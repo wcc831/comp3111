@@ -1,12 +1,18 @@
 package hk.ust.cse.hunkim.questionroom;
 
+import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -18,17 +24,24 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.util.Date;
+
 import hk.ust.cse.hunkim.questionroom.db.DBHelper;
 import hk.ust.cse.hunkim.questionroom.db.DBUtil;
 import hk.ust.cse.hunkim.questionroom.question.Question;
+import hk.ust.cse.hunkim.questionroom.question.QuestionListAdapter;
 
 public class MainActivity extends ListActivity {
 
     // TODO: change this to your own Firebase URL
-    private static final String FIREBASE_URL = "https://classquestion.firebaseio.com/";
+    private static final String FIREBASE_URL = "https://ccwfirebase.firebaseio.com/";
+
+    static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
+    static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
+    public String mEmail = null;
 
     private String roomName;
-    private Firebase mFirebaseRef;
+    private Firebase mChatroomRef;
     private ValueEventListener mConnectedListener;
     private QuestionListAdapter mChatListAdapter;
 
@@ -42,9 +55,14 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //set status bar color
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.action_bar_red));
+
         //initialized once with an Android context.
         Firebase.setAndroidContext(this);
-
         setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
@@ -59,7 +77,7 @@ public class MainActivity extends ListActivity {
         setTitle("Room name: " + roomName);
 
         // Setup our Firebase mFirebaseRef
-        mFirebaseRef = new Firebase(FIREBASE_URL).child(roomName).child("questions");
+        mChatroomRef = new Firebase(FIREBASE_URL).child("chatroom").child(roomName).child("questions");
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
@@ -93,8 +111,8 @@ public class MainActivity extends ListActivity {
         final ListView listView = getListView();
         // Tell our list adapter that we only want 200 messages at a time
         mChatListAdapter = new QuestionListAdapter(
-                mFirebaseRef.orderByChild("echo").limitToFirst(200),
-                this, R.layout.question, roomName);
+                mChatroomRef.orderByChild("echo").limitToFirst(200),
+                this, R.layout.question, this, mChatroomRef.getRoot().child("comment"));
         listView.setAdapter(mChatListAdapter);
 
         mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
@@ -106,7 +124,7 @@ public class MainActivity extends ListActivity {
         });
 
         // Finally, a little indication of connection status
-        mConnectedListener = mFirebaseRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+        mConnectedListener = mChatroomRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean connected = (Boolean) dataSnapshot.getValue();
@@ -127,7 +145,7 @@ public class MainActivity extends ListActivity {
     @Override
     public void onStop() {
         super.onStop();
-        mFirebaseRef.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
+        mChatroomRef.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
         mChatListAdapter.cleanup();
     }
 
@@ -138,9 +156,48 @@ public class MainActivity extends ListActivity {
             // Create our 'model', a Chat object
             Question question = new Question(input);
             // Create a new, auto-generated child of that chat location, and save our chat data there
-            mFirebaseRef.push().setValue(question);
+            Firebase pushRef = mChatroomRef.push();
+            pushRef.setValue(question);
+            String uniqueId = pushRef.getKey();
             inputText.setText("");
+
+            (mChatroomRef.getParent().child("recentQuestion")).setValue(uniqueId);
+            (mChatroomRef.getParent().child("activeTime")).setValue(new Date().getTime());
+
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        Log.d("main", "option menu created");
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar, menu);
+
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null)
+            actionBar.setTitle(roomName);
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        switch (item.getItemId()){
+            case R.id.action_login:
+                break;
+            case R.id.action_camera:
+                Intent cameraIntent = new Intent(this, CameraViewActivity.class);
+                cameraIntent.putExtra("action", "takePicture");
+                startActivity(cameraIntent);
+        }
+
+        return true;
     }
 
     public void updateEcho(String key) {
@@ -149,7 +206,7 @@ public class MainActivity extends ListActivity {
             return;
         }
 
-        final Firebase echoRef = mFirebaseRef.child(key).child("echo");
+        final Firebase echoRef = mChatroomRef.child(key).child("echo");
         echoRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -167,7 +224,7 @@ public class MainActivity extends ListActivity {
                 }
         );
 
-        final Firebase orderRef = mFirebaseRef.child(key).child("order");
+        final Firebase orderRef = mChatroomRef.child(key).child("order");
         orderRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override

@@ -6,7 +6,7 @@
     tools:context=".MainActivity">
 
 
-    <Button
+    <!--<Button
         android:id="@+id/close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,13 +14,12 @@
         android:text = "Quit Room"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        />
+        />-->
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/close"
+        android:layout_height="fill_parent"
         android:layout_above="@+id/listFooter"
         android:transcriptMode="alwaysScroll" />
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- the theme applied to the application or activity -->
+    <style name="actionBarTheme.red"
+        parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/actionBarStyle</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="actionBarStyle"
+        parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">#FF6666</item>
+
+        <item name="android:actionBarSize">80dp</item>
+        <item name="actionBarSize">80dp</item>
+
+    </style>
+
+</resources>

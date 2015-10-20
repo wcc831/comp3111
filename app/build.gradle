@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "hk.ust.cse.hunkim.questionroom"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -41,6 +41,9 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.google.android.gms:play-services:7.5.0'
+
+    //compile files('libs/zbar.jar')
 
     // Firebase
     compile 'com.firebase:firebase-client-android:2.3.1+'
@@ -59,4 +62,5 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
     */
+
 }

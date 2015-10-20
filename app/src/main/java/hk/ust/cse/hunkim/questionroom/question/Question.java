@@ -1,6 +1,7 @@
 package hk.ust.cse.hunkim.questionroom.question;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by hunkim on 7/16/15.
@@ -17,6 +18,7 @@ public class Question implements Comparable<Question> {
     private String headLastChar;
     private String desc;
     private String linkedDesc;
+    private String questioner;
     private boolean completed;
     private long timestamp;
     private String tags;
@@ -39,6 +41,11 @@ public class Question implements Comparable<Question> {
     // Required default constructor for Firebase object mapping
     @SuppressWarnings("unused")
     private Question() {
+    }
+
+    public Question(String questioner, String message){
+        this(message);
+        this.questioner = questioner;
     }
 
     /**
@@ -115,6 +122,8 @@ public class Question implements Comparable<Question> {
         return linkedDesc;
     }
 
+    public String getQuestioner() { return questioner; }
+
     public boolean isCompleted() {
         return completed;
     }
@@ -127,9 +136,7 @@ public class Question implements Comparable<Question> {
         return tags;
     }
 
-    public int getOrder() {
-        return order;
-    }
+    public int getOrder() { return order; }
 
     public boolean isNewQuestion() {
         return newQuestion;
