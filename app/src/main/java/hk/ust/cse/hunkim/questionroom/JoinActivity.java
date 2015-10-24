@@ -57,6 +57,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoom;
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoomListAdapter;
@@ -192,7 +193,7 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         if(requestCode == REQUEST_CODE_PICK_ACCOUNT){
             if (resultCode == RESULT_OK){
                 mEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                googleLogin(mEmail, selectedItem);
+                googleLogin(mEmail);
                 Log.d("google auth", mEmail);
             }
             else if (resultCode == RESULT_CANCELED){
@@ -201,17 +202,17 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         }
     }
 
-    public void pickUserAccount(MenuItem item) {
+    public void login(View view) {
         String[] accountTypes = new String[]{"com.google"};
         Intent intent = AccountPicker.newChooseAccountIntent(null, null,
                 accountTypes, false, null, null, null, null);
         startActivityForResult(intent, REQUEST_CODE_PICK_ACCOUNT);
     }
 
-    public void googleLogin(String email, final MenuItem item){
+    public void googleLogin(String email){
         UserInfo userInfo = new UserInfo();
         GoogleLogin login = new GoogleLogin(JoinActivity.this, chatroomRef, email, userInfo);
-        login.ExceptionCallback = new GoogleLogin.ExceptionHandler() {
+        login.exceptionCallback = new GoogleLogin.ExceptionHandler() {
             @Override
             public void handleException(final UserRecoverableAuthException e) {
                 runOnUiThread(new Runnable() {
@@ -233,10 +234,10 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
                 });
             }
         };
-        login.LoginCallback = new GoogleLogin.GoogleLoginCallback() {
+        login.loginCallback = new GoogleLogin.GoogleLoginCallback() {
             @Override
             public void onLoginSucceed(AuthData userData, String token) {
-                item.setVisible(false);
+
             }
 
             @Override
@@ -300,48 +301,71 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         joinChatroom.setText("Join " + query);
     }
 
-    private List<ChatRoom> searchChatroom(final String queryStr, final List<ChatRoom> chatroomList, final ArrayAdapter chatroomAdapter){
+    private List<ChatRoom> searchChatroom(final String queryStr, final List<ChatRoom> list, final ArrayAdapter adapter) {
 
         chatroomRef.addChildEventListener(new ChildEventListener() {
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                String roomName = dataSnapshot.getKey();
-
-                Log.d("search result", roomName);
-
-                if (roomName.contains(queryStr)) {
-                    try {
-                        String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
-                        String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
-                        String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
-
-                        chatroomList.add(0, new ChatRoom(roomName,
-                                latestQuestion,
-                                Long.parseLong(activeTime)));
-
-                        chatroomAdapter.notifyDataSetChanged();
-                    }
-                    catch (NullPointerException npe){
-                        return;
-                    }
-                }
+                searchChatroom(list, dataSnapshot, queryStr, adapter);
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildKey) {         }
+            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildKey) {
+            }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {            }
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {            }
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {            }
+            public void onCancelled(FirebaseError firebaseError) {
+            }
         });
 
-        return chatroomList;
+        return list;
+    }
+
+    private void searchChatroom(List<ChatRoom> list, DataSnapshot dataSnapshot, String queryStr, ArrayAdapter adapter) {
+        String roomName = dataSnapshot.getKey();
+
+        Log.d("search result", roomName);
+
+        if (roomName.contains(queryStr)) {
+            try {
+                String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
+                String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
+                String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
+
+                list.add(0, new ChatRoom(roomName,
+                        latestQuestion,
+                        Long.parseLong(activeTime)));
+
+                adapter.notifyDataSetChanged();
+            } catch (NullPointerException npe) {
+                npe.printStackTrace();
+            }
+        }
+    }
+
+    private void favoriteChatroom(List list, ArrayAdapter adapter, String email){
+
+        Query query = firebaseRef.child("users").orderByChild("email").equalTo(mEmail);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //dataSnapshot.child("favorite").get
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     /**

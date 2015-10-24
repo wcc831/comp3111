@@ -63,7 +63,8 @@
         android:dividerHeight="1dp"
         android:orientation="vertical"
         android:clickable="true"
-        android:background="#F0F0F0">
+        android:background="#F0F0F0"
+        android:onClick="login">
 
         <ImageView
             android:src="@drawable/more_icone_5844_96"
