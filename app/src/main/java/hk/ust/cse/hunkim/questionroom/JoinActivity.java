@@ -68,6 +68,7 @@ import hk.ust.cse.hunkim.questionroom.login.UserInfo;
  */
 public class JoinActivity extends Activity implements SearchView.OnQueryTextListener{
     public static final String ROOM_NAME = "Room_name";
+    public static Firebase firebaseRef;
     public static Firebase chatroomRef;
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
     static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
@@ -102,8 +103,8 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         }
 
         Firebase.setAndroidContext(this);
-
-        chatroomRef = new Firebase("https://ccwfirebase.firebaseio.com/").child("chatroom");
+        firebaseRef = new Firebase("https://ccwfirebase.firebaseio.com/");
+        chatroomRef = firebaseRef.child("chatroom");
 
         /*
         // Set up join chatroom.
