@@ -53,6 +53,7 @@ public class Question implements Comparable<Question> {
      * @param message string message
      */
     public Question(String message) {
+        message = message.replace("fuck", "love");
         this.wholeMsg = message;
         this.echo = 0;
         this.head = getFirstSentence(message).trim();
@@ -153,6 +154,11 @@ public class Question implements Comparable<Question> {
     public void setKey(String key) {
         this.key = key;
     }
+
+    /*public String badWordFilter(String message){
+        message.replace("fuck", "love");
+        return message;
+    }*/
 
     /**
      * New one/high echo goes bottom
