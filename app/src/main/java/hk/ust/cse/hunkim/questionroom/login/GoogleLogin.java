@@ -44,8 +44,8 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
     private static final String getUserInfoUrl = "https://www.googleapis.com/oauth2/v1/userinfo";
     private static final String getUserTokenUrl = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
 
-    public GoogleLoginCallback LoginCallback = null;
-    public ExceptionHandler ExceptionCallback = null;
+    public GoogleLoginCallback loginCallback = null;
+    public ExceptionHandler exceptionCallback = null;
 
     private Activity mActivity;
     private String userEmail = null;
@@ -69,26 +69,14 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
                 public void onAuthenticated(AuthData authData) {
                     Log.d(TAG, "auth succeed");
 
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            /*
-                            Button loginButton = (Button) mActivity.findViewById(R.id.login_button);
-                            loginButton.setId(R.id.logout_button);
-                            loginButton.setText("LOG OUT");
-
-                            ((ViewGroup)loginButton.getParent()).removeView(loginButton);
-
-                            Button logoutButton = new Button(mActivity);
-                            logoutButton.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT));
-                            */
-                        }
-                    });
-
+                    File googleProfileDir = new File(mActivity.getFilesDir(), "google");
+                    if (googleProfileDir.exists()){
+                        loginCallback.onPictureReady();
+                        return;
+                    }
 
                     try {
                         run(token);
-
                     }
                     catch (Exception e){
                         e.printStackTrace();
@@ -97,8 +85,8 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
 
                 @Override
                 public void onAuthenticationError(FirebaseError firebaseError) {
-                    if (LoginCallback != null)
-                        LoginCallback.onLoginFailed(firebaseError);
+                    if (loginCallback != null)
+                        loginCallback.onLoginFailed(firebaseError);
                 }
             });
 
@@ -116,6 +104,7 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
 
     protected String run(final String token) throws IOException{
 
+        //fetch user informaton by token
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             String json;
             @Override
@@ -132,6 +121,8 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
 
             @Override
             protected void onPostExecute(final Void param){
+
+                //save user's picture to device from a given url
                 AsyncTask<String, String, String> task = new AsyncTask<String, String, String>() {
 
                     @Override
@@ -205,7 +196,7 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                LoginCallback.onPictureReady();
+                                loginCallback.onPictureReady();
                             }
                         });
                     }
@@ -235,8 +226,8 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
             return GoogleAuthUtil.getToken(mActivity, userEmail, getUserTokenUrl);
         }
         catch (UserRecoverableAuthException usrae) {
-            if (ExceptionCallback != null) {
-                ExceptionCallback.handleException(usrae);
+            if (exceptionCallback != null) {
+                exceptionCallback.handleException(usrae);
             }
             else {
                 usrae.printStackTrace();

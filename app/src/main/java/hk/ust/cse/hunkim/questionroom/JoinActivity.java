@@ -3,24 +3,24 @@ package hk.ust.cse.hunkim.questionroom;
 import android.accounts.AccountManager;
 import android.animation.LayoutTransition;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerTabStrip;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.Html;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,8 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,44 +37,45 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
-import com.firebase.client.ValueEventListener;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoom;
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoomListAdapter;
+import hk.ust.cse.hunkim.questionroom.chatroom.ChatroomPagerAdapter;
 import hk.ust.cse.hunkim.questionroom.login.GoogleLogin;
 import hk.ust.cse.hunkim.questionroom.login.UserInfo;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class JoinActivity extends Activity implements SearchView.OnQueryTextListener{
+public class JoinActivity extends FragmentActivity implements SearchView.OnQueryTextListener{
     public static final String ROOM_NAME = "Room_name";
+    public static final String USER_EMAIL = "user_email";
+    public static Firebase firebaseRef;
     public static Firebase chatroomRef;
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
     static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
 
-    private String mEmail = null;
-    private MenuItem selectedItem = null;
+    private String userEmail = null;
+    private final List<ChatRoom> recentList = new ArrayList<>();
+    private final List<ChatRoom> favoriteList = new ArrayList<>();
+    private final List<ChatRoom> historyList = new ArrayList<>();
+    private final List<ChatRoom> searchList = new ArrayList<>();
+    private ChatRoomListAdapter searchAdapter;
 
-    private final List<ChatRoom> chatRoomList = new ArrayList<>();
-    private ChatRoomListAdapter roomAdapter;
+    ViewPager chatroomListPager;
+    PagerTabStrip chatroomListTabStrip;
+    final Context context = this;
+    final ListView[] chatListViews = {null, null, null, null};
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -95,35 +94,9 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
 
         setContentView(R.layout.activity_join);
 
-        if (Intent.ACTION_SEARCH.equals(getIntent().getAction())){
-            Log.d("joinActivity", "received search action");
-            handlSearch(getIntent().getStringExtra(SearchManager.QUERY));
-            return;
-        }
-
         Firebase.setAndroidContext(this);
-
-        chatroomRef = new Firebase("https://ccwfirebase.firebaseio.com/").child("chatroom");
-
-        /*
-        // Set up join chatroom.
-        roomNameView = (TextView) findViewById(R.id.room_name);
-        roomNameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                Log.d("onEditorAcito", "called");
-                if (actionId == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    Log.d("onEditorAcito", "attemptJoin");
-                    attemptJoin(textView);
-                }
-                return true;
-            }
-        });
-        */
-        //set up most recnet active chatroom
-
-        roomAdapter = new ChatRoomListAdapter(chatroomRef.orderByChild("activeTime").limitToFirst(10), this, chatRoomList);
-        ((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(roomAdapter);
+        firebaseRef = new Firebase("https://ccwfirebase.firebaseio.com/");
+        chatroomRef = firebaseRef.child("chatroom");
 
         //setup drawer
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.join_mainLayout);
@@ -141,6 +114,75 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
             }
         };
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
+        ChatroomPagerAdapter chatroomPagerAdapter = new ChatroomPagerAdapter(getSupportFragmentManager());
+
+        chatroomPagerAdapter.tabs = getPagerFragments(chatListViews, context);
+        //setup recent active list fragment
+        /*
+        chatroomPagerAdapter.tabs[0] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+                if (chatListViews[0] == null) {
+                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(chatroomRef.orderByChild("activeTime").limitToFirst(10), context, recentList);
+                    adapter.queryRecentList();
+                    chatListViews[0] = new ListView(context);
+                    chatListViews[0].setAdapter(adapter);
+
+                }
+                return chatListViews[0];
+            }
+        };
+        //setup favorite list fragment
+        chatroomPagerAdapter.tabs[1] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+                if (chatListViews[1] == null) {
+                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(
+                            firebaseRef.child("user").child("wcc831@gmail.com".replaceAll(".com", "")).child("favorite").orderByValue(),
+                            context,
+                            favoriteList);
+                    adapter.queryFavoriteList();
+                    chatListViews[1] = new ListView(context);
+                    chatListViews[1].setAdapter(adapter);
+                }
+                return chatListViews[1];
+            }
+        };
+        //setup recently visited lsit fragment
+        chatroomPagerAdapter.tabs[2] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+                if (chatListViews[2] == null) {
+                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(firebaseRef.child("user").child("wcc831@gmail.com".replaceAll(".com", "")).child("history").orderByValue(),
+                            context,
+                            historyList);
+                    adapter.queryFavoriteList();
+                    chatListViews[2] = new ListView(context);
+                    chatListViews[2].setAdapter(adapter);
+                }
+                return chatListViews[2];
+            }
+        };
+        //setup search result fragment
+        searchAdapter = new ChatRoomListAdapter(context, firebaseRef, new ArrayList<ChatRoom>());
+        chatroomPagerAdapter.tabs[3] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+                LinearLayout searchLayout = (LinearLayout)inflater.inflate(R.layout.activity_search_result, container, false);
+                ((ListView) searchLayout.findViewById(R.id.chatroom_list)).setAdapter(searchAdapter);
+
+                return searchLayout;
+            }
+        };
+        */
+        chatroomListPager = (ViewPager) findViewById(R.id.chatroom_list_pager);
+        chatroomListPager.setAdapter(chatroomPagerAdapter);
+        chatroomListTabStrip = (PagerTabStrip) findViewById(R.id.chatroom_list_tab_strip);
+        chatroomListTabStrip.setTextColor(Color.WHITE);
+
     }
 
     @Override
@@ -150,9 +192,9 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         inflater.inflate(R.menu.action_bar, menu);
 
         ActionBar actionBar = getActionBar();
-        if (actionBar != null)
+        if (actionBar != null) {
             actionBar.setTitle("InstaQuest");
-
+        }
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -190,9 +232,9 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         //request google account
         if(requestCode == REQUEST_CODE_PICK_ACCOUNT){
             if (resultCode == RESULT_OK){
-                mEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                googleLogin(mEmail, selectedItem);
-                Log.d("google auth", mEmail);
+                userEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                googleLogin(userEmail);
+                Log.d("google auth", userEmail);
             }
             else if (resultCode == RESULT_CANCELED){
                 Toast.makeText(JoinActivity.this, "canceled", Toast.LENGTH_SHORT).show();
@@ -200,17 +242,17 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         }
     }
 
-    public void pickUserAccount(MenuItem item) {
+    public void login(View view) {
         String[] accountTypes = new String[]{"com.google"};
         Intent intent = AccountPicker.newChooseAccountIntent(null, null,
                 accountTypes, false, null, null, null, null);
         startActivityForResult(intent, REQUEST_CODE_PICK_ACCOUNT);
     }
 
-    public void googleLogin(String email, final MenuItem item){
+    public void googleLogin(String email){
         UserInfo userInfo = new UserInfo();
         GoogleLogin login = new GoogleLogin(JoinActivity.this, chatroomRef, email, userInfo);
-        login.ExceptionCallback = new GoogleLogin.ExceptionHandler() {
+        login.exceptionCallback = new GoogleLogin.ExceptionHandler() {
             @Override
             public void handleException(final UserRecoverableAuthException e) {
                 runOnUiThread(new Runnable() {
@@ -232,10 +274,10 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
                 });
             }
         };
-        login.LoginCallback = new GoogleLogin.GoogleLoginCallback() {
+        login.loginCallback = new GoogleLogin.GoogleLoginCallback() {
             @Override
             public void onLoginSucceed(AuthData userData, String token) {
-                item.setVisible(false);
+
             }
 
             @Override
@@ -246,10 +288,86 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
             @Override
             public void onPictureReady() {
                 loadPorfile();
+                //getPagerFragments(chatListViews, context);
             }
         };
         login.execute();
     }
+
+    public Fragment[] getPagerFragments(final ListView[] chatListViews, final Context context){
+        Fragment[] fragments = new Fragment[4];
+        fragments[0] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+                if (chatListViews[0] == null) {
+                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(chatroomRef.orderByChild("activeTime").limitToFirst(10), context, recentList);
+                    adapter.queryRecentList();
+                    chatListViews[0] = new ListView(context);
+                    chatListViews[0].setAdapter(adapter);
+
+                }
+                return chatListViews[0];
+            }
+        };
+        //setup favorite list fragment
+        fragments[1] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+                if (userEmail == null){
+                    TextView notLogin = new TextView(context);
+                    notLogin.setText("Please Login First");
+                    return notLogin;
+                }
+
+                if (chatListViews[1] == null) {
+                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(
+                            firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("favorite").orderByValue(),
+                            context,
+                            favoriteList);
+                    adapter.queryFavoriteList();
+                    chatListViews[1] = new ListView(context);
+                    chatListViews[1].setAdapter(adapter);
+                }
+                return chatListViews[1];
+            }
+        };
+        //setup recently visited lsit fragment
+        fragments[2] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+                if (userEmail == null){
+                    TextView notLogin = new TextView(context);
+                    notLogin.setText("Please Login First");
+                    return notLogin;
+                }
+
+                if (chatListViews[2] == null) {
+                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("history").orderByValue(),
+                            context,
+                            historyList);
+                    adapter.queryFavoriteList();
+                    chatListViews[2] = new ListView(context);
+                    chatListViews[2].setAdapter(adapter);
+                }
+                return chatListViews[2];
+            }
+        };
+        //setup search result fragment
+        searchAdapter = new ChatRoomListAdapter(context, firebaseRef, new ArrayList<ChatRoom>());
+        fragments[3] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+                LinearLayout searchLayout = (LinearLayout)inflater.inflate(R.layout.activity_search_result, container, false);
+                ((ListView) searchLayout.findViewById(R.id.chatroom_list)).setAdapter(searchAdapter);
+
+                return searchLayout;
+            }
+        };
+        return fragments;
+    }
+
     /*
     * set account profile to leftMenu
     * */
@@ -259,27 +377,27 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         profileImage.setImageBitmap(bitmap);
 
         TextView email = (TextView) findViewById(R.id.drawer_profileEmail);
-        email.setText(mEmail);
+        email.setText(userEmail);
     }
 
+    /*
+    * Search event listener
+    * data input to search field will be handled here
+    * */
     @Override
     public boolean onQueryTextChange(String newText) {
+        chatroomListPager.setCurrentItem(3);
         if (TextUtils.isEmpty(newText)) {
             ((TextView) findViewById(R.id.join_chatroom)).setText("");
-            ((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(roomAdapter);
 
         } else {
 
             TextView textView = (TextView) findViewById(R.id.join_chatroom);
             textView.setText("Join " + newText);
             textView.setTextSize(20);
-            //ArrayAdapter adapter = new ArrayAdapter(this, R.layout.question);
 
-            List<ChatRoom> chatroomSearchResultList = new ArrayList<>();
-            ChatRoomListAdapter adapter = new ChatRoomListAdapter(this, chatroomSearchResultList);
-            ((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(adapter);
-
-            searchChatroom(newText, chatroomSearchResultList, adapter);
+            if (searchAdapter != null)
+                searchAdapter.searchChatroom(newText);
 
         }
         return true;
@@ -290,94 +408,37 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         return false;
     }
 
-    /*
-    * search request will be handled by this function
-    * */
-
-    public void handlSearch(String query){
-        TextView joinChatroom = (TextView) findViewById(R.id.join_chatroom);
-        joinChatroom.setText("Join " + query);
-    }
-
-    private List<ChatRoom> searchChatroom(final String queryStr, final List<ChatRoom> chatroomList, final ArrayAdapter chatroomAdapter){
-
-        chatroomRef.addChildEventListener(new ChildEventListener() {
-
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                String roomName = dataSnapshot.getKey();
-
-                Log.d("search result", roomName);
-
-                if (roomName.contains(queryStr)) {
-                    try {
-                        String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
-                        String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
-                        String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
-
-                        chatroomList.add(0, new ChatRoom(roomName,
-                                latestQuestion,
-                                Long.parseLong(activeTime)));
-
-                        chatroomAdapter.notifyDataSetChanged();
-                    }
-                    catch (NullPointerException npe){
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildKey) {         }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {            }
-        });
-
-        return chatroomList;
-    }
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     public void attemptJoin(View view) {
-        // Reset errors.
-        //roomNameView.setError(null);
-
         // Store values at the time of the login attempt.
+        String room_name = "";
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(USER_EMAIL, userEmail);
 
-        String room_name = null;
+        //join chatroom through list
         if (view.getId() == R.id.index_chatRoomLayout){
             room_name = (String) ((TextView) view.findViewById(R.id.index_chatRoom)).getText();
-
-            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(ROOM_NAME, room_name);
             startActivity(intent);
-
-            return;
         }
+        //join chatroom through search
         else if (view.getId() == R.id.join_chatroom){
             room_name = ((TextView)view).getText().toString().substring(5);
-            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(ROOM_NAME, room_name);
 
             SearchView searchView = (SearchView) findViewById(R.id.action_search);
             searchView.setIconified(true);
 
             startActivity(intent);
-
-            return;
         }
+        if (userEmail != null)
+            firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("history").push().setValue(room_name);
 
-
+/*
         room_name = roomNameView.getText().toString();
         boolean cancel = false;
 
@@ -396,10 +457,10 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
             roomNameView.requestFocus();
         } else {
             // Start main activity
-            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(ROOM_NAME, room_name);
             startActivity(intent);
         }
+*/
     }
 
     private boolean isEmailValid(String room_name) {
