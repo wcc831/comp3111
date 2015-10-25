@@ -69,6 +69,7 @@ import hk.ust.cse.hunkim.questionroom.login.UserInfo;
  */
 public class JoinActivity extends Activity implements SearchView.OnQueryTextListener{
     public static final String ROOM_NAME = "Room_name";
+    public static final String USER_EMAIL = "user_email";
     public static Firebase firebaseRef;
     public static Firebase chatroomRef;
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
@@ -380,18 +381,19 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         // Store values at the time of the login attempt.
 
         String room_name = null;
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(USER_EMAIL, mEmail);
+
+        //join chatroom through list
         if (view.getId() == R.id.index_chatRoomLayout){
             room_name = (String) ((TextView) view.findViewById(R.id.index_chatRoom)).getText();
-
-            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(ROOM_NAME, room_name);
             startActivity(intent);
-
             return;
         }
+        //join chatroom through search
         else if (view.getId() == R.id.join_chatroom){
             room_name = ((TextView)view).getText().toString().substring(5);
-            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(ROOM_NAME, room_name);
 
             SearchView searchView = (SearchView) findViewById(R.id.action_search);
@@ -421,7 +423,6 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
             roomNameView.requestFocus();
         } else {
             // Start main activity
-            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(ROOM_NAME, room_name);
             startActivity(intent);
         }

@@ -38,9 +38,10 @@ public class MainActivity extends ListActivity {
 
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
     static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
-    public String mEmail = null;
 
+    private String userEmail = null;
     private String roomName;
+    private Firebase mFirebaseRef;
     private Firebase mChatroomRef;
     private ValueEventListener mConnectedListener;
     private QuestionListAdapter mChatListAdapter;
@@ -70,6 +71,8 @@ public class MainActivity extends ListActivity {
 
         // Make it a bit more reliable
         roomName = intent.getStringExtra(JoinActivity.ROOM_NAME);
+        userEmail = intent.getStringExtra(JoinActivity.USER_EMAIL);
+
         if (roomName == null || roomName.length() == 0) {
             roomName = "all";
         }
@@ -77,7 +80,8 @@ public class MainActivity extends ListActivity {
         setTitle("Room name: " + roomName);
 
         // Setup our Firebase mFirebaseRef
-        mChatroomRef = new Firebase(FIREBASE_URL).child("chatroom").child(roomName).child("questions");
+        mFirebaseRef = new Firebase(FIREBASE_URL);
+        mChatroomRef =mFirebaseRef.child("chatroom").child(roomName).child("questions");
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
@@ -154,7 +158,7 @@ public class MainActivity extends ListActivity {
         String input = inputText.getText().toString();
         if (!input.equals("")) {
             // Create our 'model', a Chat object
-            Question question = new Question(input);
+            Question question = new Question(userEmail, input);
             // Create a new, auto-generated child of that chat location, and save our chat data there
             Firebase pushRef = mChatroomRef.push();
             pushRef.setValue(question);
@@ -178,6 +182,8 @@ public class MainActivity extends ListActivity {
         if (actionBar != null)
             actionBar.setTitle(roomName);
 
+        if(userEmail != null)
+            menu.findItem(R.id.action_addFavorite).setVisible(true);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -189,12 +195,14 @@ public class MainActivity extends ListActivity {
         // as you specify a parent activity in AndroidManifest.xml.
 
         switch (item.getItemId()){
-            case R.id.action_login:
-                break;
             case R.id.action_camera:
                 Intent cameraIntent = new Intent(this, CameraViewActivity.class);
                 cameraIntent.putExtra("action", "takePicture");
                 startActivity(cameraIntent);
+                break;
+            case R.id.action_addFavorite:
+                addToFavorite();
+                break;
         }
 
         return true;
@@ -244,6 +252,21 @@ public class MainActivity extends ListActivity {
 
         // Update SQLite DB
         dbutil.put(key);
+    }
+
+    public void addToFavorite() {
+        mFirebaseRef.child("user").child(parsePath(userEmail)).child("favorite").push().setValue(roomName);
+    }
+
+    public String parsePath (String email) {
+        /*
+        String parse = email.replaceAll(".", "/%2E");
+        parse = parse.replaceAll("#", "/%23");
+        parse = parse.replaceAll("$", "/%24");
+        parse = parse.replaceAll("\\[", "/%5B");
+        parse = parse.replaceAll("\\]", "/%5D");
+        */
+        return email.replaceAll(".com", "");
     }
 
     public void Close(View view) {
