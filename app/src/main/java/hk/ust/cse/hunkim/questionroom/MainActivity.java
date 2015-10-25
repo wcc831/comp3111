@@ -168,6 +168,7 @@ public class MainActivity extends ListActivity {
             (mChatroomRef.getParent().child("recentQuestion")).setValue(uniqueId);
             (mChatroomRef.getParent().child("activeTime")).setValue(new Date().getTime());
 
+
         }
     }
 

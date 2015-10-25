@@ -75,7 +75,7 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
     static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
 
-    private String mEmail = null;
+    private String userEmail = null;
     private MenuItem selectedItem = null;
 
     private final List<ChatRoom> recentList = new ArrayList<>();
@@ -179,9 +179,9 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         //request google account
         if(requestCode == REQUEST_CODE_PICK_ACCOUNT){
             if (resultCode == RESULT_OK){
-                mEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                googleLogin(mEmail);
-                Log.d("google auth", mEmail);
+                userEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                googleLogin(userEmail);
+                Log.d("google auth", userEmail);
             }
             else if (resultCode == RESULT_CANCELED){
                 Toast.makeText(JoinActivity.this, "canceled", Toast.LENGTH_SHORT).show();
@@ -248,7 +248,7 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         profileImage.setImageBitmap(bitmap);
 
         TextView email = (TextView) findViewById(R.id.drawer_profileEmail);
-        email.setText(mEmail);
+        email.setText(userEmail);
     }
 
     /*
@@ -290,21 +290,16 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
      * errors are presented and no actual login attempt is made.
      */
     public void attemptJoin(View view) {
-        // Reset errors.
-        //roomNameView.setError(null);
-
         // Store values at the time of the login attempt.
-
-        String room_name = null;
+        String room_name = "";
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(USER_EMAIL, mEmail);
+        intent.putExtra(USER_EMAIL, userEmail);
 
         //join chatroom through list
         if (view.getId() == R.id.index_chatRoomLayout){
             room_name = (String) ((TextView) view.findViewById(R.id.index_chatRoom)).getText();
             intent.putExtra(ROOM_NAME, room_name);
             startActivity(intent);
-            return;
         }
         //join chatroom through search
         else if (view.getId() == R.id.join_chatroom){
@@ -315,11 +310,11 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
             searchView.setIconified(true);
 
             startActivity(intent);
-
-            return;
         }
+        if (userEmail != null)
+            firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("history").push().setValue(room_name);
 
-
+/*
         room_name = roomNameView.getText().toString();
         boolean cancel = false;
 
@@ -341,6 +336,7 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
             intent.putExtra(ROOM_NAME, room_name);
             startActivity(intent);
         }
+*/
     }
 
     private boolean isEmailValid(String room_name) {
