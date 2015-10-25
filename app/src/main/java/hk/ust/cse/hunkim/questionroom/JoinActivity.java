@@ -78,8 +78,12 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
     private String mEmail = null;
     private MenuItem selectedItem = null;
 
-    private final List<ChatRoom> chatRoomList = new ArrayList<>();
+    private final List<ChatRoom> recentList = new ArrayList<>();
+    private final List<ChatRoom> favoriteList = new ArrayList<>();
+
     private ChatRoomListAdapter roomAdapter;
+    private ChatRoomListAdapter searchAdapter;
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -98,34 +102,16 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
 
         setContentView(R.layout.activity_join);
 
-        if (Intent.ACTION_SEARCH.equals(getIntent().getAction())){
-            Log.d("joinActivity", "received search action");
-            handlSearch(getIntent().getStringExtra(SearchManager.QUERY));
-            return;
-        }
-
         Firebase.setAndroidContext(this);
         firebaseRef = new Firebase("https://ccwfirebase.firebaseio.com/");
         chatroomRef = firebaseRef.child("chatroom");
 
-        /*
-        // Set up join chatroom.
-        roomNameView = (TextView) findViewById(R.id.room_name);
-        roomNameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                Log.d("onEditorAcito", "called");
-                if (actionId == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    Log.d("onEditorAcito", "attemptJoin");
-                    attemptJoin(textView);
-                }
-                return true;
-            }
-        });
-        */
         //set up most recnet active chatroom
-
-        roomAdapter = new ChatRoomListAdapter(chatroomRef.orderByChild("activeTime").limitToFirst(10), this, chatRoomList);
+        roomAdapter = new ChatRoomListAdapter(chatroomRef.orderByChild("activeTime").limitToFirst(10), this, recentList);
+        roomAdapter.queryRecentList();
+        //Query query = firebaseRef.child("user").child("wcc831@gmail.com".replaceAll(".com", "")).child("favorite").orderByValue();
+        //roomAdapter = new ChatRoomListAdapter(query, this, favoriteList);
+        //roomAdapter.queryFavoriteList();
         ((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(roomAdapter);
 
         //setup drawer
@@ -265,6 +251,10 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         email.setText(mEmail);
     }
 
+    /*
+    * Search event listener
+    * data input to search field will be handled here
+    * */
     @Override
     public boolean onQueryTextChange(String newText) {
         if (TextUtils.isEmpty(newText)) {
@@ -276,13 +266,14 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
             TextView textView = (TextView) findViewById(R.id.join_chatroom);
             textView.setText("Join " + newText);
             textView.setTextSize(20);
-            //ArrayAdapter adapter = new ArrayAdapter(this, R.layout.question);
 
             List<ChatRoom> chatroomSearchResultList = new ArrayList<>();
-            ChatRoomListAdapter adapter = new ChatRoomListAdapter(this, chatroomSearchResultList);
-            ((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(adapter);
+            if (searchAdapter == null) {
+                searchAdapter = new ChatRoomListAdapter(this, firebaseRef, chatroomSearchResultList);
+                ((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(searchAdapter);
+            }
 
-            searchChatroom(newText, chatroomSearchResultList, adapter);
+            searchAdapter.searchChatroom(newText);
 
         }
         return true;
@@ -291,82 +282,6 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
-    }
-
-    /*
-    * search request will be handled by this function
-    * */
-
-    public void handlSearch(String query){
-        TextView joinChatroom = (TextView) findViewById(R.id.join_chatroom);
-        joinChatroom.setText("Join " + query);
-    }
-
-    private List<ChatRoom> searchChatroom(final String queryStr, final List<ChatRoom> list, final ArrayAdapter adapter) {
-
-        chatroomRef.addChildEventListener(new ChildEventListener() {
-
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                searchChatroom(list, dataSnapshot, queryStr, adapter);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildKey) {
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
-
-        return list;
-    }
-
-    private void searchChatroom(List<ChatRoom> list, DataSnapshot dataSnapshot, String queryStr, ArrayAdapter adapter) {
-        String roomName = dataSnapshot.getKey();
-
-        Log.d("search result", roomName);
-
-        if (roomName.contains(queryStr)) {
-            try {
-                String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
-                String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
-                String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
-
-                list.add(0, new ChatRoom(roomName,
-                        latestQuestion,
-                        Long.parseLong(activeTime)));
-
-                adapter.notifyDataSetChanged();
-            } catch (NullPointerException npe) {
-                npe.printStackTrace();
-            }
-        }
-    }
-
-    private void favoriteChatroom(List list, ArrayAdapter adapter, String email){
-
-        Query query = firebaseRef.child("users").orderByChild("email").equalTo(mEmail);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //dataSnapshot.child("favorite").get
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
     }
 
     /**

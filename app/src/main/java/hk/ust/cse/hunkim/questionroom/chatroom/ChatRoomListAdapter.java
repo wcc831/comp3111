@@ -19,6 +19,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +36,15 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
     Context context;
     Query query;
     List<ChatRoom> chatrooms;
+    Firebase firebaseRef;
+
+    public ChatRoomListAdapter(Context context, Firebase firebaseRef, List<ChatRoom> list){
+        super(context, -1, list);
+
+        this.context = context;
+        this.chatrooms = list;
+        this.firebaseRef = firebaseRef;
+    }
 
     public ChatRoomListAdapter(Context context, List<ChatRoom> list) {
         super(context, -1, list);
@@ -49,12 +59,10 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
         this.query = query;
         this.context = context;
         this.chatrooms = list;
-
-        query();
     }
 
 
-    private void query() {
+    public void queryRecentList() {
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -107,6 +115,81 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
             }
         });
     }
+
+    public void queryFavoriteList() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    String roomName = child.getValue().toString();
+                    query.getRef().getRoot().child("chatroom").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String roomName = dataSnapshot.getKey();
+                            String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
+                            String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
+                            String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
+
+                            chatrooms.add(0, new ChatRoom(roomName,
+                                    latestQuestion,
+                                    Long.parseLong(activeTime)));
+
+                            notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+    public void queryVisitedList() {}
+
+    public void searchChatroom(final String searchKey){
+
+        chatrooms.clear();
+
+        firebaseRef.child("chatroom").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    String roomName = child.getKey();
+                    Log.d("room name", roomName);
+                    if (roomName.contains(searchKey)) {
+                        try {
+                            String latestQuestionId = child.child("recentQuestion").getValue().toString();
+                            String latestQuestion = child.child("questions").child(latestQuestionId).child("head").getValue().toString();
+                            String activeTime = child.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
+
+                            chatrooms.add(0, new ChatRoom(roomName,
+                                    latestQuestion,
+                                    Long.parseLong(activeTime)));
+
+                            notifyDataSetChanged();
+                        } catch (NullPointerException npe) {
+                            npe.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
 
     @Override
     public View getView(int pos, View convertView, ViewGroup parent){
