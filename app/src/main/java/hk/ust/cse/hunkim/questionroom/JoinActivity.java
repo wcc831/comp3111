@@ -368,7 +368,6 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         return fragments;
     }
 
-
     /*
     * set account profile to leftMenu
     * */

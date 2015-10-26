@@ -126,16 +126,21 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
                     query.getRef().getRoot().child("chatroom").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            String roomName = dataSnapshot.getKey();
-                            String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
-                            String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
-                            String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
+                            try {
+                                String roomName = dataSnapshot.getKey();
+                                String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
+                                String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
+                                String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
 
-                            chatrooms.add(0, new ChatRoom(roomName,
-                                    latestQuestion,
-                                    Long.parseLong(activeTime)));
+                                chatrooms.add(0, new ChatRoom(roomName,
+                                        latestQuestion,
+                                        Long.parseLong(activeTime)));
 
-                            notifyDataSetChanged();
+                                notifyDataSetChanged();
+                            }
+                            catch (NullPointerException npe){
+                                npe.printStackTrace();
+                            }
                         }
 
                         @Override
