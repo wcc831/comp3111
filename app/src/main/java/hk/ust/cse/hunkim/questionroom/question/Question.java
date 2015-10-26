@@ -156,13 +156,12 @@ public class Question implements Comparable<Question> {
     }
 
     public String badWordFilter(String message){
-        message = message.toLowerCase();
         String filter;
-        filter = message.replace("fuck", "love").replace("fuxk","support").replace("fxck","support").replace("fxxk","great").replace("on9","yeah")
-                .replace("on 9","oh yeah").replace("diu","Auntie").replace("chi lan sin","HaHa").replace("on lun","HiHi").replace("asshole","javascript")
-                .replace("ass hole","javascript").replace("ass","java").replace("bitch","friend").replace("suck","nice").replace("popkai","lucky")
-                .replace("pop kai","lucky").replace("seven head","HelloWorld").replace("sevenhead","HelloWorld").replace("7head","HelloWorld")
-                .replace("7 head","HelloWorld");
+        filter = message.replaceAll("(?i)fuck", "love").replaceAll("(?i)fuxk", "support").replaceAll("(?i)fxck", "support").replaceAll("(?i)fxxk", "great").replaceAll("(?i)on9", "clever")
+                .replaceAll("(?i)on 9", "clever").replaceAll("(?i)diu", "Auntie").replaceAll("(?i)chi lan sin", "HaHa").replaceAll("(?i)on lun", "HiHi").replaceAll("(?i)asshole", "javascript")
+                .replaceAll("(?i)ass hole", "javascript").replaceAll("(?i)ass", "java").replaceAll("(?i)bitch", "friend").replaceAll("(?i)suck", "good").replaceAll("(?i)popkai","lucky")
+                .replaceAll("(?i)pop kai", "lucky").replaceAll("(?i)seven head", "handsome").replaceAll("(?i)sevenhead", "handsome").replaceAll("(?i)7head", "handsome")
+                .replaceAll("(?i)7 head", "handsome").replaceAll("(?i)shit", "nice").replaceAll("(?i)sxit", "nice").replaceAll("(?i)shxt", "nice").replaceAll("(?i)sh!t", "nice");
         return filter;
     }
 
