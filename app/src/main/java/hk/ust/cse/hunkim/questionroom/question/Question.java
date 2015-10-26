@@ -23,6 +23,8 @@ public class Question implements Comparable<Question> {
     private long timestamp;
     private String tags;
     private int echo;
+    private int dislike;
+    private String dislikeKey;
     private int order;
     private boolean newQuestion;
 
@@ -56,6 +58,7 @@ public class Question implements Comparable<Question> {
         message = badWordFilter(message);
         this.wholeMsg = message;
         this.echo = 0;
+        this.dislike = 0;
         this.head = getFirstSentence(message).trim();
         this.desc = "";
         if (this.head.length() < message.length()) {
@@ -111,6 +114,10 @@ public class Question implements Comparable<Question> {
         return echo;
     }
 
+    public int getDislike() {
+        return dislike;
+    }
+
     public String getWholeMsg() {
         return wholeMsg;
     }
@@ -151,9 +158,13 @@ public class Question implements Comparable<Question> {
         return key;
     }
 
+    public String getDislikeKey(){ return dislikeKey;}
+
     public void setKey(String key) {
         this.key = key;
     }
+
+    public void setDislikeKey(String key) { this.dislikeKey = dislikeKey;}
 
     public String badWordFilter(String message){
         String filter;

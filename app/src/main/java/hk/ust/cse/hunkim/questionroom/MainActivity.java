@@ -255,6 +255,34 @@ public class MainActivity extends ListActivity {
         dbutil.put(key);
     }
 
+    public void updateDislike(String dislikeKey) {
+        if (dbutil.contains(dislikeKey)) {
+            Log.e("Dupkey", "Key is already in the DB!");
+            return;
+        }
+
+        final Firebase dislikeRef = mChatroomRef.child(dislikeKey).child("dislike");
+        dislikeRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Long dislikeValue = (Long) dataSnapshot.getValue();
+                        Log.e("Dislike update:", "" + dislikeValue);
+
+                        dislikeRef.setValue(dislikeValue + 1);
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                }
+        );
+
+        // Update SQLite DB
+        dbutil.put(dislikeKey);
+    }
+
     public void addToFavorite() {
         mFirebaseRef.child("user").child(parsePath(userEmail)).child("favorite").push().setValue(roomName);
     }
