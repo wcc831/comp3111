@@ -3,24 +3,24 @@ package hk.ust.cse.hunkim.questionroom;
 import android.accounts.AccountManager;
 import android.animation.LayoutTransition;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerTabStrip;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.Html;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,8 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,35 +37,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
-import com.firebase.client.ValueEventListener;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoom;
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoomListAdapter;
+import hk.ust.cse.hunkim.questionroom.chatroom.ChatroomPagerAdapter;
 import hk.ust.cse.hunkim.questionroom.login.GoogleLogin;
 import hk.ust.cse.hunkim.questionroom.login.UserInfo;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class JoinActivity extends Activity implements SearchView.OnQueryTextListener{
+public class JoinActivity extends FragmentActivity implements SearchView.OnQueryTextListener{
     public static final String ROOM_NAME = "Room_name";
     public static final String USER_EMAIL = "user_email";
     public static Firebase firebaseRef;
@@ -76,13 +66,13 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
     static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
 
     private String userEmail = null;
-    private MenuItem selectedItem = null;
-
     private final List<ChatRoom> recentList = new ArrayList<>();
     private final List<ChatRoom> favoriteList = new ArrayList<>();
-
-    private ChatRoomListAdapter roomAdapter;
+    private final List<ChatRoom> historyList = new ArrayList<>();
     private ChatRoomListAdapter searchAdapter;
+
+    ViewPager chatroomListPager;
+    PagerTabStrip chatroomListTabStrip;
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -106,14 +96,6 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         firebaseRef = new Firebase("https://ccwfirebase.firebaseio.com/");
         chatroomRef = firebaseRef.child("chatroom");
 
-        //set up most recnet active chatroom
-        roomAdapter = new ChatRoomListAdapter(chatroomRef.orderByChild("activeTime").limitToFirst(10), this, recentList);
-        roomAdapter.queryRecentList();
-        //Query query = firebaseRef.child("user").child("wcc831@gmail.com".replaceAll(".com", "")).child("favorite").orderByValue();
-        //roomAdapter = new ChatRoomListAdapter(query, this, favoriteList);
-        //roomAdapter.queryFavoriteList();
-        ((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(roomAdapter);
-
         //setup drawer
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.join_mainLayout);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.leftMenu_open, R.string.leftMenu_close){
@@ -130,6 +112,63 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
             }
         };
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
+        ChatroomPagerAdapter chatroomPagerAdapter = new ChatroomPagerAdapter(getSupportFragmentManager());
+        final Context context = this;
+        final ListView[] chatListViews = {null, null, null};
+        //setup recent active list fragment
+        chatroomPagerAdapter.tabs[0] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+                if (chatListViews[0] == null) {
+                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(chatroomRef.orderByChild("activeTime").limitToFirst(10), context, recentList);
+                    adapter.queryRecentList();
+                    chatListViews[0] = new ListView(context);
+                    chatListViews[0].setAdapter(adapter);
+
+                }
+                return chatListViews[0];
+            }
+        };
+        //setup favorite list fragment
+        chatroomPagerAdapter.tabs[1] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+                if (chatListViews[1] == null) {
+                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(
+                            firebaseRef.child("user").child("wcc831@gmail.com".replaceAll(".com", "")).child("favorite").orderByValue(),
+                            context,
+                            favoriteList);
+                    adapter.queryFavoriteList();
+                    chatListViews[1] = new ListView(context);
+                    chatListViews[1].setAdapter(adapter);
+                }
+                return chatListViews[1];
+            }
+        };
+        //setup recently visited lsit fragment
+        chatroomPagerAdapter.tabs[2] = new Fragment(){
+            @Override
+            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+                if (chatListViews[2] == null) {
+                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(firebaseRef.child("user").child("wcc831@gmail.com".replaceAll(".com", "")).child("history").orderByValue(),
+                            context,
+                            historyList);
+                    adapter.queryFavoriteList();
+                    chatListViews[2] = new ListView(context);
+                    chatListViews[2].setAdapter(adapter);
+                }
+                return chatListViews[2];
+            }
+        };
+
+        chatroomListPager = (ViewPager) findViewById(R.id.chatroom_list_pager);
+        chatroomListPager.setAdapter(chatroomPagerAdapter);
+        chatroomListTabStrip = (PagerTabStrip) findViewById(R.id.chatroom_list_tab_strip);
+        chatroomListTabStrip.setTextColor(Color.WHITE);
+
     }
 
     @Override
@@ -139,8 +178,10 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
         inflater.inflate(R.menu.action_bar, menu);
 
         ActionBar actionBar = getActionBar();
-        if (actionBar != null)
+        if (actionBar != null) {
             actionBar.setTitle("InstaQuest");
+            //actionBar.setElevation(-1);
+        }
 
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -259,7 +300,7 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
     public boolean onQueryTextChange(String newText) {
         if (TextUtils.isEmpty(newText)) {
             ((TextView) findViewById(R.id.join_chatroom)).setText("");
-            ((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(roomAdapter);
+            //((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(roomAdapter);
 
         } else {
 
@@ -270,7 +311,7 @@ public class JoinActivity extends Activity implements SearchView.OnQueryTextList
             List<ChatRoom> chatroomSearchResultList = new ArrayList<>();
             if (searchAdapter == null) {
                 searchAdapter = new ChatRoomListAdapter(this, firebaseRef, chatroomSearchResultList);
-                ((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(searchAdapter);
+                //((ListView) findViewById(R.id.recent_chatRoom)).setAdapter(searchAdapter);
             }
 
             searchAdapter.searchChatroom(newText);
