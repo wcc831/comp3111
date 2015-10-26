@@ -23,17 +23,6 @@
         android:layout_height="fill_parent"
         tools:context=".MainActivity" >
 
-        <TextView
-            android:id="@+id/join_chatroom"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:onClick="attemptJoin"/>
-       <ListView
-            android:id="@+id/recent_chatRoom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-
         <android.support.v4.view.PagerTabStrip
             android:layout_width="wrap_content"
             android:layout_height="30dp"
@@ -41,11 +30,10 @@
             android:id="@+id/chatroom_list_tab_strip"
             android:focusableInTouchMode="false">
 
-
-
         </android.support.v4.view.PagerTabStrip>
 
     </android.support.v4.view.ViewPager>
+
     <!--</LinearLayout>-->
 
     <LinearLayout

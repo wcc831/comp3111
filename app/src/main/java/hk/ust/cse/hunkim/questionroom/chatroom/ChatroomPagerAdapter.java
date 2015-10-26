@@ -12,7 +12,7 @@ import java.util.Locale;
  */
 public class ChatroomPagerAdapter extends FragmentPagerAdapter {
 
-    public Fragment[] tabs = new Fragment[3];
+    public Fragment[] tabs;
 
     public ChatroomPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
@@ -20,22 +20,12 @@ public class ChatroomPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
-        switch (position) {
-            case 0:
-                return tabs[0];
-            case 1:
-                return tabs[1];
-            case 2:
-                return tabs[2];
-        }
-
-        return null;
+        return tabs[position];
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return tabs.length;
     }
 
     @Override
@@ -45,11 +35,11 @@ public class ChatroomPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Recent Active";
             case 1:
-
                 return "Favorite";
             case 2:
-
                 return "Recent Visited";
+            case 3:
+                return "Search Result";
         }
         return null;
     }
