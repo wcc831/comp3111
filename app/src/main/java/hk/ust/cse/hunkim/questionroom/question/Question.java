@@ -53,7 +53,7 @@ public class Question implements Comparable<Question> {
      * @param message string message
      */
     public Question(String message) {
-        message = message.replace("fuck", "love");
+        message = badWordFilter(message);
         this.wholeMsg = message;
         this.echo = 0;
         this.head = getFirstSentence(message).trim();
@@ -155,10 +155,16 @@ public class Question implements Comparable<Question> {
         this.key = key;
     }
 
-    /*public String badWordFilter(String message){
-        message.replace("fuck", "love");
-        return message;
-    }*/
+    public String badWordFilter(String message){
+        message = message.toLowerCase();
+        String filter;
+        filter = message.replace("fuck", "love").replace("fuxk","support").replace("fxck","support").replace("fxxk","great").replace("on9","yeah")
+                .replace("on 9","oh yeah").replace("diu","Auntie").replace("chi lan sin","HaHa").replace("on lun","HiHi").replace("asshole","javascript")
+                .replace("ass hole","javascript").replace("ass","java").replace("bitch","friend").replace("suck","nice").replace("popkai","lucky")
+                .replace("pop kai","lucky").replace("seven head","HelloWorld").replace("sevenhead","HelloWorld").replace("7head","HelloWorld")
+                .replace("7 head","HelloWorld");
+        return filter;
+    }
 
     /**
      * New one/high echo goes bottom
