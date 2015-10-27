@@ -169,6 +169,8 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
 
         if (question.getQuestioner() != null)
             ((TextView) view.findViewById(R.id.questioner)).setText(question.getQuestioner());
+        else
+            ((TextView) view.findViewById(R.id.questioner)).setText("Anonymouse");
 
         // check if we already clicked
         boolean clickable = !dbUtil.contains(question.getKey());

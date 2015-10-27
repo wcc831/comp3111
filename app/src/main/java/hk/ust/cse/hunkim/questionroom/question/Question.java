@@ -1,5 +1,8 @@
 package hk.ust.cse.hunkim.questionroom.question;
 
+import android.util.Log;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +24,7 @@ public class Question implements Comparable<Question> {
     private String questioner;
     private boolean completed;
     private long timestamp;
-    private String tags;
+    private String[] tags;
     private int echo;
     private int dislike;
     private String dislikeKey;
@@ -56,6 +59,16 @@ public class Question implements Comparable<Question> {
      */
     public Question(String message) {
         message = badWordFilter(message);
+
+        List<String> tmp = new ArrayList<>();
+        extractTag(message, 0, tmp);
+        tags = new String[tmp.size()];
+        tmp.toArray(tags);
+
+        for(String tag : tags){
+            Log.d("print tags", tag);
+        }
+
         this.wholeMsg = message;
         this.echo = 0;
         this.dislike = 0;
@@ -140,7 +153,7 @@ public class Question implements Comparable<Question> {
         return timestamp;
     }
 
-    public String getTags() {
+    public String[] getTags() {
         return tags;
     }
 
@@ -176,6 +189,19 @@ public class Question implements Comparable<Question> {
         return filter;
     }
 
+    public static List<String> extractTag(String message, int index, List<String> tags){
+        int hashIndex = message.indexOf('#', index);
+        int spaceIndex;
+        if (hashIndex == -1)
+            return tags;
+        spaceIndex = message.indexOf(" ", hashIndex);
+        if (spaceIndex == -1)
+            spaceIndex = message.length();
+
+        tags.add(message.substring(hashIndex, spaceIndex));
+
+        return extractTag(message, spaceIndex, tags);
+    }
     /**
      * New one/high echo goes bottom
      * @param other other chat
