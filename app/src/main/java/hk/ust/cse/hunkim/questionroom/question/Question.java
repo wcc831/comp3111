@@ -100,11 +100,14 @@ public class Question implements Comparable<Question> {
                 continue;
             }
 
-            if (index == -1) {
-                index = i;
-            } else {
-                index = Math.min(i, index);
+            if (separateTitle(message, i)){
+                if (index == -1) {
+                    index = i;
+                } else {
+                    index = Math.min(i, index);
+                }
             }
+
         }
 
         if (index == -1) {
@@ -187,6 +190,25 @@ public class Question implements Comparable<Question> {
                 .replaceAll("(?i)pop kai", "lucky").replaceAll("(?i)seven head", "handsome").replaceAll("(?i)sevenhead", "handsome").replaceAll("(?i)7head", "handsome")
                 .replaceAll("(?i)7 head", "handsome").replaceAll("(?i)shit", "nice").replaceAll("(?i)sxit", "nice").replaceAll("(?i)shxt", "nice").replaceAll("(?i)sh!t", "nice");
         return filter;
+    }
+
+    public static boolean separateTitle(String m, int i){
+
+        // if meet conditions(e.g. Dr.), return false
+        if ((m.substring(i-2, i+1).equalsIgnoreCase("Dr.")) ||  (m.substring(i-2, i+1).equalsIgnoreCase("Mr."))
+                || (m.substring(i-2, i+1).equalsIgnoreCase("Ms."))){
+            return false;
+        }
+        else if (m.substring(i-3, i+1).equalsIgnoreCase("Mrs.")){
+            return false;
+        }
+        else if ((m.substring(i-4, i+1).equalsIgnoreCase("Prof.")) || (m.substring(i-4, i+1).equalsIgnoreCase("Para."))){
+            return false;
+        }
+        // else return true
+        else {
+            return true;
+        }
     }
 
     public static List<String> extractTag(String message, int index, List<String> tags){
