@@ -11,6 +11,7 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -163,6 +164,18 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mModelKeys.clear();
     }
 
+    public void removeListener() {
+        mRef.removeEventListener(mListener);
+    }
+
+    public void attachList(List<T> mModels, HashMap<String, T> hashMap){
+        this.mModels = mModels;
+        this.mModelKeys = hashMap;
+    }
+
+    public void setQueryValueListenerForSigleEvent(ValueEventListener valueEventListener) {
+        mRef.addListenerForSingleValueEvent(valueEventListener);
+    }
 
     @Override
     public int getCount() {

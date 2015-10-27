@@ -118,66 +118,6 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         ChatroomPagerAdapter chatroomPagerAdapter = new ChatroomPagerAdapter(getSupportFragmentManager());
 
         chatroomPagerAdapter.tabs = getPagerFragments(chatListViews, context);
-        //setup recent active list fragment
-        /*
-        chatroomPagerAdapter.tabs[0] = new Fragment(){
-            @Override
-            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-                if (chatListViews[0] == null) {
-                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(chatroomRef.orderByChild("activeTime").limitToFirst(10), context, recentList);
-                    adapter.queryRecentList();
-                    chatListViews[0] = new ListView(context);
-                    chatListViews[0].setAdapter(adapter);
-
-                }
-                return chatListViews[0];
-            }
-        };
-        //setup favorite list fragment
-        chatroomPagerAdapter.tabs[1] = new Fragment(){
-            @Override
-            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-                if (chatListViews[1] == null) {
-                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(
-                            firebaseRef.child("user").child("wcc831@gmail.com".replaceAll(".com", "")).child("favorite").orderByValue(),
-                            context,
-                            favoriteList);
-                    adapter.queryFavoriteList();
-                    chatListViews[1] = new ListView(context);
-                    chatListViews[1].setAdapter(adapter);
-                }
-                return chatListViews[1];
-            }
-        };
-        //setup recently visited lsit fragment
-        chatroomPagerAdapter.tabs[2] = new Fragment(){
-            @Override
-            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-                if (chatListViews[2] == null) {
-                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(firebaseRef.child("user").child("wcc831@gmail.com".replaceAll(".com", "")).child("history").orderByValue(),
-                            context,
-                            historyList);
-                    adapter.queryFavoriteList();
-                    chatListViews[2] = new ListView(context);
-                    chatListViews[2].setAdapter(adapter);
-                }
-                return chatListViews[2];
-            }
-        };
-        //setup search result fragment
-        searchAdapter = new ChatRoomListAdapter(context, firebaseRef, new ArrayList<ChatRoom>());
-        chatroomPagerAdapter.tabs[3] = new Fragment(){
-            @Override
-            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-                LinearLayout searchLayout = (LinearLayout)inflater.inflate(R.layout.activity_search_result, container, false);
-                ((ListView) searchLayout.findViewById(R.id.chatroom_list)).setAdapter(searchAdapter);
-
-                return searchLayout;
-            }
-        };
-        */
         chatroomListPager = (ViewPager) findViewById(R.id.chatroom_list_pager);
         chatroomListPager.setAdapter(chatroomPagerAdapter);
         chatroomListTabStrip = (PagerTabStrip) findViewById(R.id.chatroom_list_tab_strip);

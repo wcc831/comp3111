@@ -20,9 +20,11 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import hk.ust.cse.hunkim.questionroom.FirebaseListAdapter;
@@ -87,6 +89,68 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
         this.context = context;
         this.layout = layout;
         this.commentRef = commentRef;
+    }
+
+    public QuestionListAdapter(Query ref, Activity activity, int layout, Context context, Firebase commentRef, boolean t) {
+        super(ref, Question.class, layout, activity);
+
+        // Must be MainActivity
+        assert (activity instanceof MainActivity);
+
+        this.query = ref;
+        this.activity = (MainActivity) activity;
+        this.context = context;
+        this.layout = layout;
+        this.commentRef = commentRef;
+
+        super.cleanup();
+        super.attachList(questionList, hashMap);
+    }
+
+    final List<Question> questionList = new ArrayList<>();
+    final HashMap<String, Question> hashMap = new HashMap<>();
+
+
+    public void doSearch(final String searchTag){
+
+        questionList.clear();
+        hashMap.clear();
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child: dataSnapshot.getChildren()){
+
+                    try {
+                        Question q = child.getValue(Question.class);
+                        boolean containTag = false;
+                        for (String tag : q.getTags()) {
+                            if (tag.contains(searchTag))
+                                containTag = true;
+                        }
+
+                        if (containTag) {
+                            hashMap.put(child.getKey(), q);
+                            setKey(child.getKey(), q);
+                            questionList.add(q);
+
+                        }
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        };
+        super.setQueryValueListenerForSigleEvent(eventListener);
+
     }
 
     /**

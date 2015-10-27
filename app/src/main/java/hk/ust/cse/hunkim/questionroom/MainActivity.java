@@ -1,10 +1,15 @@
 package hk.ust.cse.hunkim.questionroom;
 
+import android.animation.LayoutTransition;
 import android.app.ActionBar;
 import android.app.ListActivity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -15,13 +20,16 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.util.Date;
@@ -31,7 +39,7 @@ import hk.ust.cse.hunkim.questionroom.db.DBUtil;
 import hk.ust.cse.hunkim.questionroom.question.Question;
 import hk.ust.cse.hunkim.questionroom.question.QuestionListAdapter;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements SearchView.OnQueryTextListener {
 
     // TODO: change this to your own Firebase URL
     private static final String FIREBASE_URL = "https://ccwfirebase.firebaseio.com/";
@@ -45,6 +53,7 @@ public class MainActivity extends ListActivity {
     private Firebase mChatroomRef;
     private ValueEventListener mConnectedListener;
     private QuestionListAdapter mChatListAdapter;
+    QuestionListAdapter searchQuestionAdapter;
 
     private DBUtil dbutil;
 
@@ -144,6 +153,18 @@ public class MainActivity extends ListActivity {
                 // No-op
             }
         });
+
+        searchQuestionAdapter = new QuestionListAdapter(
+                mChatroomRef.orderByChild("echo").limitToFirst(200),
+                this, R.layout.question, this, mChatroomRef.getRoot().child("comment"), true);
+
+        searchQuestionAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                listView.setSelection(searchQuestionAdapter.getCount() - 1);
+            }
+        });
     }
 
     @Override
@@ -185,6 +206,17 @@ public class MainActivity extends ListActivity {
 
         if(userEmail != null)
             menu.findItem(R.id.action_addFavorite).setVisible(true);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setQueryHint(Html.fromHtml("<font color= #ffffff>Search a tag</font>"));
+        searchView.setOnQueryTextListener(this);
+        searchView.setSubmitButtonEnabled(false);
+
+        LinearLayout searchBar = (LinearLayout) searchView.findViewById(R.id.action_search);
+        searchBar.setLayoutTransition(new LayoutTransition());
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -300,5 +332,28 @@ public class MainActivity extends ListActivity {
 
     public void Close(View view) {
         finish();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+
+        final ListView listView = getListView();
+        if (TextUtils.isEmpty(newText)) {
+            listView.setAdapter(mChatListAdapter);
+        }
+        else {
+
+            searchQuestionAdapter.doSearch(newText);
+            listView.setAdapter(searchQuestionAdapter);
+        }
+
+
+        return false;
     }
 }
