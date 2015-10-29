@@ -40,11 +40,6 @@
             android:name=".CameraViewActivity"
             android:label="@string/title_activity_camera_view" >
         </activity>
-        <activity
-            android:name=".SearchResultActivity"
-            android:label="@string/title_activity_search_result" >
-
-        </activity>
     </application>
 
 </manifest>
