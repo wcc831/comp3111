@@ -167,7 +167,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
         int echo = question.getEcho();
         Button echoButton = (Button) view.findViewById(R.id.echo);
         echoButton.setText("" + echo);
-        echoButton.setTextColor(Color.BLUE);
+        //echoButton.setTextColor(Color.BLUE);
 
 
         echoButton.setTag(question.getKey()); // Set tag for button
@@ -186,7 +186,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
         int dislike = question.getDislike();
         Button dislikeButton = (Button) view.findViewById(R.id.dislike);
         dislikeButton.setText("" + dislike);
-        dislikeButton.setTextColor(Color.RED);
+        //dislikeButton.setTextColor(Color.RED);
 
 
         dislikeButton.setTag(question.getKey()); // Set tag for button
@@ -244,12 +244,13 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
 
         // http://stackoverflow.com/questions/8743120/how-to-grey-out-a-button
         // grey out our button
+        /*
         if (clickable) {
             echoButton.getBackground().setColorFilter(null);
         } else {
             echoButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
         }
-
+*/
 
         // check if we already clicked
         boolean dislikeclickable = !dbUtil.contains(question.getKey());
@@ -261,12 +262,13 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
 
         // http://stackoverflow.com/questions/8743120/how-to-grey-out-a-button
         // grey out our button
+        /*
         if (dislikeclickable) {
             dislikeButton.getBackground().setColorFilter(null);
         } else {
             dislikeButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
         }
-
+*/
 
 
 
