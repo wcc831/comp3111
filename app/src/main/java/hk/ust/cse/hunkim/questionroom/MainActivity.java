@@ -2,15 +2,18 @@ package hk.ust.cse.hunkim.questionroom;
 
 import android.animation.LayoutTransition;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -106,6 +109,24 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
             @Override
             public void onClick(View view) {
                 sendMessage();
+            }
+        });
+
+
+        findViewById(R.id.category).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                final View AddCategoryLayout = inflater.inflate(R.layout.add_category_layout, null);
+                final TextView categoryContent = (TextView) AddCategoryLayout.findViewById(R.id.category);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setView(AddCategoryLayout).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
             }
         });
 
