@@ -31,6 +31,7 @@ import java.util.Map;
 import hk.ust.cse.hunkim.questionroom.FirebaseListAdapter;
 import hk.ust.cse.hunkim.questionroom.MainActivity;
 import hk.ust.cse.hunkim.questionroom.R;
+import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoomListAdapter;
 import hk.ust.cse.hunkim.questionroom.chatroom.CommentListAdapter;
 import hk.ust.cse.hunkim.questionroom.db.DBUtil;
 
@@ -83,6 +84,8 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
         }
     };
 
+    private View.OnTouchListener touchListener;
+
     public QuestionListAdapter(Query ref, Activity activity, int layout, Context context, Firebase commentRef) {
         super(ref, Question.class, layout, activity);
 
@@ -94,6 +97,14 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
         this.context = context;
         this.layout = layout;
         this.commentRef = commentRef;
+    }
+
+    public void setOnTouchListener(View.OnTouchListener listener) {
+        this.touchListener = listener;
+    }
+
+    public void setOnLongClickListener (View.OnLongClickListener listener) {
+        longClickListener = listener;
     }
 
     public void doSearch(String keyword){
@@ -262,6 +273,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
         view.setTag(question.getKey());  // store key in the view
 
         view.setOnLongClickListener(longClickListener);
+        view.setOnTouchListener(touchListener);
 /*        QuestionListAdapter commentsAdapter = new QuestionListAdapter(commentRef.child(question.getKey()).orderByChild("timestamp"),
                 activity, layout, context, commentRef);
 

@@ -1,13 +1,17 @@
 package hk.ust.cse.hunkim.questionroom.chatroom;
 
 import android.animation.LayoutTransition;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -25,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import hk.ust.cse.hunkim.questionroom.FirebaseListAdapter;
+import hk.ust.cse.hunkim.questionroom.Generic;
 import hk.ust.cse.hunkim.questionroom.R;
 import hk.ust.cse.hunkim.questionroom.question.Question;
 
@@ -33,10 +38,35 @@ import hk.ust.cse.hunkim.questionroom.question.Question;
  */
 public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
 
-    Context context;
+    final Context context;
     Query query;
     List<ChatRoom> chatrooms;
     Firebase firebaseRef;
+
+    public static View.OnTouchListener onTouchListener;/*( = new View.OnTouchListener() {
+
+        float x, y;
+
+        @Override
+        public boolean onTouch(final View v, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                x = event.getX();
+                y = event.getY();
+
+                Generic.animateColor(v, Color.argb(255, 238, 238, 238), Color.argb(255, 200, 200, 200));
+            } else if (event.getAction() == MotionEvent.ACTION_UP)
+                Generic.animateColor(v, Color.argb(255, 200, 200, 200), Color.argb(255, 238, 238, 238));
+            else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                if (Math.sqrt(Math.pow(x - event.getX(), 2) + Math.pow(y - event.getY(), 2)) > 10) {
+                    Generic.animateColor(v, Color.argb(255, 200, 200, 200), Color.argb(255, 238, 238, 238));
+                }
+            }
+            else{
+                Generic.animateColor(v, Color.argb(255, 200, 200, 200), Color.argb(255, 238, 238, 238));
+            }
+            return false;
+        }
+    };*/
 
     public ChatRoomListAdapter(Context context, Firebase firebaseRef, List<ChatRoom> list){
         super(context, -1, list);
@@ -137,8 +167,7 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
                                         Long.parseLong(activeTime)));
 
                                 notifyDataSetChanged();
-                            }
-                            catch (NullPointerException npe){
+                            } catch (NullPointerException npe) {
                                 npe.printStackTrace();
                             }
                         }
@@ -195,11 +224,14 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
         });
     }
 
+    public void setOnTouchListener(View.OnTouchListener listener){
+        this.onTouchListener = listener;
+    }
 
     @Override
     public View getView(int pos, View convertView, ViewGroup parent){
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View chatRoomView = inflater.inflate(R.layout.chatroom, parent, false);
+        final View chatRoomView = inflater.inflate(R.layout.chatroom, parent, false);
         ChatRoom room = getItem(pos);
 
         ((TextView) chatRoomView.findViewById(R.id.index_chatRoom)).setText(room.roomName);
@@ -208,6 +240,9 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
         long time = room.activeTime;
         String relativeTime = (String) DateUtils.getRelativeDateTimeString(context, time, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL);
         ((TextView) chatRoomView.findViewById(R.id.index_activeTime)).setText(relativeTime);
+
+
+        chatRoomView.setOnTouchListener(onTouchListener);
 
         return chatRoomView;
     }

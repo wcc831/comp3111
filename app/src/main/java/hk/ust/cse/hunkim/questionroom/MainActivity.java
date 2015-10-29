@@ -49,7 +49,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
     private String userEmail = null;
     private String roomName;
-    private Firebase mFirebaseRef;
+    private Firebase mFirebaseRef = new Firebase(FIREBASE_URL);
     private Firebase mChatroomRef;
     private ValueEventListener mConnectedListener;
     private QuestionListAdapter mChatListAdapter;
@@ -88,7 +88,6 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         setTitle("Room name: " + roomName);
 
         // Setup our Firebase mFirebaseRef
-        mFirebaseRef = new Firebase(FIREBASE_URL);
         mChatroomRef =mFirebaseRef.child("chatroom").child(roomName).child("questions");
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
@@ -125,6 +124,10 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         mChatListAdapter = new QuestionListAdapter(
                 mChatroomRef.orderByChild("echo").limitToFirst(200),
                 this, R.layout.question, this, mChatroomRef.getRoot().child("comment"));
+        mChatListAdapter.setOnTouchListener(
+                Generic.getAnimateColorListener(
+                        getResources().getColor(R.color.key_up_color),
+                        getResources().getColor(R.color.key_down_color)));
         listView.setAdapter(mChatListAdapter);
 
         mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
@@ -307,13 +310,6 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     }
 
     public String parsePath (String email) {
-        /*
-        String parse = email.replaceAll(".", "/%2E");
-        parse = parse.replaceAll("#", "/%23");
-        parse = parse.replaceAll("$", "/%24");
-        parse = parse.replaceAll("\\[", "/%5B");
-        parse = parse.replaceAll("\\]", "/%5D");
-        */
         return email.replaceAll(".com", "");
     }
 
@@ -331,14 +327,11 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     public boolean onQueryTextChange(String newText) {
         final ListView listView = getListView();
         if (TextUtils.isEmpty(newText)) {
-            //listView.setAdapter(mChatListAdapter);
             mChatListAdapter.finishSearch();
         }
         else {
             mChatListAdapter.doSearch(newText);
 
-            //searchQuestionAdapter.doSearch(newText);
-            //listView.setAdapter(searchQuestionAdapter);
         }
 
 

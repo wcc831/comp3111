@@ -241,7 +241,14 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
             public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
                 if (chatListViews[0] == null) {
-                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(chatroomRef.orderByChild("activeTime").limitToFirst(10), context, recentList);
+                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(
+                            chatroomRef.orderByChild("activeTime").limitToFirst(10),
+                            context,
+                            recentList);
+                    adapter.setOnTouchListener(
+                            Generic.getAnimateColorListener(
+                                    getResources().getColor(R.color.key_up_color),
+                                    getResources().getColor(R.color.key_down_color)));
                     adapter.queryRecentList();
                     chatListViews[0] = new ListView(context);
                     chatListViews[0].setAdapter(adapter);
@@ -267,6 +274,10 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
                             context,
                             favoriteList);
                     adapter.queryFavoriteList();
+                    adapter.setOnTouchListener(
+                            Generic.getAnimateColorListener(
+                                    getResources().getColor(R.color.key_up_color),
+                                    getResources().getColor(R.color.key_down_color)));
                     chatListViews[1] = new ListView(context);
                     chatListViews[1].setAdapter(adapter);
                 }
@@ -289,6 +300,10 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
                             historyList);
                     adapter.queryFavoriteList();
                     chatListViews[2] = new ListView(context);
+                    adapter.setOnTouchListener(
+                            Generic.getAnimateColorListener(
+                                    getResources().getColor(R.color.key_up_color),
+                                    getResources().getColor(R.color.key_down_color)));
                     chatListViews[2].setAdapter(adapter);
                 }
                 return chatListViews[2];
@@ -296,6 +311,10 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         };
         //setup search result fragment
         searchAdapter = new ChatRoomListAdapter(context, firebaseRef, new ArrayList<ChatRoom>());
+        searchAdapter.setOnTouchListener(
+                Generic.getAnimateColorListener(
+                        getResources().getColor(R.color.key_up_color),
+                        getResources().getColor(R.color.key_down_color)));
         fragments[3] = new Fragment(){
             @Override
             public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -377,30 +396,6 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         }
         if (userEmail != null)
             firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("history").push().setValue(room_name);
-
-/*
-        room_name = roomNameView.getText().toString();
-        boolean cancel = false;
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(room_name)) {
-            roomNameView.setError(getString(R.string.error_field_required));
-
-            cancel = true;
-        } else if (!isEmailValid(room_name)) {
-            roomNameView.setError(getString(R.string.error_invalid_room_name));
-            cancel = true;
-        }
-
-        if (cancel) {
-            roomNameView.setText("");
-            roomNameView.requestFocus();
-        } else {
-            // Start main activity
-            intent.putExtra(ROOM_NAME, room_name);
-            startActivity(intent);
-        }
-*/
     }
 
     private boolean isEmailValid(String room_name) {

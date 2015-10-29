@@ -3,4 +3,6 @@
     <color name="action_bar_red">#FF6666</color>
     <color name="timestamp">#A8A8A8</color>
     <color name="question">#787878</color>
+    <color name="key_down_color">#C8C8C8</color>
+    <color name="key_up_color">#F3F3F3 </color>
 </resources>
