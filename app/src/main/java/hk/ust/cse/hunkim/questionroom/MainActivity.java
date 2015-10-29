@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +21,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,7 +64,21 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         return dbutil;
     }
 
-    private String[] category = new String[] {"Lecture", "Tutorial", "Laboratory", "Assignment", "Project", "Midterm", "Exam"};
+    private String[] category = new String[] {"No Category", "Final", "Midterm", "Assignment", "Others"};
+    private int categoryChoice;
+
+    public void setCategoryButtonText(int choice){
+        Button categoryButton = (Button) findViewById(R.id.category);
+        categoryButton.setText(category[choice]);
+    }
+
+    public void setCategoryChoice(int choice){
+        categoryChoice = choice;
+    }
+
+    public int getCategoryChoice(){
+        return categoryChoice;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +155,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                 builder.setItems(category, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+                        setCategoryButtonText(which);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
