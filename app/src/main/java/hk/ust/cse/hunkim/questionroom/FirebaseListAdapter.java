@@ -54,7 +54,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mInflater = activity.getLayoutInflater();
         mModels = new ArrayList<T>();
         mModelKeys = new HashMap<String, T>();
+        initChildEventlistener();
+    }
 
+    public void initChildEventlistener() {
         // Look for all child events. We will then map them to our own internal ArrayList, which backs ListView
         mListener = this.mRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -157,24 +160,24 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         });
     }
 
+    public void detachChildEventlistener() {
+        mRef.removeEventListener(mListener);
+    }
+
+    public void attachList(List<T> mModels, Map<String, T> hashMap){
+        this.mModels = mModels;
+        this.mModelKeys = hashMap;
+    }
+
+    public List<T> getModels() { return mModels; }
+
+    public Map<String, T> getModelMap() { return mModelKeys; }
+
     public void cleanup() {
         // We're being destroyed, let go of our mListener and forget about all of the mModels
         mRef.removeEventListener(mListener);
         mModels.clear();
         mModelKeys.clear();
-    }
-
-    public void removeListener() {
-        mRef.removeEventListener(mListener);
-    }
-
-    public void attachList(List<T> mModels, HashMap<String, T> hashMap){
-        this.mModels = mModels;
-        this.mModelKeys = hashMap;
-    }
-
-    public void setQueryValueListenerForSigleEvent(ValueEventListener valueEventListener) {
-        mRef.addListenerForSingleValueEvent(valueEventListener);
     }
 
     @Override

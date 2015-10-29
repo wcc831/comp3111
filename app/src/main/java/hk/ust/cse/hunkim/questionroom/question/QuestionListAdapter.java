@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import hk.ust.cse.hunkim.questionroom.FirebaseListAdapter;
 import hk.ust.cse.hunkim.questionroom.MainActivity;
@@ -48,6 +49,10 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
     Query query;
     int layout;
     Firebase commentRef;
+    List<Question> searchResult;
+    Map<String, Question> searchHashMap;
+    List<Question> tmpQuestionList;
+    Map<String, Question> tmpHashMap;
 
     private View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
         @Override
@@ -91,66 +96,48 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
         this.commentRef = commentRef;
     }
 
-    public QuestionListAdapter(Query ref, Activity activity, int layout, Context context, Firebase commentRef, boolean t) {
-        super(ref, Question.class, layout, activity);
+    public void doSearch(String keyword){
 
-        // Must be MainActivity
-        assert (activity instanceof MainActivity);
+        if (searchResult == null) {
+            searchResult = new ArrayList<>();
+            searchHashMap = new HashMap<>();
+            tmpQuestionList = getModels();
+            tmpHashMap = getModelMap();
+            super.attachList(searchResult, searchHashMap);
+            super.detachChildEventlistener();
+        }
 
-        this.query = ref;
-        this.activity = (MainActivity) activity;
-        this.context = context;
-        this.layout = layout;
-        this.commentRef = commentRef;
+        searchResult.clear();
+        searchHashMap.clear();
 
-        super.cleanup();
-        super.attachList(questionList, hashMap);
+        for (Question q : tmpQuestionList) {
+            boolean containTag = false;
+            for (String tag : q.getTags()) {
+                if (tag.contains(keyword))
+                    containTag = true;
+            }
+
+            if (containTag) {
+                searchHashMap.put(q.getKey(), q);
+                setKey(q.getKey(), q);
+                searchResult.add(q);
+
+            }
+        }
+        notifyDataSetChanged();
     }
 
-    final List<Question> questionList = new ArrayList<>();
-    final HashMap<String, Question> hashMap = new HashMap<>();
+    public void finishSearch () {
+        if (searchResult != null){
+            searchResult.clear();
+            searchResult = null;
+            searchHashMap.clear();
+            searchHashMap = null;
+        }
+        if (tmpQuestionList != null && tmpHashMap != null)
+            attachList(tmpQuestionList, tmpHashMap);
 
-
-    public void doSearch(final String searchTag){
-
-        questionList.clear();
-        hashMap.clear();
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot child: dataSnapshot.getChildren()){
-
-                    try {
-                        Question q = child.getValue(Question.class);
-                        boolean containTag = false;
-                        for (String tag : q.getTags()) {
-                            if (tag.contains(searchTag))
-                                containTag = true;
-                        }
-
-                        if (containTag) {
-                            hashMap.put(child.getKey(), q);
-                            setKey(child.getKey(), q);
-                            questionList.add(q);
-
-                        }
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-                }
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        };
-        super.setQueryValueListenerForSigleEvent(eventListener);
-
+        initChildEventlistener();
     }
 
     /**

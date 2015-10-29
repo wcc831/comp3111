@@ -53,7 +53,6 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     private Firebase mChatroomRef;
     private ValueEventListener mConnectedListener;
     private QuestionListAdapter mChatListAdapter;
-    QuestionListAdapter searchQuestionAdapter;
 
     private DBUtil dbutil;
 
@@ -151,18 +150,6 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 // No-op
-            }
-        });
-
-        searchQuestionAdapter = new QuestionListAdapter(
-                mChatroomRef.orderByChild("echo").limitToFirst(200),
-                this, R.layout.question, this, mChatroomRef.getRoot().child("comment"), true);
-
-        searchQuestionAdapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                listView.setSelection(searchQuestionAdapter.getCount() - 1);
             }
         });
     }
@@ -342,15 +329,16 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
     @Override
     public boolean onQueryTextChange(String newText) {
-
         final ListView listView = getListView();
         if (TextUtils.isEmpty(newText)) {
-            listView.setAdapter(mChatListAdapter);
+            //listView.setAdapter(mChatListAdapter);
+            mChatListAdapter.finishSearch();
         }
         else {
+            mChatListAdapter.doSearch(newText);
 
-            searchQuestionAdapter.doSearch(newText);
-            listView.setAdapter(searchQuestionAdapter);
+            //searchQuestionAdapter.doSearch(newText);
+            //listView.setAdapter(searchQuestionAdapter);
         }
 
 
