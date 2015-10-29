@@ -209,12 +209,12 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
                                     latestQuestion,
                                     Long.parseLong(activeTime)));
 
-                            notifyDataSetChanged();
                         } catch (NullPointerException npe) {
                             npe.printStackTrace();
                         }
                     }
                 }
+                notifyDataSetChanged();
             }
 
             @Override
@@ -222,6 +222,11 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
 
             }
         });
+    }
+
+    public void finishSearch() {
+        chatrooms.clear();
+        notifyDataSetChanged();
     }
 
     public void setOnTouchListener(View.OnTouchListener listener){

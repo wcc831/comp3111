@@ -21,6 +21,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -264,6 +265,9 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
 
                 if (userEmail == null){
                     TextView notLogin = new TextView(context);
+                    notLogin.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    notLogin.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+                    notLogin.setTextSize(18);
                     notLogin.setText("Please Login First");
                     return notLogin;
                 }
@@ -290,6 +294,9 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
             public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
                 if (userEmail == null){
                     TextView notLogin = new TextView(context);
+                    notLogin.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    notLogin.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+                    notLogin.setTextSize(18);
                     notLogin.setText("Please Login First");
                     return notLogin;
                 }
@@ -346,8 +353,10 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     @Override
     public boolean onQueryTextChange(String newText) {
         chatroomListPager.setCurrentItem(3);
-        if (TextUtils.isEmpty(newText)) {
+        if (TextUtils.isEmpty(newText) || newText.length() < 1) {
             ((TextView) findViewById(R.id.join_chatroom)).setText("");
+            if (searchAdapter != null)
+                searchAdapter.finishSearch();
 
         } else {
 

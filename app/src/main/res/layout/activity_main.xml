@@ -38,12 +38,14 @@
             android:layout_weight="1"
             android:inputType="textShortMessage"
             android:lines="1"
+            android:layout_marginLeft="10dp"
             android:singleLine="true" />
 
         <ImageButton
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#0000"
             android:src="@android:drawable/ic_menu_send" />
     </LinearLayout>
 
