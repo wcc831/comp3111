@@ -63,6 +63,8 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         return dbutil;
     }
 
+    private String[] category = new String[] {"Lecture", "Tutorial", "Laboratory", "Assignment", "Project", "Midterm", "Exam"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +115,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         });
 
 
-        findViewById(R.id.category).setOnClickListener(new View.OnClickListener() {
+        /*findViewById(R.id.category).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LayoutInflater inflater = MainActivity.this.getLayoutInflater();
@@ -128,7 +130,28 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                 });
                 builder.show();
             }
+        });*/
+
+        findViewById(R.id.category).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Category");
+                builder.setItems(category, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            }
         });
+
 
         // get the DB Helper
         DBHelper mDbHelper = new DBHelper(this);
