@@ -67,9 +67,9 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     private String[] category = new String[] {"No Category", "Final", "Midterm", "Assignment", "Others"};
     private int categoryChoice;
 
-    public void setCategoryButtonText(int choice){
-        Button categoryButton = (Button) findViewById(R.id.category);
-        categoryButton.setText(category[choice]);
+    public void setCategoryButtonText(){
+        Button categoryButton = (Button) findViewById(R.id.categoryButton);
+        categoryButton.setText(category[getCategoryChoice()]);
     }
 
     public void setCategoryChoice(int choice){
@@ -147,7 +147,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
             }
         });*/
 
-        findViewById(R.id.category).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.categoryButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -155,8 +155,8 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                 builder.setItems(category, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //setCategoryButtonText(which);
                         setCategoryChoice(which);
+                        setCategoryButtonText();
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
