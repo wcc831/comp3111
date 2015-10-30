@@ -228,7 +228,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
 
             @Override
             public void onPictureReady() {
-                loadPorfile();
+                loadPorfile(getFilesDir(), (ImageView) findViewById(R.id.drawer_profileImage), (TextView)findViewById(R.id.drawer_profileEmail), userEmail);
                 //getPagerFragments(chatListViews, context);
             }
         };
@@ -337,13 +337,10 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     /*
     * set account profile to leftMenu
     * */
-    public void loadPorfile(){
-        ImageView profileImage = (ImageView) findViewById(R.id.drawer_profileImage);
-        Bitmap bitmap = BitmapFactory.decodeFile(new File(getFilesDir(), "google/googleProfile.jpg").toString());
-        //profileImage.setImageBitmap(bitmap);
+    public static void loadPorfile(File dir, ImageView profileImage, TextView email, String userEmail){
+        Bitmap bitmap = BitmapFactory.decodeFile(new File(dir, "google/googleProfile.jpg").toString());
         profileImage.setImageDrawable(new RoundImage(bitmap));
 
-        TextView email = (TextView) findViewById(R.id.drawer_profileEmail);
         email.setText(userEmail);
     }
 

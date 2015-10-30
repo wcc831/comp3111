@@ -23,6 +23,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -152,6 +153,9 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
             }
         });
 
+
+        //load user profile
+        JoinActivity.loadPorfile(getFilesDir(), (ImageView) findViewById(R.id.drawer_profileImage), (TextView) findViewById(R.id.drawer_profileEmail), userEmail);
 
         // get the DB Helper
         DBHelper mDbHelper = new DBHelper(this);
