@@ -94,7 +94,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         setTitle("Room name: " + roomName);
 
         // Setup our Firebase mFirebaseRef
-        mChatroomRef =mFirebaseRef.child("chatroom").child(roomName).child("questions");
+        mChatroomRef =mFirebaseRef.child("rooms").child(roomName).child("questions");
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);

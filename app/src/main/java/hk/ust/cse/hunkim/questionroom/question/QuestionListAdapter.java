@@ -123,6 +123,9 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
 
         for (Question q : tmpQuestionList) {
             boolean containTag = false;
+            if (q.getTags() == null)
+                continue;
+
             for (String tag : q.getTags()) {
                 if (tag.contains(keyword))
                     containTag = true;
@@ -145,10 +148,14 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
             searchHashMap.clear();
             searchHashMap = null;
         }
-        if (tmpQuestionList != null && tmpHashMap != null)
+        if (tmpQuestionList != null && tmpHashMap != null) {
+            tmpQuestionList.clear();
+            tmpHashMap.clear();
             attachList(tmpQuestionList, tmpHashMap);
+            initChildEventlistener();
 
-        initChildEventlistener();
+        }
+
     }
 
     /**

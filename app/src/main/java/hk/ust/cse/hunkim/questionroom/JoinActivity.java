@@ -19,6 +19,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -30,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -70,7 +72,6 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     private final List<ChatRoom> recentList = new ArrayList<>();
     private final List<ChatRoom> favoriteList = new ArrayList<>();
     private final List<ChatRoom> historyList = new ArrayList<>();
-    private final List<ChatRoom> searchList = new ArrayList<>();
     private ChatRoomListAdapter searchAdapter;
 
     ViewPager chatroomListPager;
@@ -97,7 +98,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
 
         Firebase.setAndroidContext(this);
         firebaseRef = new Firebase("https://ccwfirebase.firebaseio.com/");
-        chatroomRef = firebaseRef.child("chatroom");
+        chatroomRef = firebaseRef.child("rooms");
 
         //setup drawer
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.join_mainLayout);
@@ -142,6 +143,9 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         searchView.setQueryHint(Html.fromHtml("<font color= #ffffff>Type a chat room.</font>"));
         searchView.setOnQueryTextListener(this);
         searchView.setSubmitButtonEnabled(false);
+        EditText editText = (EditText)searchView.findViewById(getResources().getIdentifier("android:id/search_src_text", null, null));
+        editText.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+
 
         LinearLayout searchBar = (LinearLayout) searchView.findViewById(R.id.action_search);
         searchBar.setLayoutTransition(new LayoutTransition());
@@ -391,21 +395,27 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         //join chatroom through list
         if (view.getId() == R.id.index_chatRoomLayout){
             room_name = (String) ((TextView) view.findViewById(R.id.index_chatRoom)).getText();
-            intent.putExtra(ROOM_NAME, room_name);
-            startActivity(intent);
+
         }
         //join chatroom through search
         else if (view.getId() == R.id.join_chatroom){
             room_name = ((TextView)view).getText().toString().substring(5);
-            intent.putExtra(ROOM_NAME, room_name);
 
             SearchView searchView = (SearchView) findViewById(R.id.action_search);
             searchView.setIconified(true);
 
-            startActivity(intent);
         }
+
+        if (room_name.contains(" ")){
+            Toast.makeText(this, "room name contain illegal characters.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (userEmail != null)
             firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("history").push().setValue(room_name);
+
+        intent.putExtra(ROOM_NAME, room_name);
+        startActivity(intent);
     }
 
     private boolean isEmailValid(String room_name) {

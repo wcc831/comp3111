@@ -153,7 +153,7 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     String roomName = child.getValue().toString();
-                    query.getRef().getRoot().child("chatroom").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    query.getRef().getRoot().child("room").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             try {
@@ -187,13 +187,11 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
         });
     }
 
-    public void queryVisitedList() {}
-
     public void searchChatroom(final String searchKey){
 
         chatrooms.clear();
 
-        firebaseRef.child("chatroom").addValueEventListener(new ValueEventListener() {
+        firebaseRef.child("room").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
