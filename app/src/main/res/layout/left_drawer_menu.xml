@@ -13,9 +13,9 @@
     android:background="#F0F0F0"
     android:onClick="login">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="125dp"
         android:id="@+id/drawer_userProfile"
         android:orientation="vertical">
         <ImageView
@@ -40,12 +40,24 @@
             android:id="@+id/drawer_profileEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            />
-    </LinearLayout>
+            android:layout_below="@+id/drawer_profileImage"
+            android:layout_alignParentStart="true" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/loading_icon"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/drawer_profileImage" />
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/drawer_menu"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical">
+
+
+
+    </LinearLayout>
 </LinearLayout>

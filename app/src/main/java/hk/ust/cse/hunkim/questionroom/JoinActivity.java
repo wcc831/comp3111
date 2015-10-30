@@ -188,13 +188,15 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     }
 
     public void login(View view) {
+
+        if (userEmail != null) //logged in
+            return;
+
+        findViewById(R.id.loading_icon).setVisibility(View.VISIBLE);
         String[] accountTypes = new String[]{"com.google"};
         Intent intent = AccountPicker.newChooseAccountIntent(null, null,
                 accountTypes, false, null, null, null, null);
         startActivityForResult(intent, REQUEST_CODE_PICK_ACCOUNT);
-
-
-
     }
 
     public void googleLogin(String email){
@@ -235,7 +237,11 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
 
             @Override
             public void onPictureReady() {
-                loadPorfile(getFilesDir(), (ImageView) findViewById(R.id.drawer_profileImage), (TextView)findViewById(R.id.drawer_profileEmail), userEmail);
+                loadPorfile(getFilesDir(),
+                        (ImageView) findViewById(R.id.drawer_profileImage),
+                        (TextView)findViewById(R.id.drawer_profileEmail),
+                        userEmail,
+                        findViewById(R.id.loading_icon));
                 //getPagerFragments(chatListViews, context);
             }
         };
@@ -344,11 +350,12 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     /*
     * set account profile to leftMenu
     * */
-    public static void loadPorfile(File dir, ImageView profileImage, TextView email, String userEmail){
+    public static void loadPorfile(File dir, ImageView profileImage, TextView email, String userEmail, View loading){
         Bitmap bitmap = BitmapFactory.decodeFile(new File(dir, "google/googleProfile.jpg").toString());
         profileImage.setImageDrawable(new RoundImage(bitmap));
 
         email.setText(userEmail);
+        loading.setVisibility(View.INVISIBLE);
     }
 
     /*

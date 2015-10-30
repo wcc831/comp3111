@@ -153,7 +153,7 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     String roomName = child.getValue().toString();
-                    query.getRef().getRoot().child("room").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    query.getRef().getRoot().child("rooms").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             try {
