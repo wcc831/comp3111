@@ -30,7 +30,7 @@ public class Question implements Comparable<Question> {
     private String dislikeKey;
     private int order;
     private boolean newQuestion;
-    private int category;
+    private String category;
 
     public String getDateString() {
         return dateString;
@@ -49,7 +49,7 @@ public class Question implements Comparable<Question> {
     private Question() {
     }
 
-    public Question(String questioner, String message, int category){
+    public Question(String questioner, String message, String category){
         this(message);
         this.questioner = questioner;
         this.category = category;
@@ -184,7 +184,7 @@ public class Question implements Comparable<Question> {
 
     public void setDislikeKey(String key) { this.dislikeKey = dislikeKey;}
 
-    public int getCategory(){return category;}
+    public String getCategory(){return category;}
 
     public String badWordFilter(String message){
         return message.replaceAll("(?i)fuck", "love").replaceAll("(?i)fuxk", "support").replaceAll("(?i)fxck", "support").replaceAll("(?i)fxxk", "great").replaceAll("(?i)on9", "clever")

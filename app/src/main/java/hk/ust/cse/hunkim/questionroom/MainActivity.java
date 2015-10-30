@@ -33,7 +33,6 @@ import android.widget.Toast;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.util.Date;
@@ -65,18 +64,18 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     }
 
     private String[] category = new String[] {"No Category", "Final", "Midterm", "Assignment", "Others"};
-    private int categoryChoice;
+    private String categoryChoice;
 
-    public void setCategoryButtonText(){
+    public void setCategoryButtonText(int choice){
         Button categoryButton = (Button) findViewById(R.id.categoryButton);
-        categoryButton.setText(category[getCategoryChoice()]);
+        categoryButton.setText(category[choice]);
     }
 
     public void setCategoryChoice(int choice){
-        categoryChoice = choice;
+        categoryChoice = category[choice];
     }
 
-    public int getCategoryChoice(){
+    public String getCategoryChoice(){
         return categoryChoice;
     }
 
@@ -156,7 +155,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         setCategoryChoice(which);
-                        setCategoryButtonText();
+                        setCategoryButtonText(which);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -235,10 +234,9 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     private void sendMessage() {
         EditText inputText = (EditText) findViewById(R.id.messageInput);
         String input = inputText.getText().toString();
-        int category = getCategoryChoice();
         if (!input.equals("")) {
             // Create our 'model', a Chat object
-            Question question = new Question(userEmail, input, category);
+            Question question = new Question(userEmail, input, categoryChoice);
             // Create a new, auto-generated child of that chat location, and save our chat data there
             Firebase pushRef = mChatroomRef.push();
             pushRef.setValue(question);
