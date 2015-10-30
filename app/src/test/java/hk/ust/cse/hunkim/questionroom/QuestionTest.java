@@ -4,6 +4,9 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hk.ust.cse.hunkim.questionroom.question.Question;
 
 
@@ -19,7 +22,7 @@ public class QuestionTest  extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        q = new Question("Hello? This is very nice");
+        q = new Question("Hello? This is very fucking shit");
     }
 
     @SmallTest
@@ -45,12 +48,25 @@ public class QuestionTest  extends TestCase {
 
 
     @SmallTest
-    public void testDesc(){ assertEquals("desc", " This is very nice", q.getDesc()); }
+    public void testDesc(){ assertEquals("desc", " This is very loveing nice", q.getDesc()); }
 
     @SmallTest
     public void testEcho() { assertEquals("echo", 0, q.getEcho()); }
 
     @SmallTest
-    public void testgetWholeMsg() { assertEquals("WholeMsg", "Hello? This is very nice", q.getWholeMsg()); }
+    public void testgetWholeMsg() { assertEquals("WholeMsg", "Hello? This is very loveing nice", q.getWholeMsg()); }
 
+    @SmallTest
+    public void testWordFilterTest() { assertEquals("filter", true, !q.getWholeMsg().contains("fuck")); }
+
+    @SmallTest
+    public void testExtractTag() {
+        List<String> tags = new ArrayList<>();
+        Question.extractTag("#tag1 #tag2 #tag3", 0, tags);
+
+        assertEquals("tag", "#tag1", tags.get(0));
+        assertEquals("tag", "#tag2", tags.get(1));
+        assertEquals("tag", "#tag3", tags.get(2));
+
+    }
 }

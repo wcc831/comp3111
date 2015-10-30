@@ -6,7 +6,8 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
 import android.widget.Button;
 import android.widget.EditText;
-
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 /**
@@ -17,8 +18,8 @@ import android.widget.EditText;
  */
 public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActivity> {
     JoinActivity activity;
-    EditText roomNameEditText;
-    Button joinButton;
+    TextView roomNameEditText;
+    LinearLayout join;
 
     private static final int TIMEOUT_IN_MS = 5000;
 
@@ -33,10 +34,10 @@ public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActiv
         activity = getActivity();
 
         roomNameEditText =
-                (EditText) activity.findViewById(R.id.room_name);
+                (TextView) activity.findViewById(R.id.join_chatroom);
 
-        joinButton =
-                (Button) activity.findViewById(R.id.join_button);
+        join =
+                (LinearLayout) activity.findViewById(R.id.search_layout);
 
     }
 
@@ -92,7 +93,7 @@ public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActiv
         getInstrumentation().waitForIdleSync();
 
         //Click on the sendToReceiverButton to send the message to ReceiverActivity
-        TouchUtils.clickView(this, joinButton);
+        TouchUtils.clickView(this, join);
 
         //Wait until all events from the MainHandler's queue are processed
         getInstrumentation().waitForIdleSync();

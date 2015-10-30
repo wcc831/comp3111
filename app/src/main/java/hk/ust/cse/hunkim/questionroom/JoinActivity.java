@@ -188,6 +188,9 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         Intent intent = AccountPicker.newChooseAccountIntent(null, null,
                 accountTypes, false, null, null, null, null);
         startActivityForResult(intent, REQUEST_CODE_PICK_ACCOUNT);
+
+
+
     }
 
     public void googleLogin(String email){
