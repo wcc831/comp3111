@@ -19,19 +19,11 @@
         android:layout_alignParentRight="true"
         />-->
 
-        <ListView
-            android:id="@android:id/list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_above="@+id/listFooter"
-            android:transcriptMode="alwaysScroll" />
-
-
         <LinearLayout
             android:id="@+id/listFooter"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
             android:orientation="horizontal">
 
             <Button
@@ -49,7 +41,8 @@
                 android:inputType="textShortMessage"
                 android:lines="1"
                 android:layout_marginLeft="10dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:hint="Your Question Here" />
 
             <ImageButton
                 android:id="@+id/sendButton"
@@ -58,6 +51,16 @@
                 android:background="#0000"
                 android:src="@android:drawable/ic_menu_send" />
         </LinearLayout>
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/listFooter"
+            android:transcriptMode="alwaysScroll" />
+
+
+
     </RelativeLayout>
 
     <include layout="@layout/left_drawer_menu"/>
