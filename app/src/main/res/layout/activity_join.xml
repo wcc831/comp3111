@@ -52,8 +52,10 @@
         <ImageView
             android:src="@drawable/more_icone_5844_96"
             android:id="@+id/drawer_profileImage"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             />
 

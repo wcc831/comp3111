@@ -340,7 +340,8 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     public void loadPorfile(){
         ImageView profileImage = (ImageView) findViewById(R.id.drawer_profileImage);
         Bitmap bitmap = BitmapFactory.decodeFile(new File(getFilesDir(), "google/googleProfile.jpg").toString());
-        profileImage.setImageBitmap(bitmap);
+        //profileImage.setImageBitmap(bitmap);
+        profileImage.setImageDrawable(new RoundImage(bitmap));
 
         TextView email = (TextView) findViewById(R.id.drawer_profileEmail);
         email.setText(userEmail);
