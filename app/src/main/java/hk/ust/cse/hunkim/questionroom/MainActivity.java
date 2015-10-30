@@ -155,7 +155,8 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                 builder.setItems(category, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        setCategoryButtonText(which);
+                        //setCategoryButtonText(which);
+                        setCategoryChoice(which);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -234,9 +235,10 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     private void sendMessage() {
         EditText inputText = (EditText) findViewById(R.id.messageInput);
         String input = inputText.getText().toString();
+        int category = getCategoryChoice();
         if (!input.equals("")) {
             // Create our 'model', a Chat object
-            Question question = new Question(userEmail, input);
+            Question question = new Question(userEmail, input, category);
             // Create a new, auto-generated child of that chat location, and save our chat data there
             Firebase pushRef = mChatroomRef.push();
             pushRef.setValue(question);

@@ -17,6 +17,12 @@
         android:layout_width="wrap_content"/>
 
     <TextView
+        android:id="@+id/category"
+        android:textSize="15dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+
+    <TextView
         android:id="@+id/head_desc"
         android:textSize="15dp"
         android:text="head_desc"

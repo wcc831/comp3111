@@ -241,6 +241,22 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
         else
             ((TextView) view.findViewById(R.id.questioner)).setText("Anonymouse");
 
+        // To display the category
+        switch (question.getCategory()){
+            case 0: ((TextView) view.findViewById(R.id.category)).setText("No Category");
+                break;
+            case 1: ((TextView) view.findViewById(R.id.category)).setText("Final");
+                break;
+            case 2: ((TextView) view.findViewById(R.id.category)).setText("Midterm");
+                break;
+            case 3: ((TextView) view.findViewById(R.id.category)).setText("Assignment");
+                break;
+            case 4: ((TextView) view.findViewById(R.id.category)).setText("Other");
+                break;
+            default: ((TextView) view.findViewById(R.id.category)).setText("No Category");
+                break;
+        }
+
         // check if we already clicked
         boolean clickable = !dbUtil.contains(question.getKey());
 
