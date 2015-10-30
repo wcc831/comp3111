@@ -5,7 +5,7 @@
 
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -58,7 +58,7 @@
                 android:background="#0000"
                 android:src="@android:drawable/ic_menu_send" />
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <include layout="@layout/left_drawer_menu"/>
 

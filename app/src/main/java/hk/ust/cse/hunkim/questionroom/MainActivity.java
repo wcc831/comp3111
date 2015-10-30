@@ -155,7 +155,8 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
 
         //load user profile
-        JoinActivity.loadPorfile(getFilesDir(), (ImageView) findViewById(R.id.drawer_profileImage), (TextView) findViewById(R.id.drawer_profileEmail), userEmail);
+        if (userEmail != null)
+            JoinActivity.loadPorfile(getFilesDir(), (ImageView) findViewById(R.id.drawer_profileImage), (TextView) findViewById(R.id.drawer_profileEmail), userEmail);
 
         // get the DB Helper
         DBHelper mDbHelper = new DBHelper(this);
