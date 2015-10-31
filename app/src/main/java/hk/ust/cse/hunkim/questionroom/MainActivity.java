@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -286,6 +288,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
 
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -437,11 +440,15 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         }
         else {
             mChatListAdapter.doSearch(newText);
+            
             //mChatListAdapter.getFilter().filter(newText);
-
         }
 
 
         return false;
+    }
+
+    public void login(View v){
+
     }
 }

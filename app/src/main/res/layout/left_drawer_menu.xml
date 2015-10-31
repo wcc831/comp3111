@@ -11,7 +11,7 @@
     android:orientation="vertical"
     android:clickable="true"
     android:background="#F0F0F0"
-    android:onClick="login">
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:layout_height="100dp"
             android:scaleType="centerCrop"
             android:layout_gravity="left"
-
+            android:onClick="login"
             />
 
         <!--<TextView

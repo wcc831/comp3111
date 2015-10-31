@@ -250,6 +250,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
 
     public Fragment[] getPagerFragments(final ListView[] chatListViews, final Context context){
         Fragment[] fragments = new Fragment[4];
+        //recent active list fragment
         fragments[0] = new Fragment(){
             @Override
             public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -364,14 +365,18 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     * */
     @Override
     public boolean onQueryTextChange(String newText) {
-        chatroomListPager.setCurrentItem(3);
+        Log.d("query change", "triggered");
+
         if (TextUtils.isEmpty(newText) || newText.length() < 1) {
+            if (findViewById(R.id.join_chatroom) == null)
+                return false;
+
             ((TextView) findViewById(R.id.join_chatroom)).setText("");
             if (searchAdapter != null)
                 searchAdapter.finishSearch();
 
         } else {
-
+            chatroomListPager.setCurrentItem(3);
             TextView textView = (TextView) findViewById(R.id.join_chatroom);
             textView.setText("Join " + newText);
             textView.setTextSize(20);

@@ -193,7 +193,7 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
 
         chatrooms.clear();
 
-        firebaseRef.child("room").addValueEventListener(new ValueEventListener() {
+        firebaseRef.child("rooms").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
