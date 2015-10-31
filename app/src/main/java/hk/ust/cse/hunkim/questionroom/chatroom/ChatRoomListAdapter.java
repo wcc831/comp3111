@@ -96,24 +96,26 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.child("recentQuestion").getValue() == null)
+                    return;
 
-                if (dataSnapshot.child("recentQuestion").getValue() != null) {
+                String roomName = dataSnapshot.getKey();
+                String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
+                String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
+                String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
 
-                    String roomName = dataSnapshot.getKey();
-                    String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
-                    String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
-                    String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
+                chatrooms.add(0, new ChatRoom(roomName,
+                        latestQuestion,
+                        Long.parseLong(activeTime)));
 
-                    chatrooms.add(0, new ChatRoom(roomName,
-                            latestQuestion,
-                            Long.parseLong(activeTime)));
+                notifyDataSetChanged();
 
-                    notifyDataSetChanged();
-                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.child("recentQuestion").getValue() == null)
+                    return;
 
                 String modifiedRoom = dataSnapshot.getKey();
                 String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();

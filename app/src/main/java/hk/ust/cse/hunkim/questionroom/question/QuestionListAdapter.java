@@ -11,7 +11,10 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -42,7 +45,66 @@ import hk.ust.cse.hunkim.questionroom.db.DBUtil;
  * This class is an example of how to use FirebaseListAdapter. It uses the <code>Chat</code> class to encapsulate the
  * data for each individual chat message
  */
-public class QuestionListAdapter extends FirebaseListAdapter<Question> {
+public class QuestionListAdapter extends FirebaseListAdapter<Question> implements Filterable{
+    private class QuestionFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+
+            if (constraint != null && constraint.length() > 0){
+
+                List<Question> filterResult = new ArrayList<>();
+
+                for (Question q: tmpQuestionList){
+
+                    if (constraint.charAt(0) == '#'){
+                        //search by tag
+                        boolean containTag = false;
+                        if (q.getTags() == null)
+                            continue;
+
+                        for (String tag : q.getTags()) {
+                            if (tag.toLowerCase().contains(constraint.toString().toLowerCase()))
+                                containTag = true;
+                        }
+
+                        if (containTag) {
+                            filterResult.add(q);
+                        }
+                    }
+                    else if (constraint.charAt(0) == '@'){
+
+                        //search by catagory
+                        if (q.getCategory().toLowerCase().equals(
+                                constraint.toString().toLowerCase().substring(1))){
+                            filterResult.add(q);
+                        }
+                    }
+                    else if (q.getWholeMsg().contains(constraint)){
+                        //search by whole message
+                        filterResult.add(q);
+                    }
+                }
+
+                results.count = filterResult.size();
+                results.values = filterResult;
+            }
+            else {
+                results.count = tmpQuestionList.size();
+                results.values = tmpQuestionList;
+            }
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            setModels((List<Question>)results.values);
+            Log.d("publish dta size", Integer.toString(questions.size()));
+
+            notifyDataSetChanged();
+        }
+    }
 
     // The mUsername for this client. We use this to indicate which messages originated from this user
     MainActivity activity;
@@ -50,6 +112,10 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
     Query query;
     int layout;
     Firebase commentRef;
+
+    QuestionFilter questionFilter;
+
+    List<Question> questions;
     List<Question> searchResult;
     Map<String, Question> searchHashMap;
     List<Question> tmpQuestionList;
@@ -97,6 +163,8 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
         this.context = context;
         this.layout = layout;
         this.commentRef = commentRef;
+
+        this.questions = getModels();
     }
 
     public void setOnTouchListener(View.OnTouchListener listener) {
@@ -107,8 +175,17 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
         longClickListener = listener;
     }
 
-    public void doSearch(String keyword){
+    public void setList(List<Question> questions) {
+        super.setModels(questions);
+    }
 
+    public void doSearch(String keyword){
+        if (tmpQuestionList == null){
+            tmpQuestionList = getModels();
+        }
+        getFilter().filter(keyword);
+
+/*
         if (searchResult == null) {
             searchResult = new ArrayList<>();
             searchHashMap = new HashMap<>();
@@ -139,9 +216,13 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
             }
         }
         notifyDataSetChanged();
+        */
     }
 
     public void finishSearch () {
+        setModels(tmpQuestionList);
+        notifyDataSetChanged();
+        /*
         if (searchResult != null){
             searchResult.clear();
             searchResult = null;
@@ -155,7 +236,19 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
             initChildEventlistener();
 
         }
+        */
 
+    }
+
+    /**
+     *
+     *
+    * */
+    @Override
+    public Filter getFilter() {
+        if (questionFilter == null)
+            questionFilter = new QuestionFilter();
+        return questionFilter;
     }
 
     /**
@@ -168,6 +261,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> {
      */
     @Override
     protected void populateView(View view, Question question) {
+
         DBUtil dbUtil = activity.getDbutil();
 
         // Map a Chat object to an entry in our listview

@@ -173,6 +173,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
     public Map<String, T> getModelMap() { return mModelKeys; }
 
+    public void setModels(List<T> models) {
+        this.mModels = models;
+    }
+
     public void cleanup() {
         // We're being destroyed, let go of our mListener and forget about all of the mModels
         mRef.removeEventListener(mListener);

@@ -429,13 +429,15 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(final String newText) {
+
         final ListView listView = getListView();
         if (TextUtils.isEmpty(newText)) {
             mChatListAdapter.finishSearch();
         }
         else {
             mChatListAdapter.doSearch(newText);
+            //mChatListAdapter.getFilter().filter(newText);
 
         }
 
