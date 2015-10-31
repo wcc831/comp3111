@@ -134,7 +134,8 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
                         }
 
                         @Override
-                        public void onCancelled(FirebaseError firebaseError) {  }
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
                     });
                 }
             }
@@ -156,7 +157,7 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     if (child.getKey().contains(searchKey)) {
                         try {
-                            chatrooms.add(0, getChatroomProfileFromDataSnapshot(dataSnapshot));
+                            chatrooms.add(0, getChatroomProfileFromDataSnapshot(child));
 
                         } catch (NullPointerException npe) {
                             npe.printStackTrace();

@@ -127,8 +127,10 @@ public static final String ROOM_NAME = "Room_name";
         chatroomPagerAdapter = new ChatroomPagerAdapter(getSupportFragmentManager());
 
         chatroomPagerAdapter.tabs = getPagerFragments(chatListViews, context);
-        ((ViewPager) findViewById(R.id.chatroom_list_pager)).setAdapter(chatroomPagerAdapter);
-        ((PagerTabStrip) findViewById(R.id.chatroom_list_tab_strip)).setTextColor(Color.WHITE);
+        chatroomListPager = ((ViewPager) findViewById(R.id.chatroom_list_pager));
+        chatroomListPager.setAdapter(chatroomPagerAdapter);
+        chatroomListTabStrip = ((PagerTabStrip) findViewById(R.id.chatroom_list_tab_strip));
+        chatroomListTabStrip.setTextColor(Color.WHITE);
     }
 
     @Override
@@ -254,10 +256,11 @@ public static final String ROOM_NAME = "Room_name";
             public void onPictureReady() {
                 loadPorfile(getFilesDir(),
                         (ImageView) findViewById(R.id.drawer_profileImage),
-                        (TextView)findViewById(R.id.drawer_profileEmail),
+                        (TextView) findViewById(R.id.drawer_profileEmail),
                         userEmail,
                         findViewById(R.id.loading_icon));
-                //getPagerFragments(chatListViews, context);
+                chatroomPagerAdapter.tabs = getPagerFragments(chatListViews, context);
+                chatroomPagerAdapter.notifyDataSetChanged();
             }
         };
         login.execute();
@@ -380,7 +383,6 @@ public static final String ROOM_NAME = "Room_name";
     * */
     @Override
     public boolean onQueryTextChange(String newText) {
-        Log.d("query change", "triggered");
 
         if (TextUtils.isEmpty(newText) || newText.length() < 1) {
             if (findViewById(R.id.join_chatroom) == null)
@@ -438,8 +440,10 @@ public static final String ROOM_NAME = "Room_name";
             return;
         }
 
-        if (userEmail != null)
+        if (userEmail != null) {
+            Log.d("history", userEmail);
             firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("history").push().setValue(room_name);
+        }
 
         intent.putExtra(ROOM_NAME, room_name);
         startActivity(intent);
