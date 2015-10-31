@@ -57,6 +57,8 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     private ValueEventListener mConnectedListener;
     private QuestionListAdapter mChatListAdapter;
 
+    private String presenceId;
+
     private DBUtil dbutil;
 
     public DBUtil getDbutil() {
@@ -128,6 +130,10 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
             }
         });
 
+        //record users in chatroom
+        Firebase pushPresence = mChatroomRef.getParent().child("presence").push();
+        pushPresence.setValue(true);
+        presenceId = pushPresence.getKey();
 
         /*findViewById(R.id.category).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,6 +185,8 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         // get the DB Helper
         DBHelper mDbHelper = new DBHelper(this);
         dbutil = new DBUtil(mDbHelper);
+
+        countOnlineUser();
     }
 
     @Override
@@ -229,6 +237,9 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         super.onStop();
         mChatroomRef.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
         mChatListAdapter.cleanup();
+
+        //remove presence id
+        mChatroomRef.getParent().child("presence").child(presenceId).removeValue();
     }
 
     private void sendMessage() {
@@ -382,6 +393,33 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
     public void Close(View view) {
         finish();
+    }
+
+    public void countOnlineUser(){
+        mChatroomRef.getParent().child("presence").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                int numUser = 0;
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    numUser++;
+                }
+
+                TextView textView = new TextView(MainActivity.this);
+                textView.setId(R.id.drawer_onlineUsers);
+                textView.setText("online users: " + Integer.toString(numUser));
+                textView.setPadding(5, 5, 5, 5);
+
+                LinearLayout linearLayout =((LinearLayout) findViewById(R.id.drawer_menu));
+                if (linearLayout.findViewById(R.id.drawer_onlineUsers) == null)
+                    linearLayout.addView(textView);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     @Override
