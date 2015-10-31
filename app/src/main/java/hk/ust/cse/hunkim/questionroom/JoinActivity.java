@@ -97,7 +97,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         setContentView(R.layout.activity_join);
 
         Firebase.setAndroidContext(this);
-        firebaseRef = new Firebase("https://ccwfirebase.firebaseio.com/");
+        firebaseRef = new Firebase(MainActivity.FIREBASE_URL);
         chatroomRef = firebaseRef.child("rooms");
 
         //setup drawer

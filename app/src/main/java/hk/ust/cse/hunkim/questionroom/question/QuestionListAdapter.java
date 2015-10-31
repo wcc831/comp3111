@@ -74,9 +74,12 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
                     }
                     else if (constraint.charAt(0) == '@'){
 
+                        String catagory = constraint.subSequence(1, constraint.length()).toString();
+
                         //search by catagory
-                        if (q.getCategory().toLowerCase().equals(
-                                constraint.toString().toLowerCase().substring(1))){
+                        if (q.getCategory() != null
+                                && q.getCategory().toLowerCase().equals(
+                                catagory)){
                             filterResult.add(q);
                         }
                     }
@@ -265,7 +268,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
         DBUtil dbUtil = activity.getDbutil();
 
         // Map a Chat object to an entry in our listview
-        int echo = question.getEcho();
+        int echo = question.getLike();
         Button echoButton = (Button) view.findViewById(R.id.echo);
         echoButton.setText("" + echo);
         //echoButton.setTextColor(Color.BLUE);
@@ -312,7 +315,8 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
             msgString += "<font color=red>NEW </font>";
         }
 
-        msgString += "<B>" + question.getHead() + "</B>" + question.getDesc();
+        //msgString += "<B>" + question.getHead() + "</B>" + question.getDesc();
+        msgString = question.getWholeMsg();
         Log.d("comments", msgString);
 
         ((TextView) view.findViewById(R.id.head_desc)).setText(Html.fromHtml(msgString));

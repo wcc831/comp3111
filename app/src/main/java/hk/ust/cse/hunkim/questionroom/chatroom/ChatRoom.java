@@ -8,9 +8,6 @@ public class ChatRoom {
     public String question = "test";
     public long activeTime;
 
-
-    public ChatRoom() {}
-
     public ChatRoom(String roomName, String question, long activeTime) {
         this.roomName = roomName;
         this.question = question;

@@ -40,18 +40,9 @@ public class QuestionTest  extends TestCase {
         }
     }
 
-    @SmallTest
-
-    public void testHead() {
-        assertEquals("Head", "Hello?", q.getHead());
-    }
-
 
     @SmallTest
-    public void testDesc(){ assertEquals("desc", " This is very loveing nice", q.getDesc()); }
-
-    @SmallTest
-    public void testEcho() { assertEquals("echo", 0, q.getEcho()); }
+    public void testEcho() { assertEquals("like", 0, q.getLike()); }
 
     @SmallTest
     public void testgetWholeMsg() { assertEquals("WholeMsg", "Hello? This is very loveing nice", q.getWholeMsg()); }

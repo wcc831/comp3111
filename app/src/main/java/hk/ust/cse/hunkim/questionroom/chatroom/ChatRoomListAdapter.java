@@ -43,30 +43,7 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
     List<ChatRoom> chatrooms;
     Firebase firebaseRef;
 
-    public static View.OnTouchListener onTouchListener;/*( = new View.OnTouchListener() {
-
-        float x, y;
-
-        @Override
-        public boolean onTouch(final View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                x = event.getX();
-                y = event.getY();
-
-                Generic.animateColor(v, Color.argb(255, 238, 238, 238), Color.argb(255, 200, 200, 200));
-            } else if (event.getAction() == MotionEvent.ACTION_UP)
-                Generic.animateColor(v, Color.argb(255, 200, 200, 200), Color.argb(255, 238, 238, 238));
-            else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                if (Math.sqrt(Math.pow(x - event.getX(), 2) + Math.pow(y - event.getY(), 2)) > 10) {
-                    Generic.animateColor(v, Color.argb(255, 200, 200, 200), Color.argb(255, 238, 238, 238));
-                }
-            }
-            else{
-                Generic.animateColor(v, Color.argb(255, 200, 200, 200), Color.argb(255, 238, 238, 238));
-            }
-            return false;
-        }
-    };*/
+    public static View.OnTouchListener onTouchListener;
 
     public ChatRoomListAdapter(Context context, Firebase firebaseRef, List<ChatRoom> list){
         super(context, -1, list);
@@ -99,14 +76,7 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
                 if (dataSnapshot.child("recentQuestion").getValue() == null)
                     return;
 
-                String roomName = dataSnapshot.getKey();
-                String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
-                String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
-                String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
-
-                chatrooms.add(0, new ChatRoom(roomName,
-                        latestQuestion,
-                        Long.parseLong(activeTime)));
+                chatrooms.add(0, getChatroomProfileFromDataSnapshot(dataSnapshot));
 
                 notifyDataSetChanged();
 
@@ -117,15 +87,17 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
                 if (dataSnapshot.child("recentQuestion").getValue() == null)
                     return;
 
-                String modifiedRoom = dataSnapshot.getKey();
+                ChatRoom chatRoom = getChatroomProfileFromDataSnapshot(dataSnapshot);
+
+                /*String modifiedRoom = dataSnapshot.getKey();
                 String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
-                String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
-                String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
+                String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("wholeMsg").getValue().toString();
+                String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();*/
 
                 for (int i = 0; i < chatrooms.size(); i++) {
-                    if (chatrooms.get(i).roomName.equals(modifiedRoom)) {
-                        chatrooms.get(i).activeTime = Long.parseLong(activeTime);
-                        chatrooms.get(i).question = latestQuestion;
+                    if (chatrooms.get(i).roomName.equals(chatRoom.roomName)) {
+                        chatrooms.get(i).activeTime = chatRoom.activeTime;
+                        chatrooms.get(i).question = chatRoom.question;
                         Collections.swap(chatrooms, 0, i);
 
                         notifyDataSetChanged();
@@ -159,14 +131,7 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             try {
-                                String roomName = dataSnapshot.getKey();
-                                String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
-                                String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("head").getValue().toString();
-                                String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
-
-                                chatrooms.add(0, new ChatRoom(roomName,
-                                        latestQuestion,
-                                        Long.parseLong(activeTime)));
+                                chatrooms.add(0, getChatroomProfileFromDataSnapshot(dataSnapshot));
 
                                 notifyDataSetChanged();
                             } catch (NullPointerException npe) {
@@ -197,17 +162,9 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    String roomName = child.getKey();
-                    Log.d("room name", roomName);
-                    if (roomName.contains(searchKey)) {
+                    if (child.getKey().contains(searchKey)) {
                         try {
-                            String latestQuestionId = child.child("recentQuestion").getValue().toString();
-                            String latestQuestion = child.child("questions").child(latestQuestionId).child("head").getValue().toString();
-                            String activeTime = child.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
-
-                            chatrooms.add(0, new ChatRoom(roomName,
-                                    latestQuestion,
-                                    Long.parseLong(activeTime)));
+                            chatrooms.add(0, getChatroomProfileFromDataSnapshot(dataSnapshot));
 
                         } catch (NullPointerException npe) {
                             npe.printStackTrace();
@@ -222,6 +179,19 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
 
             }
         });
+    }
+
+    public ChatRoom getChatroomProfileFromDataSnapshot (DataSnapshot dataSnapshot){
+
+        String roomName = dataSnapshot.getKey();
+        String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
+        String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("wholeMsg").getValue().toString();
+        if (latestQuestion.length() > 50){
+            latestQuestion = latestQuestion.substring(0, 49) + "...";
+        }
+        String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
+
+        return new ChatRoom(roomName, latestQuestion, Long.parseLong(activeTime));
     }
 
     public void finishSearch() {

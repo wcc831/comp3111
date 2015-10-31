@@ -17,20 +17,21 @@ public class Question implements Comparable<Question> {
      */
     private String key;
     private String wholeMsg;
-    private String head;
-    private String headLastChar;
-    private String desc;
-    private String linkedDesc;
+    //private String head;
+    //private String headLastChar;
+    //private String desc;
+    //private String linkedDesc;
     private String questioner;
     private boolean completed;
     private long timestamp;
     private String[] tags;
-    private int echo;
+    private int like;
     private int dislike;
     private String dislikeKey;
     private int order;
     private boolean newQuestion;
     private String category;
+    private String attachment;
 
     public String getDateString() {
         return dateString;
@@ -72,8 +73,9 @@ public class Question implements Comparable<Question> {
         }
 
         this.wholeMsg = message;
-        this.echo = 0;
+        this.like = 0;
         this.dislike = 0;
+        /*
         this.head = getFirstSentence(message).trim();
         this.desc = "";
         if (this.head.length() < message.length()) {
@@ -82,7 +84,7 @@ public class Question implements Comparable<Question> {
 
         // get the last char
         this.headLastChar = head.substring(head.length() - 1);
-
+        */
         this.timestamp = new Date().getTime();
     }
 
@@ -120,16 +122,12 @@ public class Question implements Comparable<Question> {
     }
 
     /* -------------------- Getters ------------------- */
-    public String getHead() {
-        return head;
-    }
+    //public String getHead() { return head; }
 
-    public String getDesc() {
-        return desc;
-    }
+//    public String getDesc() { return desc; }
 
-    public int getEcho() {
-        return echo;
+    public int getLike() {
+        return like;
     }
 
     public int getDislike() {
@@ -140,13 +138,9 @@ public class Question implements Comparable<Question> {
         return wholeMsg;
     }
 
-    public String getHeadLastChar() {
-        return headLastChar;
-    }
+    //public String getHeadLastChar() { return headLastChar; }
 
-    public String getLinkedDesc() {
-        return linkedDesc;
-    }
+    //public String getLinkedDesc() { return linkedDesc; }
 
     public String getQuestioner() { return questioner; }
 
@@ -163,6 +157,8 @@ public class Question implements Comparable<Question> {
     }
 
     public int getOrder() { return order; }
+
+    public String getAttachment(){ return attachment; };
 
     public boolean isNewQuestion() {
         return newQuestion;
@@ -228,7 +224,7 @@ public class Question implements Comparable<Question> {
         return extractTag(message, spaceIndex, tags);
     }
     /**
-     * New one/high echo goes bottom
+     * New one/high like goes bottom
      * @param other other chat
      * @return order
      */
@@ -243,13 +239,13 @@ public class Question implements Comparable<Question> {
         }
 
 
-        if (this.echo == other.echo) {
+        if (this.like == other.like) {
             if (other.timestamp == this.timestamp) {
                 return 0;
             }
             return other.timestamp > this.timestamp ? -1 : 1;
         }
-        return this.echo - other.echo;
+        return this.like - other.like;
     }
 
 

@@ -47,7 +47,7 @@ import hk.ust.cse.hunkim.questionroom.question.QuestionListAdapter;
 public class MainActivity extends ListActivity implements SearchView.OnQueryTextListener {
 
     // TODO: change this to your own Firebase URL
-    private static final String FIREBASE_URL = "https://ccwfirebase.firebaseio.com/";
+    public static final String FIREBASE_URL = "https://instaquest.firebaseio.com/";
 
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
     static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
@@ -413,7 +413,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                 textView.setText("online users: " + Integer.toString(numUser));
                 textView.setPadding(5, 5, 5, 5);
 
-                LinearLayout linearLayout =((LinearLayout) findViewById(R.id.drawer_menu));
+                LinearLayout linearLayout = ((LinearLayout) findViewById(R.id.drawer_menu));
                 if (linearLayout.findViewById(R.id.drawer_onlineUsers) == null)
                     linearLayout.addView(textView);
             }
@@ -440,7 +440,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         }
         else {
             mChatListAdapter.doSearch(newText);
-            
+
             //mChatListAdapter.getFilter().filter(newText);
         }
 
