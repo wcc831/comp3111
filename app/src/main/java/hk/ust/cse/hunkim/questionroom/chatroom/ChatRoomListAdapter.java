@@ -88,12 +88,6 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
                     return;
 
                 ChatRoom chatRoom = getChatroomProfileFromDataSnapshot(dataSnapshot);
-
-                /*String modifiedRoom = dataSnapshot.getKey();
-                String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
-                String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("wholeMsg").getValue().toString();
-                String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();*/
-
                 for (int i = 0; i < chatrooms.size(); i++) {
                     if (chatrooms.get(i).roomName.equals(chatRoom.roomName)) {
                         chatrooms.get(i).activeTime = chatRoom.activeTime;
@@ -140,9 +134,7 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
                         }
 
                         @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-
-                        }
+                        public void onCancelled(FirebaseError firebaseError) {  }
                     });
                 }
             }

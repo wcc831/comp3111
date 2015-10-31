@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -61,7 +62,7 @@ import hk.ust.cse.hunkim.questionroom.login.UserInfo;
  * A login screen that offers login via email/password.
  */
 public class JoinActivity extends FragmentActivity implements SearchView.OnQueryTextListener{
-    public static final String ROOM_NAME = "Room_name";
+public static final String ROOM_NAME = "Room_name";
     public static final String USER_EMAIL = "user_email";
     public static Firebase firebaseRef;
     public static Firebase chatroomRef;
@@ -74,6 +75,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     private final List<ChatRoom> historyList = new ArrayList<>();
     private ChatRoomListAdapter searchAdapter;
 
+    ChatroomPagerAdapter chatroomPagerAdapter;
     ViewPager chatroomListPager;
     PagerTabStrip chatroomListTabStrip;
     final Context context = this;
@@ -116,15 +118,28 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
             }
         };
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
+    }
 
-        ChatroomPagerAdapter chatroomPagerAdapter = new ChatroomPagerAdapter(getSupportFragmentManager());
+    @Override
+    protected void onResume (){
+        super.onResume();
+
+        chatroomPagerAdapter = new ChatroomPagerAdapter(getSupportFragmentManager());
 
         chatroomPagerAdapter.tabs = getPagerFragments(chatListViews, context);
-        chatroomListPager = (ViewPager) findViewById(R.id.chatroom_list_pager);
-        chatroomListPager.setAdapter(chatroomPagerAdapter);
-        chatroomListTabStrip = (PagerTabStrip) findViewById(R.id.chatroom_list_tab_strip);
-        chatroomListTabStrip.setTextColor(Color.WHITE);
+        ((ViewPager) findViewById(R.id.chatroom_list_pager)).setAdapter(chatroomPagerAdapter);
+        ((PagerTabStrip) findViewById(R.id.chatroom_list_tab_strip)).setTextColor(Color.WHITE);
+    }
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+    }
+
+    @Override
+    public  void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
