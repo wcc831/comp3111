@@ -33,4 +33,10 @@ public class GenericTest extends TestCase {
 
 
     }
+
+    @SmallTest
+    public void testBlenColor(){
+        int c = Generic.blendColors(0, 255, 0.5f);
+        assertEquals("color", c, -16777089);
+    }
 }

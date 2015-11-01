@@ -69,7 +69,7 @@ public class Generic {
         anim.start();
     }
 
-    private static int blendColors(int from, int to, float ratio) {
+    public static int blendColors(int from, int to, float ratio) {
         final float inverseRatio = 1f - ratio;
 
         final float r = Color.red(to) * ratio + Color.red(from) * inverseRatio;

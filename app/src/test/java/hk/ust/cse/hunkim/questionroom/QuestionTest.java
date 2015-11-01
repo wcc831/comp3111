@@ -2,6 +2,8 @@ package hk.ust.cse.hunkim.questionroom;
 
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.google.android.gms.games.quest.Quest;
+
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -16,13 +18,13 @@ import hk.ust.cse.hunkim.questionroom.question.Question;
 
 public class QuestionTest  extends TestCase {
     Question q;
-
+    String message = "#tah3 tag2 #tag3 Hello? #tag3 This is very fucking shit";
 
 
     protected void setUp() throws Exception {
         super.setUp();
 
-        q = new Question("Hello? This is very fucking shit");
+        q = new Question("me", message, "other");
     }
 
     @SmallTest
@@ -45,10 +47,24 @@ public class QuestionTest  extends TestCase {
     public void testEcho() { assertEquals("like", 0, q.getLike()); }
 
     @SmallTest
-    public void testgetWholeMsg() { assertEquals("WholeMsg", "Hello? This is very loveing nice", q.getWholeMsg()); }
+    public void testDislike() {
+        assertEquals("dislike", 0, q.getDislike());
+    }
 
     @SmallTest
-    public void testWordFilterTest() { assertEquals("filter", true, !q.getWholeMsg().contains("fuck")); }
+    public void testgetWholeMsg() {
+        assertTrue("wholeMsg", !q.getWholeMsg().equals(message));
+        assertEquals("WholeMsg", "#tah3 tag2 #tag3 Hello? #tag3 This is very loveing nice", q.getWholeMsg());
+    }
+
+    @SmallTest
+    public void testWordFilterTest() {
+        assertTrue(!q.getWholeMsg().contains("fuck"));
+        assertTrue(!q.getWholeMsg().contains("shit"));
+
+        assertTrue(q.getWholeMsg().contains("loveing"));
+        assertTrue(q.getWholeMsg().contains("nice"));
+    }
 
     @SmallTest
     public void testExtractTag() {
@@ -59,5 +75,41 @@ public class QuestionTest  extends TestCase {
         assertEquals("tag", "#tag2", tags.get(1));
         assertEquals("tag", "#tag3", tags.get(2));
 
+    }
+
+    @SmallTest
+    public void testCatagorry(){
+        assertTrue(q.getCategory().equals("other"));
+    }
+
+    @SmallTest
+    public void testQuestioner() {
+        assertEquals("questioner", q.getQuestioner(), "me");
+    }
+
+    @SmallTest
+    public void testTag(){
+        assertEquals("tag", "#tah3", q.getTags()[0]);
+        assertEquals("tag", "#tag3", q.getTags()[1]);
+        assertEquals("tag", "#tag3", q.getTags()[2]);
+    }
+
+    @SmallTest
+    public void testSeperateTitle(){
+        String str = "Prof. ta!! test";
+        String str2 = "Mr. ta!! test";
+        String str3 = "Ms. ta!! test";
+        assertTrue(Question.getFirstSentence(str).equals("Prof. ta!!"));
+        assertTrue(Question.getFirstSentence(str2).equals("Mr. ta!!"));
+        assertTrue(Question.getFirstSentence(str3).equals("Ms. ta!!"));
+    }
+
+    @SmallTest
+    public void testCompareTo(){
+        Question q1 = new Question("msg1");
+        Question q2 = new Question("msg2");
+        Question q3 = new Question("msg3");
+
+        assertEquals("compare to", -1, q1.compareTo(q2));
     }
 }
