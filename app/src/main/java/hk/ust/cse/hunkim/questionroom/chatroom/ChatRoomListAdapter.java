@@ -179,9 +179,18 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
         String roomName = dataSnapshot.getKey();
         String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
         String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("wholeMsg").getValue().toString();
+
+        DataSnapshot questioner = dataSnapshot.child("questions").child(latestQuestionId).child("questioner");
+        if (questioner.getValue() == null){
+            latestQuestion = "Anonymous: " + latestQuestion;
+        }
+        else{
+            latestQuestion = questioner.getValue().toString() + ": " + latestQuestion;
+        }
         if (latestQuestion.length() > 50){
             latestQuestion = latestQuestion.substring(0, 49) + "...";
         }
+
         String activeTime = dataSnapshot.child("questions").child(latestQuestionId).child("timestamp").getValue().toString();
 
         return new ChatRoom(roomName, latestQuestion, Long.parseLong(activeTime));

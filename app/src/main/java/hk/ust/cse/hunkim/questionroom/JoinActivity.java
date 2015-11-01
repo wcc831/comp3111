@@ -134,7 +134,7 @@ public static final String ROOM_NAME = "Room_name";
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
 
     }
@@ -162,7 +162,6 @@ public static final String ROOM_NAME = "Room_name";
         searchView.setSubmitButtonEnabled(false);
         EditText editText = (EditText)searchView.findViewById(getResources().getIdentifier("android:id/search_src_text", null, null));
         editText.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-
 
         LinearLayout searchBar = (LinearLayout) searchView.findViewById(R.id.action_search);
         searchBar.setLayoutTransition(new LayoutTransition());
@@ -407,6 +406,8 @@ public static final String ROOM_NAME = "Room_name";
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        attemptJoin(findViewById(R.id.join_chatroom));
+
         return false;
     }
 
@@ -428,11 +429,11 @@ public static final String ROOM_NAME = "Room_name";
         }
         //join chatroom through search
         else if (view.getId() == R.id.join_chatroom){
+
             room_name = ((TextView)view).getText().toString().substring(5);
 
             SearchView searchView = (SearchView) findViewById(R.id.action_search);
             searchView.setIconified(true);
-
         }
 
         if (room_name.contains(" ")){

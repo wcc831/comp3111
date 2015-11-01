@@ -187,59 +187,11 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
             tmpQuestionList = getModels();
         }
         getFilter().filter(keyword);
-
-/*
-        if (searchResult == null) {
-            searchResult = new ArrayList<>();
-            searchHashMap = new HashMap<>();
-            tmpQuestionList = getModels();
-            tmpHashMap = getModelMap();
-            super.attachList(searchResult, searchHashMap);
-            super.detachChildEventlistener();
-        }
-
-        searchResult.clear();
-        searchHashMap.clear();
-
-        for (Question q : tmpQuestionList) {
-            boolean containTag = false;
-            if (q.getTags() == null)
-                continue;
-
-            for (String tag : q.getTags()) {
-                if (tag.contains(keyword))
-                    containTag = true;
-            }
-
-            if (containTag) {
-                searchHashMap.put(q.getKey(), q);
-                setKey(q.getKey(), q);
-                searchResult.add(q);
-
-            }
-        }
-        notifyDataSetChanged();
-        */
     }
 
     public void finishSearch () {
         setModels(tmpQuestionList);
         notifyDataSetChanged();
-        /*
-        if (searchResult != null){
-            searchResult.clear();
-            searchResult = null;
-            searchHashMap.clear();
-            searchHashMap = null;
-        }
-        if (tmpQuestionList != null && tmpHashMap != null) {
-            tmpQuestionList.clear();
-            tmpHashMap.clear();
-            attachList(tmpQuestionList, tmpHashMap);
-            initChildEventlistener();
-
-        }
-        */
 
     }
 
