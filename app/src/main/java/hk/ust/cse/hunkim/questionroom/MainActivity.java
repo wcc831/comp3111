@@ -318,7 +318,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
             return;
         }
 
-        final Firebase echoRef = mChatroomRef.child(key).child("echo");
+        final Firebase echoRef = mChatroomRef.child(key).child("like");
         echoRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override

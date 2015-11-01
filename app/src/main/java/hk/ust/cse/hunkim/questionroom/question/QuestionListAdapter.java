@@ -268,15 +268,15 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
         DBUtil dbUtil = activity.getDbutil();
 
         // Map a Chat object to an entry in our listview
-        int echo = question.getLike();
-        Button echoButton = (Button) view.findViewById(R.id.echo);
-        echoButton.setText("" + echo);
-        //echoButton.setTextColor(Color.BLUE);
+        int like = question.getLike();
+        Button liekButton = (Button) view.findViewById(R.id.echo);
+        liekButton.setText("" + like);
+        //liekButton.setTextColor(Color.BLUE);
 
 
-        echoButton.setTag(question.getKey()); // Set tag for button
+        liekButton.setTag(question.getKey()); // Set tag for button
 
-        echoButton.setOnClickListener(
+        liekButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -320,7 +320,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
         Log.d("comments", msgString);
 
         ((TextView) view.findViewById(R.id.head_desc)).setText(Html.fromHtml(msgString));
-        view.setOnClickListener(new View.OnClickListener() {
+        /*view.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         MainActivity m = (MainActivity) view.getContext();
@@ -328,7 +328,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
                                         m.updateDislike((String) view.getTag());
                                     }
                                 }
-        );
+        );*/
 
         long time = question.getTimestamp();
         String relativeTime = (String) DateUtils.getRelativeDateTimeString(context, time, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL);
@@ -345,8 +345,8 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
         // check if we already clicked
         boolean clickable = !dbUtil.contains(question.getKey());
 
-        echoButton.setClickable(clickable);
-        echoButton.setEnabled(clickable);
+        liekButton.setClickable(clickable);
+        liekButton.setEnabled(clickable);
         view.setClickable(clickable);
 
 
@@ -354,9 +354,9 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
         // grey out our button
         /*
         if (clickable) {
-            echoButton.getBackground().setColorFilter(null);
+            liekButton.getBackground().setColorFilter(null);
         } else {
-            echoButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+            liekButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
         }
 */
 
