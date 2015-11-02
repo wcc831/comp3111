@@ -455,5 +455,21 @@ public static final String ROOM_NAME = "Room_name";
         // Make sure alphanumeric characters
         return !room_name.matches("^.*[^a-zA-Z0-9 ].*$");
     }
+
+
+    /*public void refresh(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Category");
+        builder.show();
+    }*/
+
+    public boolean refresh(MenuItem item){
+        Toast.makeText(this, "refresh!", Toast.LENGTH_LONG).show();
+        onPause();
+        onResume();
+        return false;
+    }
+
+
 }
 

@@ -21,8 +21,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -293,6 +291,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         return super.onCreateOptionsMenu(menu);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -451,5 +450,12 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
     public void login(View v){
 
+    }
+
+    public boolean refresh(MenuItem item){
+        Toast.makeText(this, "refresh!", Toast.LENGTH_LONG).show();
+        onStop();
+        onStart();
+        return false;
     }
 }

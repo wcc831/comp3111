@@ -9,6 +9,7 @@
     <item android:title="Refresh"
         android:id="@+id/action_refresh"
         android:showAsAction="never"
+        android:onClick="refresh"
         />
 
     <item android:title="Start Camera"
