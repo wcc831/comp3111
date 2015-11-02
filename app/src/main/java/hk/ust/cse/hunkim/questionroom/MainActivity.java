@@ -67,7 +67,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         return dbutil;
     }
 
-    private String[] category = new String[] {"No Category", "Final", "Midterm", "Assignment", "Others"};
+    private String[] category = new String[] {"Midterm", "Final", "Assignment", "Other"};
     private String categoryChoice;
 
     public void setCategoryButtonText(int choice){
@@ -288,6 +288,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
 
+        setCategoryChoice(3);
 
         return super.onCreateOptionsMenu(menu);
     }
