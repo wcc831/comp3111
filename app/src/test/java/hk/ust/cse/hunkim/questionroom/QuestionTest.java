@@ -95,7 +95,22 @@ public class QuestionTest  extends TestCase {
     }
 
     @SmallTest
-    public void testSeperateTitle(){
+    public void testGetSeperateTitle() {
+        boolean title = Question.separateTitle("Dr. Tam", 2);
+        assertTrue("title", !title);
+
+        title = Question.separateTitle("prof. Tam", 4);
+        assertTrue("title", !title);
+
+        title = Question.separateTitle("Mr. Tam", 2);
+        assertTrue("title", !title);
+
+        title = Question.separateTitle("Ms. Tam", 2);
+        assertTrue("title", !title);
+    }
+
+    @SmallTest
+    public void testGetFirstSentence(){
         String str = "Prof. ta!! test";
         String str2 = "Mr. ta!! test";
         String str3 = "Ms. ta!! test";

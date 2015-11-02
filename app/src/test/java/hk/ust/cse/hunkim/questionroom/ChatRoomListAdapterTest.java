@@ -5,6 +5,7 @@ import android.test.IsolatedContext;
 import android.test.mock.MockContext;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 
 import junit.framework.TestCase;
@@ -25,10 +26,18 @@ public class ChatRoomListAdapterTest extends AndroidTestCase {
     ChatRoomListAdapter adapter;
 
     public ChatRoomListAdapterTest(){
+        Firebase ref = new Firebase("https://testfirebasewcc.firebaseio.com/");
         chatroomList = new ArrayList<>();
     }
+
     protected void setup() throws Exception{
         super.setUp();
     }
+
+    @SmallTest
+    public void testGetChatroomFromDataSnapshot(){
+        //ChatRoomListAdapter.getChatroomProfileFromDataSnapshot(new DataSnapshot(null, null));
+    }
+
 
 }

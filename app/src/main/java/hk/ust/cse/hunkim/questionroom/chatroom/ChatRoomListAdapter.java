@@ -174,7 +174,7 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
         });
     }
 
-    public ChatRoom getChatroomProfileFromDataSnapshot (DataSnapshot dataSnapshot){
+    public static ChatRoom getChatroomProfileFromDataSnapshot (DataSnapshot dataSnapshot){
 
         String roomName = dataSnapshot.getKey();
         String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
