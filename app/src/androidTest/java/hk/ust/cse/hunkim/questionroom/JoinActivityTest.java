@@ -1,12 +1,23 @@
 package hk.ust.cse.hunkim.questionroom;
 
+import android.app.ActionBar;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.media.Image;
+import android.os.SystemClock;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerTabStrip;
+import android.support.v4.view.ViewPager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 
@@ -41,6 +52,76 @@ public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActiv
 
     }
 
+    protected Fragment waitForFragment(String tag, int timeout) {
+        long endTime = SystemClock.uptimeMillis() + timeout;
+        while (SystemClock.uptimeMillis() <= endTime) {
+
+            Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag(tag);
+            if (fragment != null) {
+                return fragment;
+            }
+        }
+        return null;
+    }
+
+    public void testActivityLaunchProperly() {
+        assertNotNull(activity);
+    }
+
+    public void testActionBar() {
+        ActionBar actionBar = getActivity().getActionBar();
+        assertNotNull(actionBar);
+
+        String title = actionBar.getTitle().toString();
+        assertEquals("title", title, "InstaQuest");
+
+        SearchView searchView = (SearchView)activity.findViewById(R.id.action_search);
+        assertNotNull(searchView);
+
+        EditText editText = (EditText)searchView.findViewById(activity.getResources().getIdentifier("android:id/search_src_text", null, null));
+        assertNotNull(editText);
+
+    }
+
+    public void testLayout() {
+
+        ViewPager viewPager = (ViewPager) activity.findViewById(R.id.chatroom_list_pager);
+        assertNotNull(viewPager);
+        assertEquals("width", WindowManager.LayoutParams.FILL_PARENT, viewPager.getLayoutParams().width);
+        assertEquals("height", WindowManager.LayoutParams.FILL_PARENT, viewPager.getLayoutParams().height);
+
+        PagerTabStrip pagerTabStrip = (PagerTabStrip)activity.findViewById(R.id.chatroom_list_tab_strip);
+        assertNotNull(pagerTabStrip);
+        assertEquals("width", WindowManager.LayoutParams.WRAP_CONTENT, pagerTabStrip.getLayoutParams().width);
+        assertEquals("height", (int) (30 * activity.getResources().getDisplayMetrics().density), pagerTabStrip.getLayoutParams().height);
+
+
+
+
+    }
+
+    public void testlogin(){
+        ImageView userProfile = (ImageView) activity.findViewById(R.id.drawer_profileImage);
+        assertNotNull(userProfile);
+
+        TouchUtils.clickView(this, userProfile);
+
+        TextView userEmail = (TextView) activity.findViewById(R.id.drawer_profileEmail);
+        assertNotNull(userEmail);
+        assertEquals("user name", "user email adderss", userEmail.getText().toString());
+    }
+
+    public void testIncludeLeftMenu() {
+        assertNotNull(activity.findViewById(R.id.drawer_leftMenuWraper));
+        ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.loading_icon);
+        assertNotNull(progressBar);
+
+    }
+/*
+    public void testDummy() {
+        activity.attemptJoin(activity.findViewById(R.id.action_search));
+    }
+*/
     /*
     public void testIntentSetting() {
 
@@ -71,7 +152,7 @@ public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActiv
     }
 
 */
-    public void testCreatingActivity() {
+    public void ttestCreatingActivity() {
 
         //Create and add an ActivityMonitor to monitor interaction between the system and the
         //ReceiverActivity

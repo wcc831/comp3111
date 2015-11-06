@@ -2,12 +2,14 @@ package hk.ust.cse.hunkim.questionroom;
 
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -15,6 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+
+import hk.ust.cse.hunkim.questionroom.server.ServerConfig;
+import hk.ust.cse.hunkim.questionroom.server.ServerConnection;
 
 /**
  * Created by cc on 10/3/2015.
@@ -53,6 +58,18 @@ public class Generic {
         byte[] byteArr = new byte[(int) file.length()];
         fis.read(byteArr);
         return byteArr;
+    }
+
+    public static void bitmapToFile(Bitmap bp, File file, Bitmap.CompressFormat format) throws IOException{
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bp.compress(format, 100, bos);
+        byte[] bpData = bos.toByteArray();
+
+
+        OutputStream fos = new FileOutputStream(file);
+        fos.write(bpData);
+        fos.flush();
+        fos.close();
     }
 
     public static void animateColor(final View v, final int from, final int to){
@@ -103,5 +120,4 @@ public class Generic {
             }
         };
     }
-
 }

@@ -57,6 +57,7 @@ import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoomListAdapter;
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatroomPagerAdapter;
 import hk.ust.cse.hunkim.questionroom.login.GoogleLogin;
 import hk.ust.cse.hunkim.questionroom.login.UserInfo;
+import hk.ust.cse.hunkim.questionroom.server.ServerDemo;
 
 /**
  * A login screen that offers login via email/password.
@@ -89,6 +90,7 @@ public static final String ROOM_NAME = "Room_name";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         //set status bar color
         Window window = getWindow();
