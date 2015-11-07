@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.text.Html;
@@ -17,6 +18,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -33,6 +35,7 @@ import java.util.Map;
 
 import hk.ust.cse.hunkim.questionroom.FirebaseListAdapter;
 import hk.ust.cse.hunkim.questionroom.MainActivity;
+import hk.ust.cse.hunkim.questionroom.QuestionActivity;
 import hk.ust.cse.hunkim.questionroom.R;
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoomListAdapter;
 import hk.ust.cse.hunkim.questionroom.chatroom.CommentListAdapter;
@@ -138,6 +141,11 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Firebase commentPushRef = commentRef.child(v.getTag().toString()).push();
+                     if (comentContent.getText().length() < 1){
+                         Toast.makeText(context, "comment cannot be empty.", Toast.LENGTH_SHORT).show();
+                         return;
+                     }
+
                     Question question = new Question(comentContent.getText().toString());
                     commentPushRef.setValue(question);
                 }
@@ -215,7 +223,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
      * @param question An instance representing the current state of a chat message
      */
     @Override
-    protected void populateView(View view, Question question) {
+    protected void populateView(final View view, Question question) {
 
         DBUtil dbUtil = activity.getDbutil();
 
@@ -336,16 +344,39 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
 
         view.setOnLongClickListener(longClickListener);
         view.setOnTouchListener(touchListener);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, QuestionActivity.class);
+                intent.putExtra("room", query.getRef().getParent().getKey());
+                intent.putExtra("key", (String) v.getTag());
+                activity.startActivity(intent);
+            }
+        });
 /*        QuestionListAdapter commentsAdapter = new QuestionListAdapter(commentRef.child(question.getKey()).orderByChild("timestamp"),
                 activity, layout, context, commentRef);
 
         ((ListView) view.findViewById(R.id.question_comments)).setAdapter(commentsAdapter);
 */
-        final CommentListAdapter commentListAdapter = new CommentListAdapter(
+        /*final CommentListAdapter commentListAdapter = new CommentListAdapter(
                 commentRef.child(question.getKey()).orderByChild("timestamp"),
                 context,
                 new ArrayList<Question>());
-        ((ListView) view.findViewById(R.id.question_comments)).setAdapter(commentListAdapter);
+        ((ListView) view.findViewById(R.id.question_comments)).setAdapter(commentListAdapter);*/
+
+        commentRef.child(question.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                    ((TextView) view.findViewById(R.id.more_comment)).setText("click to view more comment");
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
     }
 
     @Override

@@ -91,6 +91,7 @@ public static final String ROOM_NAME = "Room_name";
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ServerDemo.email();
         //set status bar color
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

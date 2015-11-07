@@ -198,7 +198,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         // Tell our list adapter that we only want 200 messages at a time
         mChatListAdapter = new QuestionListAdapter(
                 mChatroomRef.orderByChild("echo").limitToFirst(200),
-                this, R.layout.question, this, mChatroomRef.getRoot().child("comment"));
+                this, R.layout.question, this, mChatroomRef.getParent().child("comment"));
         mChatListAdapter.setOnTouchListener(
                 Generic.getAnimateColorListener(
                         getResources().getColor(R.color.key_up_color),

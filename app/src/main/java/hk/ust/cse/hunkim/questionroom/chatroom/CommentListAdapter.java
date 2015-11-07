@@ -13,6 +13,7 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 
 import java.util.List;
 
@@ -23,6 +24,8 @@ import hk.ust.cse.hunkim.questionroom.question.Question;
  * Created by cc on 10/18/2015.
  */
 public class CommentListAdapter extends ArrayAdapter<Question> {
+
+    public static final String TAG = "CommentListAdapter";
 
     final List<Question> questions;
     Context context;
@@ -42,7 +45,26 @@ public class CommentListAdapter extends ArrayAdapter<Question> {
         this.context = context;
         this.questions = questions;
 
-        query();
+        queryOnce();
+    }
+
+    private void queryOnce() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()){
+                    Question q = child.getValue(Question.class);
+                    questions.add(q);
+                    Log.d("comment loaded from db", q.getWholeMsg());
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     private void query(){
@@ -78,17 +100,27 @@ public class CommentListAdapter extends ArrayAdapter<Question> {
     }
 
     @Override
-    public View getView(int pos, View convertView, ViewGroup parent){
+    public View getView(int pos, View view, ViewGroup parent){
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View commentView = inflater.inflate(R.layout.question, parent, false);
+        View commentView = inflater.inflate(R.layout.comment, parent, false);
         Question comment = getItem(pos);
 
-        ((TextView) commentView.findViewById(R.id.head_desc)).setText(comment.getWholeMsg());
-        Log.d("comment added to view", comment.getWholeMsg());
+        String questioner = comment.getQuestioner();
+        String message = comment.getWholeMsg();
+        if (questioner != null)
+            ((TextView) commentView.findViewById(R.id.questioner)).setText(questioner);
+        else
+            ((TextView) commentView.findViewById(R.id.questioner)).setText("Anonymous");
+        ((TextView) commentView.findViewById(R.id.head_desc)).setText(message);
 
         long time = comment.getTimestamp();
         String relativeTime = (String) DateUtils.getRelativeDateTimeString(context, time, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL);
         ((TextView) commentView.findViewById(R.id.queation_time)).setText(relativeTime);
+
+        /*for (int i = 0; i < questions.size(); i++) {
+            Log.d(TAG, getItem(i).getWholeMsg());
+        }*/
+        Log.d(TAG,Integer.toString(pos) +  " " + comment.getWholeMsg());
 
         return commentView;
     }
