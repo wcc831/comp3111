@@ -9,8 +9,10 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import hk.ust.cse.hunkim.questionroom.Generic;
 
@@ -27,6 +29,7 @@ public class ServerConfig {
     public static final int DOWNLOAD = 1;
     public static final int EMAIL = 2;
     public static final int MKDIR = 3;
+    public static final int QUERY = 4;
     public static final String SERVER_URL = "http://ec2-52-27-32-65.us-west-2.compute.amazonaws.com/fileservice/";
     public static final String SERVER_FILE_URL = "http://ec2-52-27-32-65.us-west-2.compute.amazonaws.com/files/public/";
 
@@ -39,7 +42,19 @@ public class ServerConfig {
     private File file;
     private URL url;
 
+    String sender;
+    String receiver;
+    String receiverName;
+    int type;
+
     private int action = -1;
+
+    /**
+     * Upload a file to server
+     *
+     * @param file The target file
+     * @param dir The directory on server that the target file save
+     */
 
     public void uploadFile(File file, String dir) throws IOException {
         action = UPLOAD;
@@ -47,6 +62,13 @@ public class ServerConfig {
 
         this.url = new URL(SERVER_URL + "upload/" + dir + "/");
     }
+    /**
+     * Download file from server
+     *
+     * @param dir The directory of the target file in server
+     * @param fileName The name of the target file
+     * @param file The file that the target file will be saved in
+     */
 
     public void downloadFile(String dir, String fileName, File file) throws IOException{
         action = DOWNLOAD;
@@ -55,10 +77,23 @@ public class ServerConfig {
         this.url = new URL(SERVER_FILE_URL + dir + "/" + fileName);
     }
 
-    public void sendEmail(int type) throws IOException{
+    /**
+     * request server send an email
+     *
+     * @param sender The sender of the email.
+     * @param receiver The email address of the receiver
+     * @param receiverName The name of the receiver
+     * @param type type of email, only type == 1 is available at the moment
+     */
+
+    public void sendEmail(String sender, String receiver, String receiverName, int type) throws IOException{
         action = EMAIL;
 
-        this.url = new URL(SERVER_URL + "email/");
+        this.sender = sender;
+        this.receiver = receiver;
+        this.receiverName = receiverName;
+        this.type = type;
+        this.url = new URL(SERVER_URL + "mail/");
     }
 
     public void mkDir(String dir) throws IOException{
@@ -66,6 +101,13 @@ public class ServerConfig {
 
         this.url = new URL(SERVER_URL + "mkdir/" + dir);
     }
+
+    public void query(String dir) throws IOException{
+        this.action = QUERY;
+
+        this.url = new URL(SERVER_URL + "query/" + dir);
+    }
+
 
     public void connect() {
         switch (action){
@@ -93,6 +135,21 @@ public class ServerConfig {
                     ioe.printStackTrace();
                 }
                 break;
+            case QUERY:
+                try{
+                    query(this.url);
+                }
+                catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+                break;
+            case EMAIL:
+                try{
+                    email(this.url);
+                }
+                catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
         }
     }
 
@@ -107,6 +164,42 @@ public class ServerConfig {
             serverResultCallBack.onResult(is);
             return;
         }
+
+        if (action == DOWNLOAD)
+            Generic.saveInputStreamToFile(is, file);
+    }
+
+    private void email(URL url) throws IOException {
+
+        String data = URLEncoder.encode("sender", "UTF-8") + "=" + URLEncoder.encode(this.sender, "UTF-8") + "&" +
+                URLEncoder.encode("receiver", "UTF-8") + "=" + URLEncoder.encode(this.receiver, "UTF-8") + "&" +
+                URLEncoder.encode("receiverName", "UTF-8") + "=" + URLEncoder.encode(this.receiverName, "UTF-8") + "&" +
+                URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode(Integer.toString(this.type), "UTF-8");
+
+
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setReadTimeout(10000);
+        con.setConnectTimeout(15000);
+        con.setRequestMethod("POST");
+        con.setDoInput(true);
+        con.setRequestProperty("Content-Length", Integer.toString(data.getBytes().length));
+        con.setRequestProperty("Content-Language", "en-US");
+
+        OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
+        osw.write(data);
+        osw.flush();
+        osw.close();
+
+        responseCode = con.getResponseCode();
+        responseMSG = con.getResponseMessage();
+        if (responseCode == 200){
+            is = con.getInputStream();
+            result = Generic.inputStreamToString(is);
+            logUrlResponse();
+            logResult();
+        }
+
+        con.disconnect();
 
     }
 
@@ -123,7 +216,6 @@ public class ServerConfig {
 
         if (responseCode == 200) {
             is = con.getInputStream();
-            Generic.saveInputStreamToFile(is, file);
         }
     }
 
@@ -179,16 +271,10 @@ public class ServerConfig {
         logInputStream();
     }
 
-    private void saveFile(File dir, String fileName) {
-        /*
-        if (!dir.exists()){
-            if (dir.mkdir())
-                Log.d(TAG, dir.toString() + " created");
+    private void query(URL url) throws IOException {
+        download(url);
 
-        }
-        File file =  new File(dir, fileName);
-        */
-        Generic.saveInputStreamToFile(is, file);
+        logInputStream();
     }
 
     public File getFile() { return file; }
@@ -199,5 +285,9 @@ public class ServerConfig {
 
     public void logInputStream() throws IOException {
         Log.d(TAG, "result: " + Generic.inputStreamToString(is));
+    }
+
+    public void logResult() {
+        Log.d(TAG, "result: " + result);
     }
 }

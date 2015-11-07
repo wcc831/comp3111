@@ -95,6 +95,19 @@ public class ServerDemo {
 
     }
 
+
+    public static void email() {
+        try{
+            ServerConfig config = new ServerConfig();
+            config.sendEmail("DA Yang", "ccwongam@connect.ust.hk", "ccw", 1);
+            new ServerConnection(config).execute();
+
+        }
+        catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
     public static void test (Context context) {
         ServerDemo.upload(new File(context.getFilesDir(), "google/googleProfile.jpg"));
         ServerDemo.download();
