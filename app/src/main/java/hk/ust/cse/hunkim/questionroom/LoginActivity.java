@@ -6,15 +6,27 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -23,7 +35,16 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOError;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Map;
 
 import hk.ust.cse.hunkim.questionroom.animation.AnimationFactory;
@@ -38,6 +59,9 @@ public class LoginActivity extends Activity {
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
     static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
 
+    //facebook login manager
+    CallbackManager callbackManager;
+
     UserInfo user = UserInfo.getInstance();
 
     File root;
@@ -45,6 +69,9 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+
         setContentView(R.layout.activity_login);
 
         //set status bar color
@@ -54,6 +81,8 @@ public class LoginActivity extends Activity {
         window.setStatusBarColor(getResources().getColor(R.color.action_bar_red));
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        facebookLogin();
 
         root = new File(getFilesDir(), "instaquest");
         if (!root.exists())
@@ -104,6 +133,10 @@ public class LoginActivity extends Activity {
             else if (resultCode == RESULT_CANCELED){
                 Toast.makeText(LoginActivity.this, "canceled", Toast.LENGTH_SHORT).show();
             }
+        }
+        else {
+            Log.d(TAG, "test");
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -204,6 +237,82 @@ public class LoginActivity extends Activity {
         login.execute();
     }
 
+    public void facebookLogin() {
+        //initialize facebook login
+        LoginButton facebookLogin = (LoginButton) findViewById(R.id.login_facebookLogin);
+        facebookLogin.setReadPermissions(Arrays.asList("basic_info", "email"));
+
+
+        facebookLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+
+                final String userId = loginResult.getAccessToken().getUserId();
+
+                Log.d(TAG, "user id: " + loginResult.getAccessToken().getUserId()
+                        + ", token: " + loginResult.getAccessToken().getToken());
+
+
+                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+
+                    @Override
+                    public void onCompleted(final JSONObject object, GraphResponse response) {
+                        Log.i("LoginActivity", response.toString());
+                        // Get facebook data from login
+                        Bundle bFacebookData = getFacebookData(object);
+
+                        new AsyncTask<String, String, String>(){
+
+                            @Override
+                            protected String doInBackground(String[] params) {
+
+                                try {
+                                    HttpURLConnection con = (HttpURLConnection) new URL("http://graph.facebook.com/" + userId + "/picture?type=large").openConnection();
+                                    Log.d(TAG, "con message: " + con.getResponseMessage() + ", repsonse code:" + Integer.toString(con.getResponseCode()) );
+
+                                    con.setInstanceFollowRedirects(false);
+                                    URL redirectedURL = new URL(con.getHeaderField("Location"));
+
+                                    Bitmap userPic = BitmapFactory.decodeStream(redirectedURL.openConnection().getInputStream());
+                                    File file = new File(root, "facebook_profile.jpg");
+                                    Generic.bitmapToFile(userPic, file, Bitmap.CompressFormat.JPEG);
+                                    UserInfo.getInstance().profileImage = file;
+                                    UserInfo.getInstance().email = object.getString("last_name") + "@facebook.com";
+                                }
+                                catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(String params){
+                                loginSucceed();
+                            }
+                        }.execute();
+
+                        Log.d(TAG, bFacebookData.toString());
+                    }
+                });
+                Bundle params = new Bundle();
+                params.putString("fields", "id, first_name, last_name, email, gender, birthday, location");
+                request.setParameters(params);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "succeed");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d(TAG, error.toString());
+            }
+        });
+
+    }
+
     public void loginSucceed() {
         UserInfo user = UserInfo.getInstance();
         user.authenticate();
@@ -236,4 +345,40 @@ public class LoginActivity extends Activity {
             finish();
     }
 
+    private Bundle getFacebookData(JSONObject object) {
+
+        try {
+            Bundle bundle = new Bundle();
+            String id = object.getString("id");
+
+            try {
+                URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
+                Log.i("profile_pic", profile_pic + "");
+                bundle.putString("profile_pic", profile_pic.toString());
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            bundle.putString("idFacebook", id);
+            if (object.has("first_name"))
+                bundle.putString("first_name", object.getString("first_name"));
+            if (object.has("last_name"))
+                bundle.putString("last_name", object.getString("last_name"));
+            if (object.has("email"))
+                bundle.putString("email", object.getString("email"));
+            if (object.has("gender"))
+                bundle.putString("gender", object.getString("gender"));
+            if (object.has("birthday"))
+                bundle.putString("birthday", object.getString("birthday"));
+            if (object.has("location"))
+                bundle.putString("location", object.getJSONObject("location").getString("name"));
+
+            return bundle;
+        } catch (JSONException jsone) {
+            jsone.printStackTrace();
+            return null;
+        }
+    }
 }
