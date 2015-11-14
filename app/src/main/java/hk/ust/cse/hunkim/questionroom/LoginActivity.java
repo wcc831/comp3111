@@ -28,8 +28,10 @@ import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
@@ -249,7 +251,7 @@ public class LoginActivity extends Activity {
 
                 final String userId = loginResult.getAccessToken().getUserId();
 
-                Log.d(TAG, "user id: " + loginResult.getAccessToken().getUserId()
+                Log.d(TAG, "user id: " + userId
                         + ", token: " + loginResult.getAccessToken().getToken());
 
 
@@ -261,14 +263,14 @@ public class LoginActivity extends Activity {
                         // Get facebook data from login
                         Bundle bFacebookData = getFacebookData(object);
 
-                        new AsyncTask<String, String, String>(){
+                        new AsyncTask<String, String, String>() {
 
                             @Override
                             protected String doInBackground(String[] params) {
 
                                 try {
                                     HttpURLConnection con = (HttpURLConnection) new URL("http://graph.facebook.com/" + userId + "/picture?type=large").openConnection();
-                                    Log.d(TAG, "con message: " + con.getResponseMessage() + ", repsonse code:" + Integer.toString(con.getResponseCode()) );
+                                    Log.d(TAG, "con message: " + con.getResponseMessage() + ", repsonse code:" + Integer.toString(con.getResponseCode()));
 
                                     con.setInstanceFollowRedirects(false);
                                     URL redirectedURL = new URL(con.getHeaderField("Location"));
@@ -276,17 +278,17 @@ public class LoginActivity extends Activity {
                                     Bitmap userPic = BitmapFactory.decodeStream(redirectedURL.openConnection().getInputStream());
                                     File file = new File(root, "facebook_profile.jpg");
                                     Generic.bitmapToFile(userPic, file, Bitmap.CompressFormat.JPEG);
+                                    UserInfo.getInstance().id = userId;
                                     UserInfo.getInstance().profileImage = file;
                                     UserInfo.getInstance().email = object.getString("last_name") + "@facebook.com";
-                                }
-                                catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 return null;
                             }
 
                             @Override
-                            protected void onPostExecute(String params){
+                            protected void onPostExecute(String params) {
                                 loginSucceed();
                             }
                         }.execute();
@@ -316,8 +318,8 @@ public class LoginActivity extends Activity {
     public void loginSucceed() {
         UserInfo user = UserInfo.getInstance();
         user.authenticate();
+        setRole(user.id);
 
-        proceed(null);
     }
 
     public void loginFail(String errorMessage) {
@@ -380,5 +382,23 @@ public class LoginActivity extends Activity {
             jsone.printStackTrace();
             return null;
         }
+    }
+
+    public void setRole(String key) {
+        firebaseRef.child("users").child("teachingStaff").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null)
+                    UserInfo.getInstance().role = UserInfo.SUPERVISOR;
+                else
+                    UserInfo.getInstance().role = UserInfo.NORMAL_USER;
+                proceed(null);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 }

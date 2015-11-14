@@ -13,9 +13,9 @@
     android:background="#F0F0F0"
     >
 
-    <LinearLayout
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
         android:id="@+id/drawer_userProfile"
         android:orientation="vertical">
         <ImageView
@@ -33,10 +33,19 @@
             android:text="email adderss"
             android:textSize="@dimen/font_size_middle"
             android:paddingTop="15dp"
-            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/drawer_userRole"
+            android:text="role"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

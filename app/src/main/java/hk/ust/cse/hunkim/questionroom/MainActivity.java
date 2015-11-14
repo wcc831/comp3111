@@ -181,7 +181,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         try {
             JoinActivity.loadPorfile((ImageView) findViewById(R.id.drawer_profileImage),
                     (TextView) findViewById(R.id.drawer_profileEmail),
-                    user.email);
+                    (TextView) findViewById(R.id.drawer_userRole));
         }
         catch (Exception e) {
             e.printStackTrace();

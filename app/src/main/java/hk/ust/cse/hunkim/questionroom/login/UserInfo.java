@@ -13,6 +13,8 @@ public class UserInfo {
     public static final int SUPERVISOR = 0;
     public static final int NORMAL_USER = 1;
 
+    public static final String[] roles = {"Supervisor", "student"};
+
     public static final int TA = 4;
     public static final int PROFESSOR = 5;
 
@@ -47,4 +49,6 @@ public class UserInfo {
     }
 
     public boolean isAuthenticated() { return authenticated; }
+
+    public String getRole() { return roles[role]; }
 }

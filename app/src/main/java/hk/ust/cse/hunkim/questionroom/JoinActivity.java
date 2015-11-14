@@ -104,7 +104,9 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         try {
-            loadPorfile((ImageView) findViewById(R.id.drawer_profileImage), (TextView) findViewById(R.id.drawer_profileEmail), user.email);
+            loadPorfile((ImageView) findViewById(R.id.drawer_profileImage),
+                    (TextView) findViewById(R.id.drawer_profileEmail),
+                    (TextView) findViewById(R.id.drawer_userRole));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -382,14 +384,21 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     /*
     * set account profile to leftMenu
     * */
-    public static void loadPorfile(ImageView profileImage, TextView email, String userEmail){
+    public static void loadPorfile(ImageView profileImage, TextView email, TextView userRole){
 
-        if (UserInfo.getInstance().profileImage != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(UserInfo.getInstance().profileImage.toString());
+        UserInfo user = UserInfo.getInstance();
+
+        if (user.profileImage != null) {
+            Bitmap bitmap = BitmapFactory.decodeFile(user.profileImage.toString());
             profileImage.setImageDrawable(new RoundImage(bitmap));
         }
+        if (user.email != null) {
+            email.setText(user.email);
+        }
+        if (user.role != -1) {
+            userRole.setText(user.getRole());
+        }
 
-        email.setText(userEmail);
     }
 
     /*
