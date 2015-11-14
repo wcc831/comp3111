@@ -9,7 +9,9 @@
     android:orientation="vertical"
     tools:context="hk.ust.cse.hunkim.questionroom.LoginActivity">
 
-    <LinearLayout android:orientation="vertical"
+    <LinearLayout
+        android:id="@+id/login_container"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center">
@@ -22,14 +24,14 @@
             android:id="@+id/login_loginArea"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="200dp">
 
 
             <LinearLayout
                 android:id="@+id/login_choose_loginProvider"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center">
 
                 <EditText
@@ -48,8 +50,9 @@
                     />
 
                 <Button
+                    style="@style/Base.Widget.AppCompat.Button"
                     android:id="@+id/login_firebase"
-                    android:text="Login"
+                    android:text="LOGIN"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="login"/>
@@ -72,9 +75,10 @@
                 </LinearLayout>
 
                 <Button
+                    android:id="@+id/login_proceed_as_visitor"
                     android:background="@color/transparent"
                     android:textColor="@color/my_blue"
-                    android:text="porceed as visitor"
+                    android:text="proceed as visitor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="proceed"/>

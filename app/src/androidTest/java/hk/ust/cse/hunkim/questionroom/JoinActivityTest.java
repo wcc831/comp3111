@@ -113,8 +113,6 @@ public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActiv
 
     public void testIncludeLeftMenu() {
         assertNotNull(activity.findViewById(R.id.drawer_leftMenuWraper));
-        ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.loading_icon);
-        assertNotNull(progressBar);
 
     }
 /*

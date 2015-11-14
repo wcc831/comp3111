@@ -4,7 +4,15 @@
     android:layout_height="match_parent" android:orientation="vertical"
     tools:context="hk.ust.cse.hunkim.questionroom.QuestionActivity">
 
-    <include layout="@layout/question"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_corner_bg">
+
+        <include layout="@layout/question"/>
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/question_comments"

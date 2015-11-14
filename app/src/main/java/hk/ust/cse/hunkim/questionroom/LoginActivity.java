@@ -26,6 +26,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import java.io.File;
 import java.util.Map;
 
+import hk.ust.cse.hunkim.questionroom.animation.AnimationFactory;
 import hk.ust.cse.hunkim.questionroom.login.GoogleLogin;
 import hk.ust.cse.hunkim.questionroom.login.UserInfo;
 
@@ -38,6 +39,8 @@ public class LoginActivity extends Activity {
     static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
 
     UserInfo user = UserInfo.getInstance();
+
+    File root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +55,16 @@ public class LoginActivity extends Activity {
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        root = new File(getFilesDir(), "instaquest");
+        if (!root.exists())
+            if (!root.mkdir())
+                Log.d(TAG, "failed create directory");
+
         Firebase.setAndroidContext(this);
         firebaseRef = new Firebase(MainActivity.FIREBASE_URL);
+
+        AnimationFactory.fadeIn(findViewById(R.id.login_container), 1300);
+
 
         ((EditText)findViewById(R.id.login_userName)).setText("test@gamil.com");
         ((EditText)findViewById(R.id.login_password)).setText("password");
@@ -65,8 +76,7 @@ public class LoginActivity extends Activity {
         if (user.isAuthenticated()) //logged in
             return;
 
-        findViewById(R.id.login_choose_loginProvider).setVisibility(View.INVISIBLE);
-        findViewById(R.id.loging_loading).setVisibility(View.VISIBLE);
+        AnimationFactory.crossFade(findViewById(R.id.login_choose_loginProvider), findViewById(R.id.loging_loading), 250);
 
         switch (view.getId()){
             case R.id.login_googleLogin:
@@ -104,10 +114,7 @@ public class LoginActivity extends Activity {
             public void onAuthenticated(AuthData authData) {
                 user.id = authData.getUid();
                 user.email = userName;
-                File root = new File(getFilesDir(), "instaquest");
-                if (!root.exists())
-                    if (!root.mkdir())
-                        Log.d(TAG, "failed create directory");
+
 
                 try {
                     File firebseProfile = new File(root, "firebse_login.jpg");
@@ -146,9 +153,7 @@ public class LoginActivity extends Activity {
 
                 }
 
-                findViewById(R.id.loging_loading).setVisibility(View.INVISIBLE);
-                findViewById(R.id.login_choose_loginProvider).setVisibility(View.VISIBLE);
-                Toast.makeText(LoginActivity.this, "Failed to login. \n" + firebaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                loginFail("Failed to login. \n" + firebaseError.getMessage());
             }
         });
 
@@ -156,7 +161,7 @@ public class LoginActivity extends Activity {
 
     public void googleLogin(String email){
         UserInfo userInfo = UserInfo.getInstance();
-        GoogleLogin login = new GoogleLogin(LoginActivity.this, firebaseRef, email, userInfo);
+        final GoogleLogin login = new GoogleLogin(LoginActivity.this, firebaseRef, email, userInfo);
         login.exceptionCallback = new GoogleLogin.ExceptionHandler() {
             @Override
             public void handleException(final UserRecoverableAuthException e) {
@@ -187,7 +192,7 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onLoginFailed(FirebaseError error) {
-
+                loginFail("fail to login" + error.getMessage());
             }
 
             @Override
@@ -206,8 +211,25 @@ public class LoginActivity extends Activity {
         proceed(null);
     }
 
+    public void loginFail(String errorMessage) {
+        AnimationFactory.crossFade(findViewById(R.id.loging_loading), findViewById(R.id.login_choose_loginProvider), 250);
+        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+
+    }
+
     public void proceed(View view) {
 
+        if (view != null && view.getId() == R.id.login_proceed_as_visitor){
+            try {
+                user.profileImage = new File(root, "visitor.jpg");
+                Generic.bitmapToFile(BitmapFactory.decodeResource(getResources(), R.drawable.no_profile), user.profileImage, Bitmap.CompressFormat.JPEG);
+                user.email = "visitor";
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         startActivity(new Intent(this, JoinActivity.class));
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         if (UserInfo.getInstance().isAuthenticated())

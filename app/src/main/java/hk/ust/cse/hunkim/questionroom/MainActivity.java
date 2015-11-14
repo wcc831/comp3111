@@ -178,11 +178,14 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
 
         //load user profile
-        if (user.isAuthenticated())
-            JoinActivity.loadPorfile(
-                    (ImageView) findViewById(R.id.drawer_profileImage),
+        try {
+            JoinActivity.loadPorfile((ImageView) findViewById(R.id.drawer_profileImage),
                     (TextView) findViewById(R.id.drawer_profileEmail),
                     user.email);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // get the DB Helper
         DBHelper mDbHelper = new DBHelper(this);

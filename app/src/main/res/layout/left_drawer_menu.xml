@@ -13,9 +13,9 @@
     android:background="#F0F0F0"
     >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="125dp"
+    <LinearLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
         android:id="@+id/drawer_userProfile"
         android:orientation="vertical">
         <ImageView
@@ -28,29 +28,15 @@
             android:onClick="login"
             />
 
-        <!--<TextView
-            android:text="User name"
-            android:id="@+id/drawer_profileName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            />-->
         <TextView
-            android:text="user email adderss"
             android:id="@+id/drawer_profileEmail"
+            android:text="email adderss"
+            android:textSize="@dimen/font_size_middle"
+            android:paddingTop="15dp"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/drawer_profileImage"
-            android:layout_alignParentStart="true" />
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/loading_icon"
-            android:indeterminate="true"
-            android:visibility="invisible"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/drawer_profileImage" />
-    </RelativeLayout>
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
