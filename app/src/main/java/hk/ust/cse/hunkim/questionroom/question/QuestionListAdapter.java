@@ -351,6 +351,8 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
                 intent.putExtra("room", query.getRef().getParent().getKey());
                 intent.putExtra("key", (String) v.getTag());
                 activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
             }
         });
 /*        QuestionListAdapter commentsAdapter = new QuestionListAdapter(commentRef.child(question.getKey()).orderByChild("timestamp"),

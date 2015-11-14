@@ -6,4 +6,8 @@
     <color name="question">#787878</color>
     <color name="key_down_color">#C8C8C8</color>
     <color name="key_up_color">#F3F3F3 </color>
+
+
+    <color name="my_blue">#01579B</color>
+    <color name="transparent">#0000</color>
 </resources>

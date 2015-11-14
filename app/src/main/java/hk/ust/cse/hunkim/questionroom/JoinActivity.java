@@ -63,7 +63,7 @@ import hk.ust.cse.hunkim.questionroom.server.ServerDemo;
  * A login screen that offers login via email/password.
  */
 public class JoinActivity extends FragmentActivity implements SearchView.OnQueryTextListener{
-public static final String ROOM_NAME = "Room_name";
+    public static final String ROOM_NAME = "Room_name";
     public static final String USER_EMAIL = "user_email";
     public static Firebase firebaseRef;
     public static Firebase chatroomRef;
@@ -91,7 +91,6 @@ public static final String ROOM_NAME = "Room_name";
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ServerDemo.email();
         //set status bar color
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -203,6 +202,12 @@ public static final String ROOM_NAME = "Room_name";
                 Toast.makeText(JoinActivity.this, "canceled", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void login(View view) {
@@ -450,6 +455,7 @@ public static final String ROOM_NAME = "Room_name";
 
         intent.putExtra(ROOM_NAME, room_name);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     private boolean isEmailValid(String room_name) {
