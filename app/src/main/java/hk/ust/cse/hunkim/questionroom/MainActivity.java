@@ -39,6 +39,7 @@ import java.util.Date;
 
 import hk.ust.cse.hunkim.questionroom.db.DBHelper;
 import hk.ust.cse.hunkim.questionroom.db.DBUtil;
+import hk.ust.cse.hunkim.questionroom.login.UserInfo;
 import hk.ust.cse.hunkim.questionroom.question.Question;
 import hk.ust.cse.hunkim.questionroom.question.QuestionListAdapter;
 
@@ -50,7 +51,8 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
     static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
 
-    private String userEmail = null;
+    private UserInfo user = UserInfo.getInstance();
+
     private String roomName;
     private Firebase mFirebaseRef = new Firebase(FIREBASE_URL);
     private Firebase mChatroomRef;
@@ -95,12 +97,13 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_main);
 
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         Intent intent = getIntent();
         assert (intent != null);
 
         // Make it a bit more reliable
         roomName = intent.getStringExtra(JoinActivity.ROOM_NAME);
-        userEmail = intent.getStringExtra(JoinActivity.USER_EMAIL);
 
         if (roomName == null || roomName.length() == 0) {
             roomName = "all";
@@ -175,12 +178,11 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
 
         //load user profile
-        if (userEmail != null)
-            JoinActivity.loadPorfile(getFilesDir(),
+        if (user.isAuthenticated())
+            JoinActivity.loadPorfile(
                     (ImageView) findViewById(R.id.drawer_profileImage),
                     (TextView) findViewById(R.id.drawer_profileEmail),
-                    userEmail,
-                    findViewById(R.id.loading_icon));
+                    user.email);
 
         // get the DB Helper
         DBHelper mDbHelper = new DBHelper(this);
@@ -247,7 +249,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         String input = inputText.getText().toString();
         if (!input.equals("")) {
             // Create our 'model', a Chat object
-            Question question = new Question(userEmail, input, categoryChoice);
+            Question question = new Question(user.email, input, categoryChoice);
             // Create a new, auto-generated child of that chat location, and save our chat data there
             Firebase pushRef = mChatroomRef.push();
             pushRef.setValue(question);
@@ -272,7 +274,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         if (actionBar != null)
             actionBar.setTitle(roomName);
 
-        if(userEmail != null)
+        if(user.isAuthenticated())
             menu.findItem(R.id.action_addFavorite).setVisible(true);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -387,7 +389,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     }
 
     public void addToFavorite() {
-        mFirebaseRef.child("user").child(parsePath(userEmail)).child("favorite").push().setValue(roomName);
+        mFirebaseRef.child("user").child(parsePath(user.email)).child("favorite").push().setValue(roomName);
     }
 
     public String parsePath (String email) {

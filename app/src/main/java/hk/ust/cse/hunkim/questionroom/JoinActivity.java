@@ -67,10 +67,8 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     public static final String USER_EMAIL = "user_email";
     public static Firebase firebaseRef;
     public static Firebase chatroomRef;
-    static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
-    static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
 
-    private String userEmail = null;
+    private UserInfo user = UserInfo.getInstance();
     private final List<ChatRoom> recentList = new ArrayList<>();
     private final List<ChatRoom> favoriteList = new ArrayList<>();
     private final List<ChatRoom> historyList = new ArrayList<>();
@@ -102,6 +100,12 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         Firebase.setAndroidContext(this);
         firebaseRef = new Firebase(MainActivity.FIREBASE_URL);
         chatroomRef = firebaseRef.child("rooms");
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        if (user.isAuthenticated()) {
+            loadPorfile((ImageView) findViewById(R.id.drawer_profileImage), (TextView) findViewById(R.id.drawer_profileEmail), user.email);
+        }
 
         //setup drawer
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.join_mainLayout);
@@ -189,7 +193,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         return true;
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //request google account
         if(requestCode == REQUEST_CODE_PICK_ACCOUNT){
@@ -202,7 +206,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
                 Toast.makeText(JoinActivity.this, "canceled", Toast.LENGTH_SHORT).show();
             }
         }
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
@@ -210,7 +214,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    public void login(View view) {
+    /*public void login(View view) {
 
         if (userEmail != null) //logged in
             return;
@@ -270,7 +274,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
             }
         };
         login.execute();
-    }
+    }*/
 
     public Fragment[] getPagerFragments(final ListView[] chatListViews, final Context context){
         Fragment[] fragments = new Fragment[4];
@@ -301,7 +305,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
             @Override
             public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-                if (userEmail == null){
+                if (!UserInfo.getInstance().isAuthenticated()){
                     TextView notLogin = new TextView(context);
                     notLogin.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                     notLogin.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
@@ -312,7 +316,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
 
                 if (chatListViews[1] == null) {
                     ChatRoomListAdapter adapter = new ChatRoomListAdapter(
-                            firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("favorite").orderByValue(),
+                            firebaseRef.child("user").child(user.email.replaceAll(".com", "")).child("favorite").orderByValue(),
                             context,
                             favoriteList);
                     adapter.queryFavoriteList();
@@ -330,16 +334,16 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         fragments[2] = new Fragment(){
             @Override
             public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-                if (userEmail == null){
+                //if (!UserInfo.getInstance().isAuthenticated()){
                     TextView notLogin = new TextView(context);
                     notLogin.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                     notLogin.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                     notLogin.setTextSize(18);
                     notLogin.setText("Please Login First");
                     return notLogin;
-                }
+                //}
 
-                if (chatListViews[2] == null) {
+                /*if (chatListViews[2] == null) {
                     ChatRoomListAdapter adapter = new ChatRoomListAdapter(firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("history").orderByValue(),
                             context,
                             historyList);
@@ -351,7 +355,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
                                     getResources().getColor(R.color.key_down_color)));
                     chatListViews[2].setAdapter(adapter);
                 }
-                return chatListViews[2];
+                return chatListViews[2];*/
             }
         };
         //setup search result fragment
@@ -376,11 +380,22 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     * set account profile to leftMenu
     * */
     public static void loadPorfile(File dir, ImageView profileImage, TextView email, String userEmail, View loading){
-        Bitmap bitmap = BitmapFactory.decodeFile(new File(dir, "google/googleProfile.jpg").toString());
+
+        Bitmap bitmap = BitmapFactory.decodeFile(UserInfo.getInstance().profileImage.toString());
         profileImage.setImageDrawable(new RoundImage(bitmap));
 
         email.setText(userEmail);
         loading.setVisibility(View.INVISIBLE);
+    }
+
+    public static void loadPorfile(ImageView profileImage, TextView email, String userEmail){
+
+        if (UserInfo.getInstance().profileImage != null) {
+            Bitmap bitmap = BitmapFactory.decodeFile(UserInfo.getInstance().profileImage.toString());
+            profileImage.setImageDrawable(new RoundImage(bitmap));
+        }
+
+        email.setText(userEmail);
     }
 
     /*
@@ -427,7 +442,6 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         // Store values at the time of the login attempt.
         String room_name = "";
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(USER_EMAIL, userEmail);
 
         //join chatroom through list
         if (view.getId() == R.id.index_chatRoomLayout){
@@ -448,9 +462,9 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
             return;
         }
 
-        if (userEmail != null) {
-            Log.d("history", userEmail);
-            firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("history").push().setValue(room_name);
+        if (user.isAuthenticated()) {
+            Log.d("history", user.email);
+            firebaseRef.child("user").child(user.email.replaceAll(".com", "")).child("history").push().setValue(room_name);
         }
 
         intent.putExtra(ROOM_NAME, room_name);
