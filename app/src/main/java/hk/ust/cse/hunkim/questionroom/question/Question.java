@@ -61,8 +61,6 @@ public class Question implements Comparable<Question> {
      * @param message string message
      */
     public Question(String message) {
-        message = badWordFilter(message);
-
         List<String> tmp = new ArrayList<>();
         extractTag(message, 0, tmp);
         tags = new String[tmp.size()];
@@ -181,15 +179,6 @@ public class Question implements Comparable<Question> {
     public void setDislikeKey(String key) { this.dislikeKey = dislikeKey;}
 
     public String getCategory(){return category;}
-
-    public String badWordFilter(String message){
-        return message.replaceAll("(?i)fuck", "love").replaceAll("(?i)fuxk", "support").replaceAll("(?i)fxck", "support").replaceAll("(?i)fxxk", "great").replaceAll("(?i)on9", "clever")
-                .replaceAll("(?i)on 9", "clever").replaceAll("(?i)diu", "Auntie").replaceAll("(?i)chi lan sin", "HaHa").replaceAll("(?i)on lun", "HiHi").replaceAll("(?i)asshole", "javascript")
-                .replaceAll("(?i)ass hole", "javascript").replaceAll("(?i)ass ", "java ").replaceAll("(?i)bitch", "friend").replaceAll("(?i)suck", "good").replaceAll("(?i)popkai","lucky")
-                .replaceAll("(?i)pop kai", "lucky").replaceAll("(?i)seven head", "handsome").replaceAll("(?i)sevenhead", "handsome").replaceAll("(?i)7head", "handsome")
-                .replaceAll("(?i)7 head", "handsome").replaceAll("(?i)shit", "nice").replaceAll("(?i)sxit", "nice").replaceAll("(?i)shxt", "nice").replaceAll("(?i)sh!t", "nice")
-                .replaceAll("(?i)damn", "god");
-    }
 
     public static boolean separateTitle(String m, int i){
 
