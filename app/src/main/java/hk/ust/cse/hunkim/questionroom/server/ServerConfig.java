@@ -21,7 +21,7 @@ import hk.ust.cse.hunkim.questionroom.Generic;
  */
 public class ServerConfig {
     public interface ServerResultCallBack{
-        void onResult(InputStream is);
+        void onResult(InputStream is, String result);
     }
 
     private static final String TAG = "ServerConfig";
@@ -30,6 +30,7 @@ public class ServerConfig {
     public static final int EMAIL = 2;
     public static final int MKDIR = 3;
     public static final int QUERY = 4;
+    public static final int AUTH = 5;
     public static final String SERVER_URL = "http://ec2-52-27-32-65.us-west-2.compute.amazonaws.com/fileservice/";
     public static final String SERVER_FILE_URL = "http://ec2-52-27-32-65.us-west-2.compute.amazonaws.com/files/public/";
 
@@ -108,6 +109,12 @@ public class ServerConfig {
         this.url = new URL(SERVER_URL + "query/" + dir);
     }
 
+    public void auth(String token) throws IOException {
+        this.action = AUTH;
+
+        this.url = new URL(SERVER_URL + "auth/" + token);
+    }
+
 
     public void connect() {
         switch (action){
@@ -150,6 +157,15 @@ public class ServerConfig {
                 catch (IOException ioe) {
                     ioe.printStackTrace();
                 }
+                break;
+            case AUTH:
+                try {
+                    auth(this.url);
+                }
+                catch (IOException ioe){
+                    ioe.printStackTrace();
+                }
+                break;
         }
     }
 
@@ -161,7 +177,7 @@ public class ServerConfig {
 
 
         if (serverResultCallBack != null) {
-            serverResultCallBack.onResult(is);
+            serverResultCallBack.onResult(is, result);
             return;
         }
 
@@ -259,25 +275,39 @@ public class ServerConfig {
 
         if (responseCode == 200) {
             is = con.getInputStream();
+            result = Generic.inputStreamToString(is);
+            logResult();
         }
         con.disconnect();
 
-        logInputStream();
     }
 
     private void mkDir(URL url) throws IOException {
         download(url);
 
-        logInputStream();
+        result = Generic.inputStreamToString(is);
+        logResult();
     }
+
+
 
     private void query(URL url) throws IOException {
         download(url);
 
-        logInputStream();
+        result = Generic.inputStreamToString(is);
+        logResult();
+    }
+
+    private void auth(URL url) throws IOException {
+        download(url);
+
+        result = Generic.inputStreamToString(is);
+        logResult();
     }
 
     public File getFile() { return file; }
+
+    public String getResult() { return result; }
 
     public void logUrlResponse() {
         Log.d(TAG, "repsonse code: " + Integer.toString(responseCode) + ", msg: " + responseMSG);

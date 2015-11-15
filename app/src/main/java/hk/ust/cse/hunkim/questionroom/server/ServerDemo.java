@@ -82,7 +82,7 @@ public class ServerDemo {
 
             config.setServerResultCallBack(new ServerConfig.ServerResultCallBack() {
                 @Override
-                public void onResult(InputStream is) {
+                public void onResult(InputStream is, String str) {
 
                     config.logUrlResponse();
 
