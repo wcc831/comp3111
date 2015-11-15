@@ -282,7 +282,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     }*/
 
     public Fragment[] getPagerFragments(final ListView[] chatListViews, final Context context){
-        Fragment[] fragments = new Fragment[4];
+        Fragment[] fragments = new Fragment[3];
         //recent active list fragment
         fragments[0] = new Fragment(){
             @Override
@@ -321,7 +321,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
 
                 if (chatListViews[1] == null) {
                     ChatRoomListAdapter adapter = new ChatRoomListAdapter(
-                            firebaseRef.child("user").child(user.email.replaceAll(".com", "")).child("favorite").orderByValue(),
+                            firebaseRef.child("userRecord").child(user.id).child("favorite").orderByValue(),
                             context,
                             favoriteList);
                     adapter.queryFavoriteList();
@@ -336,7 +336,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
             }
         };
         //setup recently visited lsit fragment
-        fragments[2] = new Fragment(){
+        /*fragments[2] = new Fragment(){
             @Override
             public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
                 //if (!UserInfo.getInstance().isAuthenticated()){
@@ -348,7 +348,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
                     return notLogin;
                 //}
 
-                /*if (chatListViews[2] == null) {
+                if (chatListViews[2] == null) {
                     ChatRoomListAdapter adapter = new ChatRoomListAdapter(firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("history").orderByValue(),
                             context,
                             historyList);
@@ -360,18 +360,21 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
                                     getResources().getColor(R.color.key_down_color)));
                     chatListViews[2].setAdapter(adapter);
                 }
-                return chatListViews[2];*/
+                return chatListViews[2];
             }
-        };
+        };*/
         //setup search result fragment
-        searchAdapter = new ChatRoomListAdapter(context, firebaseRef, new ArrayList<ChatRoom>());
-        searchAdapter.setOnTouchListener(
-                Generic.getAnimateColorListener(
-                        getResources().getColor(R.color.key_up_color),
-                        getResources().getColor(R.color.key_down_color)));
-        fragments[3] = new Fragment(){
+
+        fragments[2] = new Fragment(){
             @Override
             public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+                searchAdapter = new ChatRoomListAdapter(context, firebaseRef, new ArrayList<ChatRoom>());
+                searchAdapter.setOnTouchListener(
+                        Generic.getAnimateColorListener(
+                                getResources().getColor(R.color.key_up_color),
+                                getResources().getColor(R.color.key_down_color)));
+
                 LinearLayout searchLayout = (LinearLayout)inflater.inflate(R.layout.activity_search_result, container, false);
                 ((ListView) searchLayout.findViewById(R.id.chatroom_list)).setAdapter(searchAdapter);
 
