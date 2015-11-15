@@ -385,13 +385,21 @@ public class LoginActivity extends Activity {
     }
 
     public void setRole(String key) {
+
+        Log.d(TAG, user.toString());
+
         firebaseRef.child("users").child("teachingStaff").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null)
+
+                if (dataSnapshot.getValue() != null) {
                     UserInfo.getInstance().role = UserInfo.SUPERVISOR;
-                else
+                    Log.d(TAG, "is supervisor");
+                }
+                else {
                     UserInfo.getInstance().role = UserInfo.NORMAL_USER;
+                    Log.d(TAG, "is student");
+                }
                 proceed(null);
             }
 

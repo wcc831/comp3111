@@ -69,16 +69,6 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
                 public void onAuthenticated(AuthData authData) {
                     Log.d(TAG, "auth succeed");
 
-                    /* if user profile already load into device, use directly
-                     * otherwise download the image to the device
-                     */
-                    File googleProfileDir = new File(mActivity.getFilesDir(), "google");
-
-                    if (googleProfileDir.exists()){
-                        loginCallback.onPictureReady();
-                        return;
-                    }
-
                     try {
                         run(token);
                     }
@@ -132,6 +122,18 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
                     @Override
                     protected String doInBackground(String... params) {
                         try {
+
+                            /* if user profile already load into device, use directly
+                            * otherwise download the image to the device
+                            */
+                            File googleProfileDir = new File(mActivity.getFilesDir(), "google");
+
+                            if (googleProfileDir.exists()){
+                                loginCallback.onPictureReady();
+                                return null;
+                            }
+
+
                             saveUserProfileImage(json);
                         }
                         catch (Exception e){

@@ -13,7 +13,7 @@ public class UserInfo {
     public static final int SUPERVISOR = 0;
     public static final int NORMAL_USER = 1;
 
-    public static final String[] roles = {"Supervisor", "student"};
+    public static final String[] roles = {"Supervisor", "Student"};
 
     public static final int TA = 4;
     public static final int PROFESSOR = 5;
@@ -23,7 +23,7 @@ public class UserInfo {
     public String pictureUrl;
     public String email;
     public File profileImage;
-    public int role;
+    public int role = -1;
 
     private static UserInfo userInfo = new UserInfo();
     private boolean authenticated = false;
@@ -36,12 +36,13 @@ public class UserInfo {
         JSONObject obj = new JSONObject(json);
         pictureUrl = obj.has("picture") ? obj.getString("picture") : null;
         name = (obj.has("name")) ? obj.getString("name") : null;
+        id = (obj.has("id")) ? obj.getString("id") : null;
 
         return this;
     }
 
     public String toString() {
-        return "user name: " + name + "\r\n picture: " + pictureUrl;
+        return "user name: " + name + "\r\n picture: " + pictureUrl + "\r\n id: " + id;
     }
 
     public void authenticate() {
