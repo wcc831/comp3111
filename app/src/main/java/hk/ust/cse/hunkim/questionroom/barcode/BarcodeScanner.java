@@ -2,7 +2,6 @@ package hk.ust.cse.hunkim.questionroom.barcode;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,7 +12,6 @@ import net.sourceforge.zbar.ImageScanner;
 import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
 
-import hk.ust.cse.hunkim.questionroom.AuthenticationActivity;
 import hk.ust.cse.hunkim.questionroom.CameraViewActivity;
 
 /**
@@ -66,19 +64,12 @@ public class BarcodeScanner  extends Thread{
                     SymbolSet syms = scanner.getResults();
                     for (final Symbol sym : syms) {
                         Log.d(Tag, "barcode result " + sym.getData());
-
-                        Intent intent = new Intent(activity, AuthenticationActivity.class);
-                        intent.putExtra("token", sym.getData());
-
-                        activity.startActivity(intent);
-                        activity.finish();
-                        return;
-                        /*activity.runOnUiThread(new Runnable() {
+                        activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(activity, sym.getData(), Toast.LENGTH_SHORT).show();
                             }
-                        });*/
+                        });
 
                         //str = sym.getData();
                     }
