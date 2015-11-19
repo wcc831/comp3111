@@ -15,8 +15,6 @@ public class UserInfo {
 
     public static final String[] roles = {"Supervisor", "Student"};
 
-    public static final int TA = 4;
-    public static final int PROFESSOR = 5;
 
     public String id;
     public String name;

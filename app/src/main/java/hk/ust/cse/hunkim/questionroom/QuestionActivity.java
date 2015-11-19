@@ -28,6 +28,10 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.View;
+import android.graphics.Typeface;
+import android.content.Context;
+import android.content.res.AssetManager;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -49,6 +53,7 @@ public class QuestionActivity extends Activity {
 
     private static final String TAG = "QuestionActivity";
 
+
     Firebase fireRef;
     Firebase questionRef;
 
@@ -56,6 +61,7 @@ public class QuestionActivity extends Activity {
     String roomName;
 
     DBUtil dbUtil;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +88,7 @@ public class QuestionActivity extends Activity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Question q = dataSnapshot.getValue(Question.class);
 
+
                 if (q.getQuestioner() != null)
                     ((TextView) findViewById(R.id.questioner)).setText(q.getQuestioner());
 
@@ -103,6 +110,8 @@ public class QuestionActivity extends Activity {
                     );
                 }
 
+
+
                 Button likeButton = ((Button) findViewById(R.id.echo));
                 likeButton.setText(Integer.toString(q.getLike()));
 
@@ -117,6 +126,7 @@ public class QuestionActivity extends Activity {
                 dislikeButton.setEnabled(clickable);
 
                 Log.d(TAG, Boolean.toString(dbUtil.contains(questitionKey)));
+
             }
 
             @Override
@@ -150,6 +160,7 @@ public class QuestionActivity extends Activity {
 
         if (UserInfo.getInstance().role == UserInfo.SUPERVISOR) {
             menu.findItem(R.id.action_giveReword).setVisible(true);
+            menu.findItem(R.id.action_highlight).setVisible(true);
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -162,6 +173,11 @@ public class QuestionActivity extends Activity {
             case R.id.action_giveReword:
                 giveReword((String) ((TextView) findViewById(R.id.questioner)).getText());
                 break;
+            case R.id.action_highlight:
+
+                break;
+
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -236,4 +252,6 @@ public class QuestionActivity extends Activity {
         }
 
     }
+
+
 }

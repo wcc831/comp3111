@@ -33,6 +33,10 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Typeface;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.view.View;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -52,6 +56,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
     // TODO: change this to your own Firebase URL
     public static final String FIREBASE_URL = "https://instaquest.firebaseio.com/";
+    //public static final String FIREBASE_URL = "https://andyfire.firebaseio.com/";
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private UserInfo user = UserInfo.getInstance();
@@ -157,6 +162,9 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                 builder.show();
             }
         });
+
+
+
 
         //record users in chatroom
         Firebase pushPresence = mChatroomRef.getParent().child("presence").push();
@@ -293,13 +301,19 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
 
             // Create a new, auto-generated child of that chat location, and save our chat data there
+
+            if (user.getInstance().role == UserInfo.SUPERVISOR) {    question.setHighlight(2);}
+            else { question.setHighlight(0);}
+
             Firebase pushRef = mChatroomRef.push();
             pushRef.setValue(question);
             String uniqueId = pushRef.getKey();
             inputText.setText("");
 
+
             (mChatroomRef.getParent().child("recentQuestion")).setValue(uniqueId);
             (mChatroomRef.getParent().child("activeTime")).setValue(new Date().getTime());
+
 
 
         }
@@ -525,4 +539,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
+
+    public int getUserRole() {  return user.role; }
+
 }

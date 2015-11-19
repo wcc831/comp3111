@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Typeface;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -40,6 +41,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.Object;
 
 import hk.ust.cse.hunkim.questionroom.FirebaseListAdapter;
 import hk.ust.cse.hunkim.questionroom.MainActivity;
@@ -48,6 +50,7 @@ import hk.ust.cse.hunkim.questionroom.R;
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoomListAdapter;
 import hk.ust.cse.hunkim.questionroom.chatroom.CommentListAdapter;
 import hk.ust.cse.hunkim.questionroom.db.DBUtil;
+import hk.ust.cse.hunkim.questionroom.login.UserInfo;
 
 /**
  * @author greg
@@ -297,7 +300,28 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
 
         Log.d("comments", msgString);
 
+
         ((TextView) view.findViewById(R.id.head_desc)).setText(badWordFilter(msgString));
+        // 0= nothing, 1 = prof like , 2= prof ask
+        final TextView supervisorText = (TextView) view.findViewById(R.id.head_desc);
+        final TextView supervisorCate = (TextView) view.findViewById(R.id.category);
+        Typeface helvetica = Typeface.createFromAsset(context.getAssets(), "fonts/Helvetica_Neue.ttf");
+        if (question.getHighlight() == 2) {
+            supervisorText.setTypeface(helvetica);
+            supervisorCate.setTypeface(helvetica, Typeface.BOLD);
+            supervisorText.setTextColor((0xFF2DAAF3));
+            supervisorCate.setTextColor((0xFF2DAAF3));
+        }
+
+        else if (question.getHighlight() == 1) {
+            supervisorText.setTypeface(helvetica);
+            supervisorCate.setTypeface(helvetica, Typeface.BOLD);
+            supervisorText.setTextColor((0xFFF28D09));
+            supervisorCate.setTextColor((0xFFF28D09));
+
+        }
+        // if dislike < 15 (view.visuablility = false
+
         /*view.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {

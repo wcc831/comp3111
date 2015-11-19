@@ -32,6 +32,9 @@ public class Question implements Comparable<Question> {
     private boolean newQuestion;
     private String category;
     private String attachment;
+    private int highlight;
+    // is professfor ask, set hightlight = 2
+    // 0= nothing, 1 = prof like , 2= prof ask
 
     public String getDateString() {
         return dateString;
@@ -257,4 +260,10 @@ public class Question implements Comparable<Question> {
     public int hashCode() {
         return key.hashCode();
     }
+
+    public int getHighlight() { return highlight;}
+
+    public void setHighlight(int num) {
+        highlight = num;}
+
 }
