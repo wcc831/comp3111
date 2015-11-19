@@ -96,8 +96,25 @@ public class QuestionActivity extends Activity {
                 String relativeTime = (String) DateUtils.getRelativeDateTimeString(QuestionActivity.this, time, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL);
                 ((TextView) findViewById(R.id.queation_time)).setText(relativeTime);
 
-                ((TextView) findViewById(R.id.category)).setText(q.getCategory());
-                ((TextView) findViewById(R.id.head_desc)).setText(q.getWholeMsg());
+                TextView category = (TextView) findViewById(R.id.category);
+                TextView msg = (TextView) findViewById(R.id.head_desc);
+                category.setText(q.getCategory());
+                msg.setText(q.getWholeMsg());
+                Typeface helvetica = Typeface.createFromAsset(getAssets(), "font/Helvetica_Neue.ttf");
+                if (q.getHighlight() == 2) {
+                    msg.setTypeface(helvetica);
+                    category.setTypeface(helvetica, Typeface.BOLD);
+                    msg.setTextColor((0xFF2DAAF3));
+                    category.setTextColor((0xFF2DAAF3));
+                }
+                else if (q.getHighlight() == 1) {
+                    msg.setTypeface(helvetica);
+                    category.setTypeface(helvetica, Typeface.BOLD);
+                    msg.setTextColor((0xFFF28D09));
+                    category.setTextColor((0xFFF28D09));
+                }
+
+
 
                 //set attachment
                 String encodedImage = q.getAttachment();
@@ -154,14 +171,10 @@ public class QuestionActivity extends Activity {
         inflater.inflate(R.menu.action_bar, menu);
 
         ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle("InstaQuest");
-        }
+        actionBar.setTitle("InstaQuest");
 
-        if (UserInfo.getInstance().role == UserInfo.SUPERVISOR) {
-            menu.findItem(R.id.action_giveReword).setVisible(true);
-            menu.findItem(R.id.action_highlight).setVisible(true);
-        }
+        menu.findItem(R.id.action_giveReword).setVisible(UserInfo.getInstance().role == UserInfo.SUPERVISOR);
+        menu.findItem(R.id.action_highlight).setVisible(UserInfo.getInstance().role == UserInfo.SUPERVISOR);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -174,7 +187,7 @@ public class QuestionActivity extends Activity {
                 giveReword((String) ((TextView) findViewById(R.id.questioner)).getText());
                 break;
             case R.id.action_highlight:
-
+                fireRef.child("rooms").child(roomName).child("questions").child(questitionKey).child("highlight").setValue(1);
                 break;
 
 

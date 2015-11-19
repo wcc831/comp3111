@@ -133,10 +133,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
     QuestionFilter questionFilter;
 
     List<Question> questions;
-    List<Question> searchResult;
-    Map<String, Question> searchHashMap;
     List<Question> tmpQuestionList;
-    Map<String, Question> tmpHashMap;
 
     private View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
         @Override
@@ -245,6 +242,9 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
     @Override
     protected void populateView(final View view, Question question) {
 
+        if (UserInfo.getInstance().hideMessage && question.getDislike() != 0)
+            view.setLayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT));
+
         DBUtil dbUtil = activity.getDbutil();
 
         // Map a Chat object to an entry in our listview
@@ -286,8 +286,6 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
 
         );
 
-
-
         String msgString = "";
 
         question.updateNewQuestion();
@@ -305,14 +303,13 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
         // 0= nothing, 1 = prof like , 2= prof ask
         final TextView supervisorText = (TextView) view.findViewById(R.id.head_desc);
         final TextView supervisorCate = (TextView) view.findViewById(R.id.category);
-        Typeface helvetica = Typeface.createFromAsset(context.getAssets(), "fonts/Helvetica_Neue.ttf");
+        Typeface helvetica = Typeface.createFromAsset(context.getAssets(), "font/Helvetica_Neue.ttf");
         if (question.getHighlight() == 2) {
             supervisorText.setTypeface(helvetica);
             supervisorCate.setTypeface(helvetica, Typeface.BOLD);
             supervisorText.setTextColor((0xFF2DAAF3));
             supervisorCate.setTextColor((0xFF2DAAF3));
         }
-
         else if (question.getHighlight() == 1) {
             supervisorText.setTypeface(helvetica);
             supervisorCate.setTypeface(helvetica, Typeface.BOLD);
@@ -408,16 +405,6 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
 
             }
         });
-/*        QuestionListAdapter commentsAdapter = new QuestionListAdapter(commentRef.child(question.getKey()).orderByChild("timestamp"),
-                activity, layout, context, commentRef);
-
-        ((ListView) view.findViewById(R.id.question_comments)).setAdapter(commentsAdapter);
-*/
-        /*final CommentListAdapter commentListAdapter = new CommentListAdapter(
-                commentRef.child(question.getKey()).orderByChild("timestamp"),
-                context,
-                new ArrayList<Question>());
-        ((ListView) view.findViewById(R.id.question_comments)).setAdapter(commentListAdapter);*/
 
         commentRef.child(question.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -432,6 +419,11 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
             }
         });
 
+    }
+
+    public void refersh(){
+        cleanup();
+        initChildEventlistener();
     }
 
     @Override

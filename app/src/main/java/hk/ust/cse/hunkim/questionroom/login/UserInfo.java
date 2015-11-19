@@ -22,6 +22,7 @@ public class UserInfo {
     public String email;
     public File profileImage;
     public int role = -1;
+    public boolean hideMessage = false;
 
     private static UserInfo userInfo = new UserInfo();
     private boolean authenticated = false;

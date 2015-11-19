@@ -64,14 +64,12 @@ import hk.ust.cse.hunkim.questionroom.server.ServerDemo;
  */
 public class JoinActivity extends FragmentActivity implements SearchView.OnQueryTextListener{
     public static final String ROOM_NAME = "Room_name";
-    public static final String USER_EMAIL = "user_email";
     public static Firebase firebaseRef;
     public static Firebase chatroomRef;
 
     private UserInfo user = UserInfo.getInstance();
     private final List<ChatRoom> recentList = new ArrayList<>();
     private final List<ChatRoom> favoriteList = new ArrayList<>();
-    private final List<ChatRoom> historyList = new ArrayList<>();
     private ChatRoomListAdapter searchAdapter;
 
     ChatroomPagerAdapter chatroomPagerAdapter;
@@ -83,7 +81,6 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     // UI references.
-    private TextView roomNameView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +107,16 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         }
         catch (Exception e) {
             e.printStackTrace();
+        }
+
+        if (user.hideMessage){
+            //set on off button
+            ((ImageView)findViewById(R.id.hide_message)).
+                    setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on));
+        }
+        else{
+            ((ImageView)findViewById(R.id.hide_message)).
+                    setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off));
         }
 
         //setup drawer
@@ -194,88 +201,11 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         return true;
     }
 
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //request google account
-        if(requestCode == REQUEST_CODE_PICK_ACCOUNT){
-            if (resultCode == RESULT_OK){
-                userEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                googleLogin(userEmail);
-                Log.d("google auth", userEmail);
-            }
-            else if (resultCode == RESULT_CANCELED){
-                Toast.makeText(JoinActivity.this, "canceled", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }*/
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
-
-    /*public void login(View view) {
-
-        if (userEmail != null) //logged in
-            return;
-
-        findViewById(R.id.loading_icon).setVisibility(View.VISIBLE);
-        String[] accountTypes = new String[]{"com.google"};
-        Intent intent = AccountPicker.newChooseAccountIntent(null, null,
-                accountTypes, false, null, null, null, null);
-        startActivityForResult(intent, REQUEST_CODE_PICK_ACCOUNT);
-    }
-
-    public void googleLogin(String email){
-        UserInfo userInfo = new UserInfo();
-        GoogleLogin login = new GoogleLogin(JoinActivity.this, chatroomRef, email, userInfo);
-        login.exceptionCallback = new GoogleLogin.ExceptionHandler() {
-            @Override
-            public void handleException(final UserRecoverableAuthException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (e instanceof GooglePlayServicesAvailabilityException) {
-                            int statusCode = ((GooglePlayServicesAvailabilityException) e)
-                                    .getConnectionStatusCode();
-                            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(statusCode,
-                                    JoinActivity.this,
-                                    REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR);
-                            dialog.show();
-                        } else if (e instanceof UserRecoverableAuthException) {
-                            Intent intent = ((UserRecoverableAuthException) e).getIntent();
-                            startActivityForResult(intent,
-                                    REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR);
-                        }
-                    }
-                });
-            }
-        };
-        login.loginCallback = new GoogleLogin.GoogleLoginCallback() {
-            @Override
-            public void onLoginSucceed(AuthData userData, String token) {
-
-            }
-
-            @Override
-            public void onLoginFailed(FirebaseError error) {
-
-            }
-
-            @Override
-            public void onPictureReady() {
-                loadPorfile(getFilesDir(),
-                        (ImageView) findViewById(R.id.drawer_profileImage),
-                        (TextView) findViewById(R.id.drawer_profileEmail),
-                        userEmail,
-                        findViewById(R.id.loading_icon));
-                chatroomPagerAdapter.tabs = getPagerFragments(chatListViews, context);
-                chatroomPagerAdapter.notifyDataSetChanged();
-            }
-        };
-        login.execute();
-    }*/
 
     public Fragment[] getPagerFragments(final ListView[] chatListViews, final Context context){
         Fragment[] fragments = new Fragment[3];
@@ -331,36 +261,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
                 return chatListViews[1];
             }
         };
-        //setup recently visited lsit fragment
-        /*fragments[2] = new Fragment(){
-            @Override
-            public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-                //if (!UserInfo.getInstance().isAuthenticated()){
-                    TextView notLogin = new TextView(context);
-                    notLogin.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                    notLogin.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-                    notLogin.setTextSize(18);
-                    notLogin.setText("Please Login First");
-                    return notLogin;
-                //}
-
-                if (chatListViews[2] == null) {
-                    ChatRoomListAdapter adapter = new ChatRoomListAdapter(firebaseRef.child("user").child(userEmail.replaceAll(".com", "")).child("history").orderByValue(),
-                            context,
-                            historyList);
-                    adapter.queryFavoriteList();
-                    chatListViews[2] = new ListView(context);
-                    adapter.setOnTouchListener(
-                            Generic.getAnimateColorListener(
-                                    getResources().getColor(R.color.key_up_color),
-                                    getResources().getColor(R.color.key_down_color)));
-                    chatListViews[2].setAdapter(adapter);
-                }
-                return chatListViews[2];
-            }
-        };*/
         //setup search result fragment
-
         fragments[2] = new Fragment(){
             @Override
             public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -483,6 +384,12 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         return false;
     }
 
-
+    public void changeHideMessage(View view) {
+        user.hideMessage = !user.hideMessage;
+        if(user.hideMessage)
+            ((ImageView)view).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on));
+        else
+            ((ImageView)view).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off));
+    }
 }
 

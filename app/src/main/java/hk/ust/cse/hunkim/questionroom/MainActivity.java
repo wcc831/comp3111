@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Html;
@@ -22,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -118,6 +120,16 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         }
 
         setTitle("Room name: " + roomName);
+
+        if (user.hideMessage){
+            //set on off button
+            ((ImageView)findViewById(R.id.hide_message)).
+                    setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on));
+        }
+        else{
+            ((ImageView)findViewById(R.id.hide_message)).
+                    setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off));
+        }
 
         // Setup our Firebase mFirebaseRef
         mChatroomRef =mFirebaseRef.child("rooms").child(roomName).child("questions");
@@ -540,6 +552,22 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    public int getUserRole() {  return user.role; }
+
+    public void changeHideMessage(View view) {
+        user.hideMessage = !user.hideMessage;
+        if(user.hideMessage) {
+            ((ImageView) view).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on));
+
+        }
+        else {
+            ((ImageView) view).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off));
+
+        }
+
+        mChatListAdapter.refersh();
+
+
+
+    }
 
 }
