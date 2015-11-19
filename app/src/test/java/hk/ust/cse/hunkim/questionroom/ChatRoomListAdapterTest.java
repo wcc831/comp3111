@@ -26,7 +26,7 @@ public class ChatRoomListAdapterTest extends AndroidTestCase {
     ChatRoomListAdapter adapter;
 
     public ChatRoomListAdapterTest(){
-        Firebase ref = new Firebase("https://testfirebasewcc.firebaseio.com/");
+        //Firebase ref = new Firebase("https://testfirebasewcc.firebaseio.com/");
         chatroomList = new ArrayList<>();
     }
 

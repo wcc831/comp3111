@@ -415,13 +415,8 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     }
 
     public void addToFavorite() {
-        //mFirebaseRef.child("user").child(parsePath(user.email)).child("favorite").push().setValue(roomName);
         mFirebaseRef.child("userRecord").child(user.id).child("favorite").push().setValue(roomName);
 
-    }
-
-    public String parsePath (String email) {
-        return email.replaceAll(".com", "");
     }
 
     public void Close(View view) {

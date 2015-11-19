@@ -10,6 +10,7 @@ import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
+import android.test.suitebuilder.annotation.SmallTest;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -95,31 +96,22 @@ public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActiv
         assertEquals("width", WindowManager.LayoutParams.WRAP_CONTENT, pagerTabStrip.getLayoutParams().width);
         assertEquals("height", (int) (30 * activity.getResources().getDisplayMetrics().density), pagerTabStrip.getLayoutParams().height);
 
-
-
-
     }
 
-    public void testlogin(){
-        ImageView userProfile = (ImageView) activity.findViewById(R.id.drawer_profileImage);
-        assertNotNull(userProfile);
-
-        TouchUtils.clickView(this, userProfile);
-
-        TextView userEmail = (TextView) activity.findViewById(R.id.drawer_profileEmail);
-        assertNotNull(userEmail);
-        assertEquals("user name", "user email adderss", userEmail.getText().toString());
+    @SmallTest
+    public void testSearch() {
+        activity.onQueryTextChange("");
     }
 
-    public void testIncludeLeftMenu() {
-        assertNotNull(activity.findViewById(R.id.drawer_leftMenuWraper));
+    @SmallTest
+    public void testFragment() {
+    }
 
+    @SmallTest
+    public void testJoin() {
+        //activity.attemptJoin(activity.findViewById(R.id.index_chatRoom));
     }
-/*
-    public void testDummy() {
-        activity.attemptJoin(activity.findViewById(R.id.action_search));
-    }
-*/
+
     /*
     public void testIntentSetting() {
 

@@ -88,8 +88,8 @@ public class LoginActivity extends Activity {
 
         root = new File(getFilesDir(), "instaquest");
         if (!root.exists())
-            if (!root.mkdir())
-                Log.d(TAG, "failed create directory");
+            root.mkdir();
+
 
         Firebase.setAndroidContext(this);
         firebaseRef = new Firebase(MainActivity.FIREBASE_URL);
@@ -104,8 +104,6 @@ public class LoginActivity extends Activity {
     public void login(View view) {
 
         Log.d(TAG, "logging user....");
-        if (user.isAuthenticated()) //logged in
-            return;
 
         AnimationFactory.crossFade(findViewById(R.id.login_choose_loginProvider), findViewById(R.id.loging_loading), 250);
 
@@ -261,7 +259,6 @@ public class LoginActivity extends Activity {
                     public void onCompleted(final JSONObject object, GraphResponse response) {
                         Log.i("LoginActivity", response.toString());
                         // Get facebook data from login
-                        Bundle bFacebookData = getFacebookData(object);
 
                         new AsyncTask<String, String, String>() {
 
@@ -293,7 +290,7 @@ public class LoginActivity extends Activity {
                             }
                         }.execute();
 
-                        Log.d(TAG, bFacebookData.toString());
+                        Log.d(TAG, object.toString());
                     }
                 });
                 Bundle params = new Bundle();
@@ -345,43 +342,6 @@ public class LoginActivity extends Activity {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         if (UserInfo.getInstance().isAuthenticated())
             finish();
-    }
-
-    private Bundle getFacebookData(JSONObject object) {
-
-        try {
-            Bundle bundle = new Bundle();
-            String id = object.getString("id");
-
-            try {
-                URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
-                Log.i("profile_pic", profile_pic + "");
-                bundle.putString("profile_pic", profile_pic.toString());
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            bundle.putString("idFacebook", id);
-            if (object.has("first_name"))
-                bundle.putString("first_name", object.getString("first_name"));
-            if (object.has("last_name"))
-                bundle.putString("last_name", object.getString("last_name"));
-            if (object.has("email"))
-                bundle.putString("email", object.getString("email"));
-            if (object.has("gender"))
-                bundle.putString("gender", object.getString("gender"));
-            if (object.has("birthday"))
-                bundle.putString("birthday", object.getString("birthday"));
-            if (object.has("location"))
-                bundle.putString("location", object.getJSONObject("location").getString("name"));
-
-            return bundle;
-        } catch (JSONException jsone) {
-            jsone.printStackTrace();
-            return null;
-        }
     }
 
     public void setRole(String key) {

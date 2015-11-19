@@ -172,6 +172,10 @@ public class Question implements Comparable<Question> {
 
     public String getDislikeKey(){ return dislikeKey;}
 
+    public void setTimestamp(long time) { this.timestamp = time; }
+
+    public void setLike(int like) { this.like = like; }
+
     public void setKey(String key) {
         this.key = key;
     }

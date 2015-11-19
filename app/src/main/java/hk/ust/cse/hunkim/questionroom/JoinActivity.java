@@ -161,9 +161,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         inflater.inflate(R.menu.action_bar, menu);
 
         ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle("InstaQuest");
-        }
+        actionBar.setTitle("InstaQuest");
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -188,8 +186,6 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         // as you specify a parent activity in AndroidManifest.xml.
 
         switch (item.getItemId()){
-            case R.id.action_login:
-                break;
             case R.id.action_camera:
                 Intent cameraIntent = new Intent(this, CameraViewActivity.class);
                 startActivity(cameraIntent);
@@ -468,20 +464,9 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
             return;
         }
 
-        if (user.isAuthenticated()) {
-            Log.d("history", user.email);
-            firebaseRef.child("user").child(user.email.replaceAll(".com", "")).child("history").push().setValue(room_name);
-        }
-
         intent.putExtra(ROOM_NAME, room_name);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-
-    private boolean isEmailValid(String room_name) {
-        // http://stackoverflow.com/questions/8248277
-        // Make sure alphanumeric characters
-        return !room_name.matches("^.*[^a-zA-Z0-9 ].*$");
     }
 
 
