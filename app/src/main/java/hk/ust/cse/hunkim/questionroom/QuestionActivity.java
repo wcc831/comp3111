@@ -6,19 +6,23 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.format.DateUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -87,6 +91,17 @@ public class QuestionActivity extends Activity {
 
                 ((TextView) findViewById(R.id.category)).setText(q.getCategory());
                 ((TextView) findViewById(R.id.head_desc)).setText(q.getWholeMsg());
+
+                //set attachment
+                String encodedImage = q.getAttachment();
+                if (encodedImage != null) {
+                    byte[] imageAsBytes = Base64.decode(encodedImage.getBytes(), Base64.DEFAULT);
+                    ImageView image = (ImageView) findViewById(R.id.attachment);
+                    image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800));
+                    image.setImageBitmap(
+                            BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length)
+                    );
+                }
 
                 Button likeButton = ((Button) findViewById(R.id.echo));
                 likeButton.setText(Integer.toString(q.getLike()));

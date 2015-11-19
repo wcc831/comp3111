@@ -103,6 +103,17 @@ public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActiv
         activity.onQueryTextChange("");
     }
 
+
+    /*
+        @UiThreadTest
+    public void testSearch() {
+
+        activity.onQueryTextChange("");
+        View view = activity.findViewById(R.id.join_chatroom);
+        activity.onQueryTextChange("string");
+    }
+    * */
+
     @SmallTest
     public void testFragment() {
     }

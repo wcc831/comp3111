@@ -1,21 +1,27 @@
 package hk.ust.cse.hunkim.questionroom.question;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +33,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -348,6 +356,17 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
         }
 */
 
+
+        String encodedImage = question.getAttachment();
+        if (encodedImage != null) {
+
+            byte[] imageAsBytes = Base64.decode(encodedImage.getBytes(), Base64.DEFAULT);
+            ImageView image = (ImageView) view.findViewById(R.id.attachment);
+            image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800));
+            image.setImageBitmap(
+                    BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length)
+            );
+        }
 
 
         view.setTag(question.getKey());  // store key in the view

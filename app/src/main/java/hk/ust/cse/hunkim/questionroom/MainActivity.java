@@ -9,9 +9,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -36,6 +39,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 import hk.ust.cse.hunkim.questionroom.db.DBHelper;
@@ -49,9 +53,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     // TODO: change this to your own Firebase URL
     public static final String FIREBASE_URL = "https://instaquest.firebaseio.com/";
 
-    static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
-    static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;
-
+    static final int REQUEST_IMAGE_CAPTURE = 1;
     private UserInfo user = UserInfo.getInstance();
 
     private String roomName;
@@ -121,7 +123,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    sendMessage();
+                    sendMessage(null);
                 }
                 return true;
             }
@@ -130,7 +132,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendMessage();
+                sendMessage(null);
             }
         });
 
@@ -270,12 +272,26 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         mChatroomRef.getParent().child("presence").child(presenceId).removeValue();
     }
 
-    private void sendMessage() {
+    private void sendMessage(Bitmap photo) {
         EditText inputText = (EditText) findViewById(R.id.messageInput);
         String input = inputText.getText().toString();
         if (!input.equals("")) {
+
+
             // Create our 'model', a Chat object
             Question question = new Question(user.email, input, categoryChoice);
+
+            if (photo != null) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                photo.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+                byte[] b = baos.toByteArray();
+
+                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+                question.setAttachment(encodedImage);
+            }
+
+
             // Create a new, auto-generated child of that chat location, and save our chat data there
             Firebase pushRef = mChatroomRef.push();
             pushRef.setValue(question);
@@ -328,9 +344,15 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
         switch (item.getItemId()){
             case R.id.action_camera:
+                /*
                 Intent cameraIntent = new Intent(this, CameraViewActivity.class);
                 cameraIntent.putExtra("action", "takePicture");
                 startActivity(cameraIntent);
+                */
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
                 break;
             case R.id.action_addFavorite:
                 addToFavorite();
@@ -338,6 +360,20 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         }
 
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            sendMessage(imageBitmap);
+            //ImageView mImageView = (ImageView) findViewById(R.id.cameraImageView);
+            //mImageView.setImageBitmap(imageBitmap);
+
+
+        }
     }
 
     public void updateEcho(String key) {
