@@ -117,6 +117,7 @@ public class LoginActivity extends Activity {
             case R.id.login_firebase:
                 firebaseLogin(((TextView) findViewById(R.id.login_userName)).getText().toString(),
                         ((TextView) findViewById(R.id.login_password)).getText().toString());
+                break;
 
         }
     }
@@ -198,6 +199,8 @@ public class LoginActivity extends Activity {
         login.exceptionCallback = new GoogleLogin.ExceptionHandler() {
             @Override
             public void handleException(final UserRecoverableAuthException e) {
+
+                /*
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -215,6 +218,8 @@ public class LoginActivity extends Activity {
                         }
                     }
                 });
+                */
+
             }
         };
         login.loginCallback = new GoogleLogin.GoogleLoginCallback() {

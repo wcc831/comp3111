@@ -2,14 +2,19 @@ package hk.ust.cse.hunkim.questionroom;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.TextView;
+
+
+import org.w3c.dom.Text;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import hk.ust.cse.hunkim.questionroom.login.UserInfo;
 
@@ -29,66 +34,119 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
         activity = getActivity();
     }
 
-    @SmallTest
-    public void testLaunch() throws Exception {
-        assertTrue(true);
-    }
-
-    @MediumTest
+    @UiThreadTest
     public void testGogoleLogin() throws Exception {
-        activity.googleLogin("");
-    }
 
-    @UiThreadTest
-    public void testLogin() {
-        activity.login(activity.findViewById(R.id.login_googleLogin));
+        final View v = activity.findViewById(R.id.login_googleLogin);
 
-
-        activity.login(activity.findViewById(R.id.login_firebase));
-    }
-
-/*    @SmallTest
-    public void testSetRole() throws Exception {
-        activity.setRole("test");
-    }*/
-
-    @UiThreadTest
-    public void testActivityForResult() {
-        Intent returnIntent = new Intent();
-
-        returnIntent.putExtra("result", "");
-        Instrumentation.ActivityResult activityResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, returnIntent);
-        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(LoginActivity.class.getName(), activityResult , true);
-        final ImageView button = (ImageView) activity.findViewById(R.id.login_googleLogin);
+        final CountDownLatch signal = new CountDownLatch(1);
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                button.performClick();
+                v.performClick();
             }
         });
 
-        Activity loginActivity =  getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5);
+        signal.await(10, TimeUnit.SECONDS);
+
+    }
+
+    @UiThreadTest
+    public void testProceedWithoutLogin() throws Exception {
+        final View v = activity.findViewById(R.id.login_proceed_as_visitor);
+        final CountDownLatch signal = new CountDownLatch(1);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                v.performClick();
+            }
+        });
+        signal.await(10, TimeUnit.SECONDS);
+
+    }
+
+    @UiThreadTest
+    public void testFirebaseLogin() throws Exception {
+
+        final View v = activity.findViewById(R.id.login_firebase);
 
 
-        activity.onActivityResult(0, 0, null);
+        ((TextView)activity.findViewById(R.id.login_password)).setText("wrongPassword");
+        final CountDownLatch signal2 = new CountDownLatch(1);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                v.performClick();
+            }
+        });
 
-        activity.onActivityResult(1000, Activity.RESULT_CANCELED, null);
+        signal2.await(15, TimeUnit.SECONDS);
 
-        activity.onActivityResult(1000, -1593, null);
+        ((TextView)activity.findViewById(R.id.login_password)).setText("password");
+        final CountDownLatch signal = new CountDownLatch(1);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                v.performClick();
+            }
+        });
+
+        signal.await(15, TimeUnit.SECONDS);
+
+    }
+
+    @UiThreadTest
+    public void testProceedAsVisitor() throws Exception {
+        final View v = activity.findViewById(R.id.login_proceed_as_visitor);
+        final CountDownLatch signal = new CountDownLatch(1);
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                v.performClick();
+            }
+        });
+
+
+        signal.await(15, TimeUnit.SECONDS);
+    }
+
+    @UiThreadTest
+    public void testOnResultFail() throws Exception{
+        activity.onActivityResult(LoginActivity.REQUEST_CODE_PICK_ACCOUNT, 123456, null);
+
+        Thread.sleep(10000);
+        activity.onActivityResult(LoginActivity.REQUEST_CODE_PICK_ACCOUNT, Activity.RESULT_CANCELED, null);
+
+        Thread.sleep(10000);
 
         Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, "wcc831@gmail.com");
-        activity.onActivityResult(1000, Activity.RESULT_OK, intent);
+        activity.onActivityResult(LoginActivity.REQUEST_CODE_PICK_ACCOUNT, Activity.RESULT_OK, intent);
+
+        Thread.sleep(15000);
+    }
+
+
+    @UiThreadTest
+    public void testLoginWithInvalidView() throws Exception {
+        activity.login(activity.findViewById(R.id.login_password));
     }
 
     @SmallTest
-    public void testProceed() {
-        activity.proceed(null);
+    public void testSetRoleNotSupervior() throws Exception {
+        final CountDownLatch signal = new CountDownLatch(1);
 
-        UserInfo.getInstance().authenticate();
-        activity.proceed(null);
+        activity.setRole("someUnknownKey");
 
-        //activity.proceed(activity.findViewById(R.id.login_proceed_as_visitor));
+
+        signal.await(15, TimeUnit.SECONDS);
     }
 
+    @UiThreadTest
+    public void testProceedNull() throws Exception {
+        activity.proceed(null);
+
+        activity.proceed(activity.findViewById(R.id.login_password));
+    }
 }
