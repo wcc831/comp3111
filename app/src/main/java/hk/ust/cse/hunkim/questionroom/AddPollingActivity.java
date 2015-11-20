@@ -30,12 +30,12 @@ public class AddPollingActivity extends ListActivity {
         Intent intent = getIntent();
         assert (intent != null);
 
-        roomName = intent.getStringExtra(JoinActivity.ROOM_NAME);
+        roomName = intent.getStringExtra(PollingActivity.ROOM_NAME);
         if (roomName == null || roomName.length() == 0) {
             roomName = "all";
         }
 
-        mFirebaseRef = new Firebase(FIREBASE_URL).child(roomName).child("polling");
+        mFirebaseRef = new Firebase(FIREBASE_URL).child("rooms").child(roomName).child("polling");
 
         findViewById(R.id.send_polling).setOnClickListener(new View.OnClickListener() {
             @Override

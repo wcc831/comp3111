@@ -55,6 +55,7 @@ import hk.ust.cse.hunkim.questionroom.question.Question;
 import hk.ust.cse.hunkim.questionroom.question.QuestionListAdapter;
 
 public class MainActivity extends ListActivity implements SearchView.OnQueryTextListener {
+    public static final String ROOM_NAME = "Room_name";
 
     // TODO: change this to your own Firebase URL
     public static final String FIREBASE_URL = "https://instaquest.firebaseio.com/";
@@ -112,9 +113,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         Intent intent = getIntent();
         assert (intent != null);
 
-        // Make it a bit more reliable
         roomName = intent.getStringExtra(JoinActivity.ROOM_NAME);
-
         if (roomName == null || roomName.length() == 0) {
             roomName = "all";
         }
@@ -157,6 +156,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
             @Override
             public void onClick(View view){
                 Intent intent = new Intent();
+                intent.putExtra(ROOM_NAME, roomName);
                 intent.setClass(MainActivity.this, PollingActivity.class);
                 startActivity(intent);
             }

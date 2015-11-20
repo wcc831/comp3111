@@ -30,6 +30,9 @@ import hk.ust.cse.hunkim.questionroom.question.Question;
  * Created by onzzz on 20/11/2015.
  */
 public class PollingActivity extends ListActivity {
+    public static final String ROOM_NAME = "Room_name";
+    private String roomName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +42,18 @@ public class PollingActivity extends ListActivity {
         Intent intent = getIntent();
         assert (intent != null);
 
+        roomName = intent.getStringExtra(MainActivity.ROOM_NAME);
+        if (roomName == null || roomName.length() == 0) {
+            roomName = "all";
+        }
+
+        setTitle("Room name: " + roomName);
+
         findViewById(R.id.create_poll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
+                intent.putExtra(ROOM_NAME, roomName);
                 intent.setClass(PollingActivity.this, AddPollingActivity.class);
                 startActivity(intent);
             }
