@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/poll_title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Define Poll's Title"/>
+
+    <EditText
+        android:id="@+id/poll_title_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Poll's Title" />
+
+    <TextView
+        android:id="@+id/poll_answer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Define Poll's Answer"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/poll_answer_input1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Poll's Answer1"/>
+            <EditText
+                android:id="@+id/poll_answer_input2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Poll's Answer2"/>
+            <EditText
+                android:id="@+id/poll_answer_input3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Poll's Answer3"/>
+            <EditText
+                android:id="@+id/poll_answer_input4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Poll's Answer4"/>
+            <EditText
+                android:id="@+id/poll_answer_input5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Poll's Answer5"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/send_polling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEND"/>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/close"
+        android:layout_above="@+id/listFooter"
+        android:transcriptMode="alwaysScroll" />
+
+</LinearLayout>

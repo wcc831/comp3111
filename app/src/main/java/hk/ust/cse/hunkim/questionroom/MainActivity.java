@@ -156,24 +156,12 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         findViewById(R.id.pollButton).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                LayoutInflater inflater = getLayoutInflater();
-                View addPollingLayout = inflater.inflate(R.layout.add_polling_layout, null);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setView(addPollingLayout).setPositiveButton("Enter", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                builder.show();
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, PollingActivity.class);
+                startActivity(intent);
             }
         });
+
 
 
 
