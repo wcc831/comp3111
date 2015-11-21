@@ -18,12 +18,10 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -35,10 +33,6 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.graphics.Typeface;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.view.View;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -65,7 +59,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     private UserInfo user = UserInfo.getInstance();
 
     private String roomName;
-    private Firebase mFirebaseRef = new Firebase(FIREBASE_URL);
+    private Firebase mFirebaseRef;
     private Firebase mChatroomRef;
     private ValueEventListener mConnectedListener;
     private QuestionListAdapter mChatListAdapter;
@@ -106,6 +100,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
         //initialized once with an Android context.
         Firebase.setAndroidContext(this);
+        mFirebaseRef = new Firebase(FIREBASE_URL);
         setContentView(R.layout.activity_main);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -120,6 +115,9 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
         setTitle("Room name: " + roomName);
 
+        // Setup our Firebase mFirebaseRef
+        mChatroomRef =mFirebaseRef.child("rooms").child(roomName).child("questions");
+
         if (user.hideMessage){
             //set on off button
             ((ImageView)findViewById(R.id.hide_message)).
@@ -130,8 +128,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                     setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off));
         }
 
-        // Setup our Firebase mFirebaseRef
-        mChatroomRef =mFirebaseRef.child("rooms").child(roomName).child("questions");
+
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
@@ -212,7 +209,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
         //load user profile
         try {
-            JoinActivity.loadPorfile((ImageView) findViewById(R.id.drawer_profileImage),
+            JoinActivity.loadProfile((ImageView) findViewById(R.id.drawer_profileImage),
                     (TextView) findViewById(R.id.drawer_profileEmail),
                     (TextView) findViewById(R.id.drawer_userRole));
         }
@@ -324,7 +321,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         // Inflate the menu items for use in the action bar
         Log.d("main", "option menu created");
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar, menu);
+        inflater.inflate(R.menu.action_bar_main, menu);
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null)
@@ -355,23 +352,6 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-
-        switch (item.getItemId()){
-            case R.id.action_camera:
-                /*
-                Intent cameraIntent = new Intent(this, CameraViewActivity.class);
-                cameraIntent.putExtra("action", "takePicture");
-                startActivity(cameraIntent);
-                */
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                }
-                break;
-            case R.id.action_addFavorite:
-                addToFavorite();
-                break;
-        }
 
         return true;
     }
@@ -464,7 +444,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         dbutil.put(dislikeKey);
     }
 
-    public void addToFavorite() {
+    public void addToFavorite(MenuItem item) {
         mFirebaseRef.child("userRecord").child(user.id).child("favorite").push().setValue(roomName);
 
     }
@@ -554,8 +534,17 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
         mChatListAdapter.refersh();
 
+    }
 
+    public void startCamera(MenuItem item) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
 
+    public void setUser(boolean b) {
+        user.hideMessage = b;
     }
 
 }

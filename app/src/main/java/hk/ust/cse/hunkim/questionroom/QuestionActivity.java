@@ -168,7 +168,7 @@ public class QuestionActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar, menu);
+        inflater.inflate(R.menu.action_bar_question, menu);
 
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("InstaQuest");
@@ -266,5 +266,8 @@ public class QuestionActivity extends Activity {
 
     }
 
+    public void addToFavorite(MenuItem item) {
+
+    }
 
 }

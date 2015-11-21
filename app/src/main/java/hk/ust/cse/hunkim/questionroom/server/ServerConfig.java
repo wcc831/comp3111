@@ -118,6 +118,7 @@ public class ServerConfig {
 
     public void connect() {
         switch (action){
+            /*
             case UPLOAD:
                 try {
                     upload(this.url);
@@ -149,7 +150,7 @@ public class ServerConfig {
                 catch (IOException ioe) {
                     ioe.printStackTrace();
                 }
-                break;
+                break;*/
             case EMAIL:
                 try{
                     email(this.url);
@@ -219,6 +220,13 @@ public class ServerConfig {
 
     }
 
+    private void auth(URL url) throws IOException {
+        download(url);
+
+        result = Generic.inputStreamToString(is);
+        logResult();
+    }
+
     private void download(URL url) throws IOException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setReadTimeout(10000);
@@ -230,11 +238,11 @@ public class ServerConfig {
         responseCode = con.getResponseCode();
         responseMSG = con.getResponseMessage();
 
-        if (responseCode == 200) {
-            is = con.getInputStream();
-        }
+        //if (responseCode == 200) {
+        is = con.getInputStream();
+        //}
     }
-
+    /*
     private void upload(URL url) throws IOException {
         String endline = "\r\n";
         String twoHyphens = "--";
@@ -298,12 +306,7 @@ public class ServerConfig {
         logResult();
     }
 
-    private void auth(URL url) throws IOException {
-        download(url);
-
-        result = Generic.inputStreamToString(is);
-        logResult();
-    }
+       */
 
     public File getFile() { return file; }
 

@@ -91,7 +91,7 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
             }
         });
 
-        signal.await(15, TimeUnit.SECONDS);
+        signal.await(5, TimeUnit.SECONDS);
 
     }
 
@@ -108,23 +108,23 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
         });
 
 
-        signal.await(15, TimeUnit.SECONDS);
+        signal.await(2, TimeUnit.SECONDS);
     }
 
     @UiThreadTest
     public void testOnResultFail() throws Exception{
         activity.onActivityResult(LoginActivity.REQUEST_CODE_PICK_ACCOUNT, 123456, null);
 
-        Thread.sleep(10000);
+        Thread.sleep(1000);
         activity.onActivityResult(LoginActivity.REQUEST_CODE_PICK_ACCOUNT, Activity.RESULT_CANCELED, null);
 
-        Thread.sleep(10000);
+        Thread.sleep(1000);
 
         Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, "wcc831@gmail.com");
         activity.onActivityResult(LoginActivity.REQUEST_CODE_PICK_ACCOUNT, Activity.RESULT_OK, intent);
 
-        Thread.sleep(15000);
+        Thread.sleep(1500);
     }
 
 
@@ -140,7 +140,7 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
         activity.setRole("someUnknownKey");
 
 
-        signal.await(15, TimeUnit.SECONDS);
+        signal.await(1, TimeUnit.SECONDS);
     }
 
     @UiThreadTest

@@ -1,25 +1,11 @@
 package hk.ust.cse.hunkim.questionroom;
 
-import android.app.ActionBar;
-import android.app.Instrumentation;
-import android.content.Intent;
-import android.media.Image;
-import android.os.SystemClock;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerTabStrip;
-import android.support.v4.view.ViewPager;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.TouchUtils;
 import android.test.UiThreadTest;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.util.concurrent.CountDownLatch;
@@ -61,8 +47,33 @@ public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActiv
         assertNotNull(activity);
     }
 
+
     @UiThreadTest
-    public void testSearch() throws Exception{
+    public void testSearch() throws Exception {
+        activity.onQueryTextChange("");
+
+        activity.removeAdapter();
+        activity.onQueryTextChange("sine");
+
+    }
+
+/*    @UiThreadTest
+    public void testEnterByList() throws Exception {
+        final View v = activity.findViewById(R.id.index_chatRoom);
+
+        final CountDownLatch signal = new CountDownLatch(1);
+        signal.await(10, TimeUnit.SECONDS);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                v.performClick();
+            }
+        });
+    }*/
+
+
+    @UiThreadTest
+    public void testZEnterBySearch() throws Exception{
 
         activity.onQueryTextChange("NOENTERPLEASE");
         final View v = activity.findViewById(R.id.join_chatroom);
@@ -74,8 +85,7 @@ public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActiv
                 v.performClick();
             }
         });
-        signal.await(10, TimeUnit.SECONDS);
-
+        signal.await(2, TimeUnit.SECONDS);
 
         /*
         Toast.makeText(activity, "here", Toast.LENGTH_SHORT).show();
@@ -86,5 +96,61 @@ public class JoinActivityTest extends ActivityInstrumentationTestCase2<JoinActiv
 
         Espresso.onView(withId(R.id.sendButton)).perform(click());*/
 
+    }
+
+    @UiThreadTest
+    public void testIllegalJoin() throws Exception {
+        activity.onQueryTextChange(" ");
+        final View v = activity.findViewById(R.id.join_chatroom);
+        assertNotNull(v);
+        final CountDownLatch signal = new CountDownLatch(1);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                v.performClick();
+            }
+        });
+        signal.await(10, TimeUnit.SECONDS);
+    }
+
+    @UiThreadTest
+    public void testHideMessage() throws Exception{
+
+        final ImageView v = (ImageView)activity.findViewById(R.id.hide_message);
+        assertNotNull(v);
+        final CountDownLatch signal = new CountDownLatch(1);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                v.performClick();
+            }
+        });
+        signal.await(2, TimeUnit.SECONDS);
+
+
+    }
+
+    @UiThreadTest
+    public void testHideMessage2() throws Exception {
+
+        final ImageView v = (ImageView)activity.findViewById(R.id.hide_message);
+        activity.setUser(true);
+        final CountDownLatch signal2 = new CountDownLatch(1);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                v.performClick();
+            }
+        });
+        signal2.await(2, TimeUnit.SECONDS);
+    }
+
+    @UiThreadTest
+    public void testSetRole() {
+
+        activity.setUser();
+        activity.loadProfile((ImageView) activity.findViewById(R.id.drawer_profileImage),
+                (TextView) activity.findViewById(R.id.drawer_profileEmail),
+                (TextView) activity.findViewById(R.id.drawer_userRole));
     }
 }

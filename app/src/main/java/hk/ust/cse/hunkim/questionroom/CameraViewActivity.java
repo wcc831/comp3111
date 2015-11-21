@@ -27,15 +27,6 @@ public class CameraViewActivity extends Activity {
         ActionBar actionBar = getActionBar();
         if (actionBar != null) actionBar.hide();
 
-        Intent intent = getIntent();
-        String action = intent.getStringExtra("action");
-
-        if (action != null && action.equals("takePicture")){
-            setContentView(R.layout.activity_camera_view);
-            dispatchTakePictureIntent(null);
-            return;
-        }
-
         final CameraView cameraView = new CameraView(this, null);
 
         final BarcodeScanner scanner = new BarcodeScanner(this);
@@ -55,7 +46,7 @@ public class CameraViewActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_camera_view, menu);
+        //getMenuInflater().inflate(R.menu.menu_camera_view, menu);
         return true;
     }
 
@@ -67,27 +58,11 @@ public class CameraViewActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            ImageView mImageView = (ImageView) findViewById(R.id.cameraImageView);
-            mImageView.setImageBitmap(imageBitmap);
-        }
-    }
-
-    public void dispatchTakePictureIntent(View view) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
 }

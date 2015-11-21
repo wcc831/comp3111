@@ -7,18 +7,6 @@
         android:onClick="refresh"
         />
 
-    <item android:title="Start Camera"
-        android:id="@+id/action_camera"
-        android:showAsAction="never"
-        android:onClick="startCamera"
-        />
-
-    <item android:title="Add Favorite"
-        android:id="@+id/action_addFavorite"
-        android:onClick="addToFavorite"
-        android:showAsAction="never"
-        android:visible="false"/>
-
     <item android:title="Give a reward"
         android:id="@+id/action_giveReword"
         android:showAsAction="never"

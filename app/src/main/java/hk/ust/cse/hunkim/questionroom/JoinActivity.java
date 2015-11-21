@@ -1,9 +1,7 @@
 package hk.ust.cse.hunkim.questionroom;
 
-import android.accounts.AccountManager;
 import android.animation.LayoutTransition;
 import android.app.ActionBar;
-import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -40,13 +38,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
-import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.android.gms.common.AccountPicker;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,9 +47,7 @@ import java.util.List;
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoom;
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoomListAdapter;
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatroomPagerAdapter;
-import hk.ust.cse.hunkim.questionroom.login.GoogleLogin;
 import hk.ust.cse.hunkim.questionroom.login.UserInfo;
-import hk.ust.cse.hunkim.questionroom.server.ServerDemo;
 
 /**
  * A login screen that offers login via email/password.
@@ -77,6 +67,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     PagerTabStrip chatroomListTabStrip;
     final Context context = this;
     final ListView[] chatListViews = {null, null, null, null};
+    File root;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -98,10 +89,12 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         firebaseRef = new Firebase(MainActivity.FIREBASE_URL);
         chatroomRef = firebaseRef.child("rooms");
 
+        root = new File(getFilesDir(), "instaquest");
+
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         try {
-            loadPorfile((ImageView) findViewById(R.id.drawer_profileImage),
+            loadProfile((ImageView) findViewById(R.id.drawer_profileImage),
                     (TextView) findViewById(R.id.drawer_profileEmail),
                     (TextView) findViewById(R.id.drawer_userRole));
         }
@@ -165,7 +158,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar, menu);
+        inflater.inflate(R.menu.action_bar_join, menu);
 
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("InstaQuest");
@@ -191,12 +184,6 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-
-        switch (item.getItemId()){
-            case R.id.action_camera:
-                Intent cameraIntent = new Intent(this, CameraViewActivity.class);
-                startActivity(cameraIntent);
-        }
 
         return true;
     }
@@ -284,7 +271,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     /*
     * set account profile to leftMenu
     * */
-    public static void loadPorfile(ImageView profileImage, TextView email, TextView userRole){
+    public static void loadProfile(ImageView profileImage, TextView email, TextView userRole){
 
         UserInfo user = UserInfo.getInstance();
 
@@ -308,7 +295,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     @Override
     public boolean onQueryTextChange(String newText) {
 
-        if (TextUtils.isEmpty(newText) || newText.length() < 1) {
+        if (TextUtils.isEmpty(newText)) {
             if (findViewById(R.id.join_chatroom) == null)
                 return false;
 
@@ -352,7 +339,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
 
         }
         //join chatroom through search
-        else if (view.getId() == R.id.join_chatroom){
+        else /*if (view.getId() == R.id.join_chatroom)*/{
 
             room_name = ((TextView)view).getText().toString().substring(5);
 
@@ -390,6 +377,27 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
             ((ImageView)view).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on));
         else
             ((ImageView)view).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off));
+    }
+
+    public void setUser(boolean b) {
+        user.hideMessage = b;
+    }
+
+    public void setUser() {
+
+
+        user.email = " ";
+        user.role = 1;
+        //user.profileImage = new File(root, "visitor.jpg");
+    }
+
+    public void removeAdapter() {
+        this.searchAdapter = null;
+    }
+
+    public void startCamera(MenuItem item) {
+        Intent cameraIntent = new Intent(this, CameraViewActivity.class);
+        startActivity(cameraIntent);
     }
 }
 
