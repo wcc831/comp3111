@@ -1,16 +1,11 @@
 package hk.ust.cse.hunkim.questionroom;
 
-import android.animation.LayoutTransition;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.InputFilter;
 import android.text.format.DateUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -18,21 +13,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.View;
 import android.graphics.Typeface;
-import android.content.Context;
-import android.content.res.AssetManager;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -58,7 +47,7 @@ public class QuestionActivity extends Activity {
     Firebase fireRef;
     Firebase questionRef;
 
-    String questitionKey;
+    String questionKey;
     String roomName;
 
     DBUtil dbUtil;
@@ -68,6 +57,7 @@ public class QuestionActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
+        Firebase.setAndroidContext(this);
 
         //set status bar color
         Window window = getWindow();
@@ -77,11 +67,19 @@ public class QuestionActivity extends Activity {
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        roomName = getIntent().getStringExtra("room");
-        questitionKey = getIntent().getStringExtra("key");
+        Intent intent = getIntent();
+        /*if (intent == null) {
+            roomName = "all";
+            questionKey = "-K3djkApKzx7PvQPw-ps";
+        }*/
+        //else {
+            roomName = intent.getStringExtra("room");
+            questionKey = intent.getStringExtra("key");
+        //}
+
 
         fireRef = new Firebase(MainActivity.FIREBASE_URL);
-        questionRef = fireRef.child("rooms").child(roomName).child("questions").child(questitionKey);
+        questionRef = fireRef.child("rooms").child(roomName).child("questions").child(questionKey);
 
         //load question to layout
         questionRef.addValueEventListener(new ValueEventListener() {
@@ -137,14 +135,14 @@ public class QuestionActivity extends Activity {
                 Button dislikeButton = ((Button) findViewById(R.id.dislike));
                 dislikeButton.setText(Integer.toString(q.getDislike()));
 
-                boolean clickable = !dbUtil.contains(questitionKey);
+                boolean clickable = !dbUtil.contains(questionKey);
                 likeButton.setClickable(clickable);
                 likeButton.setEnabled(clickable);
 
                 dislikeButton.setClickable(clickable);
                 dislikeButton.setEnabled(clickable);
 
-                Log.d(TAG, Boolean.toString(dbUtil.contains(questitionKey)));
+                Log.d(TAG, Boolean.toString(dbUtil.contains(questionKey)));
 
             }
 
@@ -157,7 +155,7 @@ public class QuestionActivity extends Activity {
         setUpdateListener(((Button) findViewById(R.id.echo)), "like", 1);
         setUpdateListener(((Button) findViewById(R.id.dislike)), "dislike", -1);
         //load comments
-        CommentListAdapter adapter = new CommentListAdapter(fireRef.child("rooms").child(roomName).child("comment").child(questitionKey).orderByChild("timestamp"),
+        CommentListAdapter adapter = new CommentListAdapter(fireRef.child("rooms").child(roomName).child("comment").child(questionKey).orderByChild("timestamp"),
                 this, new ArrayList<Question>());
 
         ((ListView) findViewById(R.id.question_comments)).setAdapter(adapter);
@@ -183,17 +181,6 @@ public class QuestionActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()){
-            case R.id.action_giveReword:
-                giveReword((String) ((TextView) findViewById(R.id.questioner)).getText());
-                break;
-            case R.id.action_highlight:
-                fireRef.child("rooms").child(roomName).child("questions").child(questitionKey).child("highlight").setValue(1);
-                break;
-
-
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -234,7 +221,7 @@ public class QuestionActivity extends Activity {
                     }
                 });
 
-                dbUtil.put(questitionKey);
+                dbUtil.put(questionKey);
 
             }
         });
@@ -251,7 +238,12 @@ public class QuestionActivity extends Activity {
         return false;
     }
 
-    public void giveReword (String email) {
+    public void highlight() {
+        fireRef.child("rooms").child(roomName).child("questions").child(questionKey).child("highlight").setValue(1);
+    }
+
+    public void giveReword (MenuItem item) {
+        String email = (String) ((TextView) findViewById(R.id.questioner)).getText();
         if (!email.contains(".com") && !email.contains("@")) {
             Toast.makeText(QuestionActivity.this, "The email provide by this user is not valid", Toast.LENGTH_SHORT).show();
             return;

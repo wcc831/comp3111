@@ -15,13 +15,7 @@
     <item android:title="Highlight a question"
         android:id="@+id/action_highlight"
         android:showAsAction="never"
+        android:onClick="highlight"
         android:visible="false"/>
-
-    <item android:title="search"
-        android:id="@+id/action_search"
-        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
-        android:showAsAction="always"
-        android:actionViewClass="android.widget.SearchView"
-        />
 
 </menu>

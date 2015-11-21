@@ -79,8 +79,7 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
 
                 @Override
                 public void onAuthenticationError(FirebaseError firebaseError) {
-                    if (loginCallback != null)
-                        loginCallback.onLoginFailed(firebaseError);
+                    loginCallback.onLoginFailed(firebaseError);
                 }
             });
 
@@ -128,10 +127,11 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
                             */
                             File googleProfileDir = new File(mActivity.getFilesDir(), "google");
 
-                            if (googleProfileDir.exists()){
+                            /*if (googleProfileDir.exists()){
                                 loginCallback.onPictureReady();
                                 return null;
-                            }
+                            }*/
+                            loginCallback.onPictureReady();
 
 
                             saveUserProfileImage(json);
@@ -193,8 +193,8 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
 
                     if (con.getResponseCode() == 200) {
                         File googleProfileDir = new File(mActivity.getFilesDir(), "google");
-                        if (!googleProfileDir.exists() && !googleProfileDir.mkdir())
-                            Log.d(TAG, "directory not exist.");
+                        if (!googleProfileDir.exists())
+                            googleProfileDir.mkdir();
                         else
                             Log.d(TAG, "folder created");
 
@@ -232,12 +232,13 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
             return GoogleAuthUtil.getToken(mActivity, userEmail, getUserTokenUrl);
         }
         catch (UserRecoverableAuthException usrae) {
+            /*
             if (exceptionCallback != null) {
                 exceptionCallback.handleException(usrae);
             }
             else {
                 usrae.printStackTrace();
-            }
+            }*/
         }
         catch (GoogleAuthException fatalException) {
             fatalException.printStackTrace();

@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -43,7 +44,8 @@ public class PollingActivity extends ListActivity {
         assert (intent != null);
 
         roomName = intent.getStringExtra(MainActivity.ROOM_NAME);
-        if (roomName == null || roomName.length() == 0) {
+        //if (roomName == null || roomName.length() == 0) {
+        if (TextUtils.isEmpty(roomName)) {
             roomName = "all";
         }
 

@@ -36,6 +36,9 @@ public class UserInfo {
         pictureUrl = obj.has("picture") ? obj.getString("picture") : null;
         name = (obj.has("name")) ? obj.getString("name") : null;
         id = (obj.has("id")) ? obj.getString("id") : null;
+        email = (obj.has("email")) ? obj.getString("email") : null;
+        role = (obj.has("role")) ? Integer.parseInt(obj.getString("role")) : -1;
+        hideMessage = (obj.has("hideMessage")) ? true : false;
 
         return this;
     }

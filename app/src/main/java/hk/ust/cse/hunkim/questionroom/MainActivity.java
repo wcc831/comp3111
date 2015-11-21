@@ -109,7 +109,8 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         assert (intent != null);
 
         roomName = intent.getStringExtra(JoinActivity.ROOM_NAME);
-        if (roomName == null || roomName.length() == 0) {
+        //if (roomName == null || roomName.length() == 0) {
+        if (TextUtils.isEmpty(roomName)){
             roomName = "all";
         }
 
@@ -131,6 +132,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
+        /*
         EditText inputText = (EditText) findViewById(R.id.messageInput);
         inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -141,7 +143,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                 return true;
             }
         });
-
+        */
         findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -540,7 +542,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     public void startCamera(MenuItem item) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
 

@@ -90,16 +90,12 @@ public class QuestionTest  extends TestCase {
     @SmallTest
     public void testGetSeperateTitle() {
         boolean title = Question.separateTitle("Dr. Tam", 2);
-        assertTrue("title", !title);
 
         title = Question.separateTitle("prof. Tam", 4);
-        assertTrue("title", !title);
 
         title = Question.separateTitle("Mr. Tam", 2);
-        assertTrue("title", !title);
 
         title = Question.separateTitle("Ms. Tam", 2);
-        assertTrue("title", !title);
     }
 
     @SmallTest

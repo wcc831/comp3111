@@ -80,8 +80,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
                             continue;
 
                         for (String tag : q.getTags()) {
-                            if (tag.toLowerCase().contains(constraint.toString().toLowerCase()))
-                                containTag = true;
+                            containTag = tag.toLowerCase().contains(constraint.toString().toLowerCase());
                         }
 
                         if (containTag) {

@@ -1,6 +1,7 @@
 package hk.ust.cse.hunkim.questionroom;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.ActivityUnitTestCase;
 import android.test.UiThreadTest;
@@ -9,18 +10,23 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import hk.ust.cse.hunkim.questionroom.login.UserInfo;
+import hk.ust.cse.hunkim.questionroom.polling.Polling;
 
 /**
  * Created by cc on 11/19/2015.
  */
-public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
+public class ZMainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
 
     MainActivity activity;
 
-    public MainActivityTest() {
+    public ZMainActivityTest() {
         super(MainActivity.class);
     }
 
@@ -36,8 +42,18 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
         activity.onQueryTextChange("#test");
         Thread.sleep(500);
-        activity.onQueryTextChange("@test");
+        activity.onQueryTextChange("@unit");
         Thread.sleep(500);
+        activity.onQueryTextChange("");
+        Thread.sleep(500);
+    }
+
+    @UiThreadTest
+    public void testLikeDislike() throws Exception{
+        //activity.updateDislike("");
+        activity.updateDislike("-K3dYQTp3hOzadl_n6rO");
+        //activity.updateEcho("");
+        activity.updateEcho("-K3dYQTp3hOzadl_n6rO");
     }
 
     @UiThreadTest
@@ -114,7 +130,62 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     }
 
     @UiThreadTest
-    public void testZCapture() throws Exception {
+    public void testXCapture() throws Exception {
         activity.startCamera(null);
     }
+
+    @SmallTest
+    public void testUserjson() throws Exception {
+        JSONObject obj = new JSONObject();
+        obj.put("picture", "test");
+        obj.put("name", "test");
+        obj.put("id", "test");
+        obj.put("role", "0");
+        obj.put("email", "test");
+        obj.put("hideMessage", "test");
+        UserInfo.getInstance().fromJson(obj.toString());
+
+
+        JSONObject obj2 = new JSONObject();
+        obj2.put("test", "test");
+        UserInfo.getInstance().fromJson(obj2.toString());
+
+    }
+
+    @UiThreadTest
+    public void testZQuestionActivity() throws Exception {
+        Intent intent = new Intent(activity, QuestionActivity.class);
+        intent.putExtra("room", "-K3djkApKzx7PvQPw-ps");
+        intent.putExtra("key", "all");
+        activity.startActivity(intent);
+        Thread.sleep(500);
+    }
+
+    @UiThreadTest
+    public void testAnimation() throws Exception {
+        final ImageView textView = new ImageView(activity);
+
+        textView.setOnTouchListener(Generic.getAnimateColorListener(0, 100));
+
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.performClick();
+            }
+        });
+
+    }
+
+    @SmallTest
+    public void testPolling() throws Exception {
+        String[] str = new String[10];
+        str[0] = "";
+
+        for (int i = 1; i < 10; i++){
+            str[i] = "test";
+        }
+        new Polling("test", str, 10);
+    }
+
 }

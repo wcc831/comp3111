@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +37,9 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 
     @UiThreadTest
     public void testGogoleLogin() throws Exception {
+
+        File file = new File(activity.getFilesDir(), "googleProfile.jpg");
+        file.delete();
 
         final View v = activity.findViewById(R.id.login_googleLogin);
 
