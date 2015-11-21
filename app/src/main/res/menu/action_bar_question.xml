@@ -10,6 +10,7 @@
     <item android:title="Give a reward"
         android:id="@+id/action_giveReword"
         android:showAsAction="never"
+        android:onClick="giveReward"
         android:visible="false"/>
 
     <item android:title="Highlight a question"

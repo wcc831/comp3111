@@ -343,7 +343,7 @@ public class LoginActivity extends Activity {
                 e.printStackTrace();
             }
         }
-        //startActivity(new Intent(this, JoinActivity.class));
+        startActivity(new Intent(this, JoinActivity.class));
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         if (UserInfo.getInstance().isAuthenticated())
             finish();

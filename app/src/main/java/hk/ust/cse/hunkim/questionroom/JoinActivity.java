@@ -388,7 +388,7 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
 
         user.email = " ";
         user.role = 1;
-        //user.profileImage = new File(root, "visitor.jpg");
+        user.profileImage = new File(root, "visitor.jpg");
     }
 
     public void removeAdapter() {

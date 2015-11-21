@@ -26,7 +26,6 @@
 
     <ImageView
         android:id="@+id/attachment"
-        android:src="@drawable/transparent_bg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -49,7 +48,7 @@
             android:id="@+id/like_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/like2"
+            android:src="@drawable/like"
             />
         <Button
             android:id="@+id/echo"
@@ -63,7 +62,7 @@
             android:id="@+id/unlike_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/dislike"
+            android:src="@drawable/unlike"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/echo" />
         <Button

@@ -68,14 +68,8 @@ public class QuestionActivity extends Activity {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         Intent intent = getIntent();
-        /*if (intent == null) {
-            roomName = "all";
-            questionKey = "-K3djkApKzx7PvQPw-ps";
-        }*/
-        //else {
-            roomName = intent.getStringExtra("room");
-            questionKey = intent.getStringExtra("key");
-        //}
+        roomName = intent.getStringExtra("room");
+        questionKey = intent.getStringExtra("key");
 
 
         fireRef = new Firebase(MainActivity.FIREBASE_URL);
@@ -238,11 +232,11 @@ public class QuestionActivity extends Activity {
         return false;
     }
 
-    public void highlight() {
+    public void highlight(MenuItem item) {
         fireRef.child("rooms").child(roomName).child("questions").child(questionKey).child("highlight").setValue(1);
     }
 
-    public void giveReword (MenuItem item) {
+    public void giveReward (MenuItem item) {
         String email = (String) ((TextView) findViewById(R.id.questioner)).getText();
         if (!email.contains(".com") && !email.contains("@")) {
             Toast.makeText(QuestionActivity.this, "The email provide by this user is not valid", Toast.LENGTH_SHORT).show();
