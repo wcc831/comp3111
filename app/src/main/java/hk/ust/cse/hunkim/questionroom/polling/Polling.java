@@ -8,22 +8,28 @@ import java.util.Date;
 public class Polling implements Comparable<Polling> {
 
     private String name;
-    private String[][] options = new String[5][2];
+    private String[][] options = new String[10][2];
     private long timestamp;
 
     private Polling(){
 
     }
 
-    public Polling(String name, int numOfOption){
+    public Polling(String name, String[] option, int numOfOption){
         this.name = name;
         this.timestamp = new Date().getTime();
-        for (int i=0; i<5; i++){
-            for (int j=0; j<2; j++){
-                this.options[i][j] = "";
+
+        int j = 0;
+        for (int i=0; i<numOfOption && j<10;){
+            if (!option[j].equals("")){
+                options[i][0] = option[j];
+                options[i][1] = "0";
+                i++;
             }
+            j++;
         }
     }
+
 
     public String getName(){
         return name;

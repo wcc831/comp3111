@@ -43,7 +43,7 @@ public class AddPollingActivity extends ListActivity {
                 EditText pollingTitleInputText = (EditText) findViewById(R.id.poll_title_input);
                 String pollingTitleInput = pollingTitleInputText.getText().toString();
 
-                String option[] = new String[5];
+                String option[] = new String[10];
                 EditText pollingAnswerInputText1 = (EditText) findViewById(R.id.poll_answer_input1);
                 String pollingAnswerInput1 = pollingAnswerInputText1.getText().toString();
                 option[0] = pollingAnswerInput1;
@@ -59,30 +59,49 @@ public class AddPollingActivity extends ListActivity {
                 EditText pollingAnswerInputText5 = (EditText) findViewById(R.id.poll_answer_input5);
                 String pollingAnswerInput5 = pollingAnswerInputText5.getText().toString();
                 option[4] = pollingAnswerInput5;
+                EditText pollingAnswerInputText6 = (EditText) findViewById(R.id.poll_answer_input6);
+                String pollingAnswerInput6 = pollingAnswerInputText6.getText().toString();
+                option[5] = pollingAnswerInput6;
+                EditText pollingAnswerInputText7 = (EditText) findViewById(R.id.poll_answer_input7);
+                String pollingAnswerInput7 = pollingAnswerInputText7.getText().toString();
+                option[6] = pollingAnswerInput7;
+                EditText pollingAnswerInputText8 = (EditText) findViewById(R.id.poll_answer_input8);
+                String pollingAnswerInput8 = pollingAnswerInputText8.getText().toString();
+                option[7] = pollingAnswerInput8;
+                EditText pollingAnswerInputText9 = (EditText) findViewById(R.id.poll_answer_input9);
+                String pollingAnswerInput9 = pollingAnswerInputText9.getText().toString();
+                option[8] = pollingAnswerInput9;
+                EditText pollingAnswerInputText10 = (EditText) findViewById(R.id.poll_answer_input10);
+                String pollingAnswerInput10 = pollingAnswerInputText10.getText().toString();
+                option[9] = pollingAnswerInput10;
 
                 int numOfOption = 0;
 
-                for (int i=0; i<5; i++){
+                for (int i=0; i<10; i++){
                     if (!option[i].equals(""))
                         numOfOption++;
                 }
 
-                if (!pollingTitleInput.equals("")) {
+                if (!pollingTitleInput.equals("") && numOfOption!=0) {
                     // Create our 'model', a Chat object
-                    Polling polling = new Polling(pollingTitleInput, numOfOption);
+                    Polling polling = new Polling(pollingTitleInput, option, numOfOption);
                     // Create a new, auto-generated child of that chat location, and save our chat data there
                     mFirebaseRef.push().setValue(polling);
-                    pollingTitleInputText.setText("");
-                    pollingAnswerInputText1.setText("");
-                    pollingAnswerInputText2.setText("");
-                    pollingAnswerInputText3.setText("");
-                    pollingAnswerInputText4.setText("");
-                    pollingAnswerInputText5.setText("");
                 }
+
+                pollingTitleInputText.setText("");
+                pollingAnswerInputText1.setText("");
+                pollingAnswerInputText2.setText("");
+                pollingAnswerInputText3.setText("");
+                pollingAnswerInputText4.setText("");
+                pollingAnswerInputText5.setText("");
+                pollingAnswerInputText6.setText("");
+                pollingAnswerInputText7.setText("");
+                pollingAnswerInputText8.setText("");
+                pollingAnswerInputText9.setText("");
+                pollingAnswerInputText10.setText("");
             }
         });
-
-
     }
 
     @Override
