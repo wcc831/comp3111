@@ -55,6 +55,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Poll's Answer5"/>
+            <EditText
+                android:id="@+id/poll_answer_input6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Poll's Answer6"/>
+            <EditText
+                android:id="@+id/poll_answer_input7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Poll's Answer7"/>
+            <EditText
+                android:id="@+id/poll_answer_input8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Poll's Answer8"/>
+            <EditText
+                android:id="@+id/poll_answer_input9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Poll's Answer9"/>
+            <EditText
+                android:id="@+id/poll_answer_input10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Poll's Answer10"/>
 
         </LinearLayout>
 
