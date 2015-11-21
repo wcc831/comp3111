@@ -16,7 +16,7 @@ android {
     defaultConfig {
         applicationId "hk.ust.cse.hunkim.questionroom"
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }

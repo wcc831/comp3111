@@ -336,7 +336,7 @@ public class LoginActivity extends Activity {
             try {
                 user.profileImage = new File(root, "visitor.jpg");
                 Generic.bitmapToFile(BitmapFactory.decodeResource(getResources(), R.drawable.no_profile), user.profileImage, Bitmap.CompressFormat.JPEG);
-                user.email = "visitor";
+                user.email = "Anonymous";
 
             }
             catch (Exception e) {

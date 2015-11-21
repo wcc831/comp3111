@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Html;
@@ -119,12 +120,13 @@ public class QuestionActivity extends Activity {
                 //set attachment
                 String encodedImage = q.getAttachment();
                 if (encodedImage != null) {
+                    encodedImage = encodedImage.substring(encodedImage.indexOf(','));
                     byte[] imageAsBytes = Base64.decode(encodedImage.getBytes(), Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
                     ImageView image = (ImageView) findViewById(R.id.attachment);
-                    image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800));
-                    image.setImageBitmap(
-                            BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length)
-                    );
+                    image.setLayoutParams(new LinearLayout.LayoutParams(bitmap.getWidth() * 5, bitmap.getHeight() * 5));
+                    image.setImageBitmap(bitmap);
+                    image.setPadding(0, 15, 0, 15);
                 }
 
 

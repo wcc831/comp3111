@@ -292,7 +292,8 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                 byte[] b = baos.toByteArray();
 
                 String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-
+                encodedImage = "data:image/jpg;base64," + encodedImage;
+                Log.d("attachment", encodedImage);
                 question.setAttachment(encodedImage);
             }
 

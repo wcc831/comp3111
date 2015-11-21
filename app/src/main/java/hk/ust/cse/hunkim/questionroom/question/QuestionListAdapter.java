@@ -6,10 +6,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -317,6 +319,10 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
             supervisorCate.setTextColor((0xFFF28D09));
 
         }
+        else {
+            supervisorText.setTextColor(Color.BLACK);
+            supervisorCate.setTextColor(Color.BLACK);
+        }
         // if dislike < 15 (view.visuablility = false
 
         /*view.setOnClickListener(new View.OnClickListener() {
@@ -379,14 +385,24 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
 
 
         String encodedImage = question.getAttachment();
-        if (encodedImage != null) {
+        //if (encodedImage != null) {
+        if (!TextUtils.isEmpty(encodedImage)){
+            Log.d("attachment", question.getWholeMsg() + " " + encodedImage.substring(0, 5));
+            encodedImage = encodedImage.substring(encodedImage.indexOf(','));
 
             byte[] imageAsBytes = Base64.decode(encodedImage.getBytes(), Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+
+
             ImageView image = (ImageView) view.findViewById(R.id.attachment);
-            image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800));
-            image.setImageBitmap(
-                    BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length)
-            );
+            image.setLayoutParams(new LinearLayout.LayoutParams(bitmap.getWidth() * 5, bitmap.getHeight() * 5));
+            image.setImageBitmap(bitmap);
+            image.setPadding(0, 15, 0, 15);
+        }
+        else {
+            ImageView image = (ImageView) view.findViewById(R.id.attachment);
+            image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            image.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.transparent_bg));
         }
 
 
