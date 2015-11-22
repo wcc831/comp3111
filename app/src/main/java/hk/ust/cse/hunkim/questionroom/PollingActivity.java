@@ -49,6 +49,11 @@ public class PollingActivity extends Activity {
 
     Firebase fireRef;
     Firebase pollingRef;
+    private DBUtil dbutil;
+
+    public DBUtil getDbutil() {
+        return dbutil;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
