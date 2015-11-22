@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.format.DateUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
 
@@ -62,97 +63,110 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
         final String pollTitle = polling.getName();
         ((TextView) view.findViewById(R.id.pollTitle)).setText(pollTitle);
 
-        ((Button) view.findViewById(R.id.pollOption1)).setVisibility(View.GONE);
-        ((Button) view.findViewById(R.id.pollOption2)).setVisibility(View.GONE);
-        ((Button) view.findViewById(R.id.pollOption3)).setVisibility(View.GONE);
-        ((Button) view.findViewById(R.id.pollOption4)).setVisibility(View.GONE);
-        ((Button) view.findViewById(R.id.pollOption5)).setVisibility(View.GONE);
-        ((Button) view.findViewById(R.id.pollOption6)).setVisibility(View.GONE);
-        ((Button) view.findViewById(R.id.pollOption7)).setVisibility(View.GONE);
-        ((Button) view.findViewById(R.id.pollOption8)).setVisibility(View.GONE);
-        ((Button) view.findViewById(R.id.pollOption9)).setVisibility(View.GONE);
-        ((Button) view.findViewById(R.id.pollOption10)).setVisibility(View.GONE);
-        ((TextView) view.findViewById(R.id.pollVote1)).setVisibility(View.GONE);
-        ((TextView) view.findViewById(R.id.pollVote2)).setVisibility(View.GONE);
-        ((TextView) view.findViewById(R.id.pollVote3)).setVisibility(View.GONE);
-        ((TextView) view.findViewById(R.id.pollVote4)).setVisibility(View.GONE);
-        ((TextView) view.findViewById(R.id.pollVote5)).setVisibility(View.GONE);
-        ((TextView) view.findViewById(R.id.pollVote6)).setVisibility(View.GONE);
-        ((TextView) view.findViewById(R.id.pollVote7)).setVisibility(View.GONE);
-        ((TextView) view.findViewById(R.id.pollVote8)).setVisibility(View.GONE);
-        ((TextView) view.findViewById(R.id.pollVote9)).setVisibility(View.GONE);
-        ((TextView) view.findViewById(R.id.pollVote10)).setVisibility(View.GONE);
-
-
         String pollOption[][] = polling.getOptions();
         int numOfOption = 0;
+        int totalVote = 0;
+        for (int i=0; i<pollOption.length; i++){
+            totalVote += Integer.parseInt(pollOption[i][1]);
+        }
+
         if (numOfOption < pollOption.length){
-            ((Button) view.findViewById(R.id.pollOption1)).setVisibility(View.VISIBLE);
+            ((LinearLayout) view.findViewById(R.id.group1)).setVisibility(View.VISIBLE);
             ((Button) view.findViewById(R.id.pollOption1)).setText(pollOption[0][0]);
-            ((TextView) view.findViewById(R.id.pollVote1)).setVisibility(View.VISIBLE);
+            if (totalVote == 0 || pollOption[0][1].equals("0"))
+                ((Button) view.findViewById(R.id.bar1)).setVisibility(View.GONE);
+            else
+                ((Button) view.findViewById(R.id.bar1)).setWidth(500 * Integer.parseInt(pollOption[0][1]) / totalVote);
             ((TextView) view.findViewById(R.id.pollVote1)).setText(pollOption[0][1]);
         }
         numOfOption++;
         if (numOfOption < pollOption.length){
-            ((Button) view.findViewById(R.id.pollOption2)).setVisibility(View.VISIBLE);
+            ((LinearLayout) view.findViewById(R.id.group2)).setVisibility(View.VISIBLE);
             ((Button) view.findViewById(R.id.pollOption2)).setText(pollOption[1][0]);
-            ((TextView) view.findViewById(R.id.pollVote2)).setVisibility(View.VISIBLE);
+            if (totalVote == 0 || pollOption[1][1].equals("0"))
+                ((Button) view.findViewById(R.id.bar2)).setVisibility(View.GONE);
+            else
+                ((Button) view.findViewById(R.id.bar2)).setWidth(500*Integer.parseInt(pollOption[1][1])/totalVote);
             ((TextView) view.findViewById(R.id.pollVote2)).setText(pollOption[1][1]);
         }
         numOfOption++;
         if (numOfOption < pollOption.length) {
-            ((Button) view.findViewById(R.id.pollOption3)).setVisibility(View.VISIBLE);
+            ((LinearLayout) view.findViewById(R.id.group3)).setVisibility(View.VISIBLE);
             ((Button) view.findViewById(R.id.pollOption3)).setText(pollOption[2][0]);
-            ((TextView) view.findViewById(R.id.pollVote3)).setVisibility(View.VISIBLE);
+            if (totalVote == 0 || pollOption[2][1].equals("0"))
+                ((Button) view.findViewById(R.id.bar3)).setVisibility(View.GONE);
+            else
+                ((Button) view.findViewById(R.id.bar3)).setWidth(500 * Integer.parseInt(pollOption[2][1]) / totalVote);
             ((TextView) view.findViewById(R.id.pollVote3)).setText(pollOption[2][1]);
         }
         numOfOption++;
         if (numOfOption < pollOption.length) {
-            ((Button) view.findViewById(R.id.pollOption4)).setVisibility(View.VISIBLE);
+            ((LinearLayout) view.findViewById(R.id.group4)).setVisibility(View.VISIBLE);
             ((Button) view.findViewById(R.id.pollOption4)).setText(pollOption[3][0]);
-            ((TextView) view.findViewById(R.id.pollVote4)).setVisibility(View.VISIBLE);
+            if (totalVote == 0 || pollOption[3][1].equals("0"))
+                ((Button) view.findViewById(R.id.bar4)).setVisibility(View.GONE);
+            else
+                ((Button) view.findViewById(R.id.bar4)).setWidth(500 * Integer.parseInt(pollOption[3][1]) / totalVote);
             ((TextView) view.findViewById(R.id.pollVote4)).setText(pollOption[3][1]);
         }
         numOfOption++;
         if (numOfOption < pollOption.length) {
-            ((Button) view.findViewById(R.id.pollOption5)).setVisibility(View.VISIBLE);
+            ((LinearLayout) view.findViewById(R.id.group5)).setVisibility(View.VISIBLE);
             ((Button) view.findViewById(R.id.pollOption5)).setText(pollOption[4][0]);
-            ((TextView) view.findViewById(R.id.pollVote5)).setVisibility(View.VISIBLE);
+            if (totalVote == 0 || pollOption[4][1].equals("0"))
+                ((Button) view.findViewById(R.id.bar5)).setVisibility(View.GONE);
+            else
+                ((Button) view.findViewById(R.id.bar5)).setWidth(500 * Integer.parseInt(pollOption[4][1]) / totalVote);
             ((TextView) view.findViewById(R.id.pollVote5)).setText(pollOption[4][1]);
         }
         numOfOption++;
         if (numOfOption < pollOption.length) {
-            ((Button) view.findViewById(R.id.pollOption6)).setVisibility(View.VISIBLE);
+            ((LinearLayout) view.findViewById(R.id.group6)).setVisibility(View.VISIBLE);
             ((Button) view.findViewById(R.id.pollOption6)).setText(pollOption[5][0]);
-            ((TextView) view.findViewById(R.id.pollVote6)).setVisibility(View.VISIBLE);
+            if (totalVote == 0 || pollOption[5][1].equals("0"))
+                ((Button) view.findViewById(R.id.bar6)).setVisibility(View.GONE);
+            else
+                ((Button) view.findViewById(R.id.bar6)).setWidth(500 * Integer.parseInt(pollOption[5][1]) / totalVote);
             ((TextView) view.findViewById(R.id.pollVote6)).setText(pollOption[5][1]);
         }
         numOfOption++;
         if (numOfOption < pollOption.length) {
-            ((Button) view.findViewById(R.id.pollOption7)).setVisibility(View.VISIBLE);
+            ((LinearLayout) view.findViewById(R.id.group7)).setVisibility(View.VISIBLE);
             ((Button) view.findViewById(R.id.pollOption7)).setText(pollOption[6][0]);
-            ((TextView) view.findViewById(R.id.pollVote7)).setVisibility(View.VISIBLE);
+            if (totalVote == 0 || pollOption[6][1].equals("0"))
+                ((Button) view.findViewById(R.id.bar7)).setVisibility(View.GONE);
+            else
+                ((Button) view.findViewById(R.id.bar7)).setWidth(500 * Integer.parseInt(pollOption[6][1]) / totalVote);
             ((TextView) view.findViewById(R.id.pollVote7)).setText(pollOption[6][1]);
         }
         numOfOption++;
         if (numOfOption < pollOption.length) {
-            ((Button) view.findViewById(R.id.pollOption8)).setVisibility(View.VISIBLE);
+            ((LinearLayout) view.findViewById(R.id.group8)).setVisibility(View.VISIBLE);
             ((Button) view.findViewById(R.id.pollOption8)).setText(pollOption[7][0]);
-            ((TextView) view.findViewById(R.id.pollVote8)).setVisibility(View.VISIBLE);
+            if (totalVote == 0 || pollOption[7][1].equals("0"))
+                ((Button) view.findViewById(R.id.bar8)).setVisibility(View.GONE);
+            else
+                ((Button) view.findViewById(R.id.bar8)).setWidth(500 * Integer.parseInt(pollOption[7][1]) / totalVote);
             ((TextView) view.findViewById(R.id.pollVote8)).setText(pollOption[7][1]);
         }
         numOfOption++;
         if (numOfOption < pollOption.length) {
-            ((Button) view.findViewById(R.id.pollOption9)).setVisibility(View.VISIBLE);
+            ((LinearLayout) view.findViewById(R.id.group9)).setVisibility(View.VISIBLE);
             ((Button) view.findViewById(R.id.pollOption9)).setText(pollOption[8][0]);
-            ((TextView) view.findViewById(R.id.pollVote9)).setVisibility(View.VISIBLE);
+            if (totalVote == 0 || pollOption[8][1].equals("0"))
+                ((Button) view.findViewById(R.id.bar9)).setVisibility(View.GONE);
+            else
+                ((Button) view.findViewById(R.id.bar9)).setWidth(500 * Integer.parseInt(pollOption[8][1]) / totalVote);
             ((TextView) view.findViewById(R.id.pollVote9)).setText(pollOption[8][1]);
         }
         numOfOption++;
         if (numOfOption < pollOption.length) {
-            ((Button) view.findViewById(R.id.pollOption10)).setVisibility(View.VISIBLE);
+            ((LinearLayout) view.findViewById(R.id.group10)).setVisibility(View.VISIBLE);
             ((Button) view.findViewById(R.id.pollOption10)).setText(pollOption[9][0]);
-            ((TextView) view.findViewById(R.id.pollVote10)).setVisibility(View.VISIBLE);
+            if (totalVote == 0 || pollOption[9][1].equals("0"))
+                ((Button) view.findViewById(R.id.bar10)).setVisibility(View.GONE);
+            else
+                ((Button) view.findViewById(R.id.bar10)).setWidth(500 * Integer.parseInt(pollOption[9][1]) / totalVote);
             ((TextView) view.findViewById(R.id.pollVote10)).setText(pollOption[9][1]);
         }
         numOfOption++;

@@ -69,7 +69,7 @@ public class PollingActivity extends Activity {
             roomName = "all";
         }
 
-        setTitle("Room name: " + roomName);
+        setTitle(roomName);
 
         fireRef = new Firebase(MainActivity.FIREBASE_URL);
         pollingRef = fireRef.child("rooms").child(roomName).child("polling");

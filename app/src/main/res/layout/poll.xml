@@ -3,179 +3,286 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/pollTitle"
-        android:layout_height="wrap_content"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:text="Title"/>
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/pollTitle"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Title"
+            android:textSize="20dp"/>
+
+        <TextView
+            android:id="@+id/pollTime"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:gravity="right"
+            android:textSize="12dp"/>
+
+    </RelativeLayout>
+
 
     <LinearLayout
+        android:id="@+id/group1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/pollOption1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/bar1"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#ADD8E6" />
+
         <TextView
             android:id="@+id/pollVote1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/pollOption1" />
+            android:layout_marginLeft="5dp" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/group2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/pollOption2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/bar2"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#ADD8E6"/>
+
         <TextView
             android:id="@+id/pollVote2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/pollOption2"/>
+            android:layout_marginLeft="5dp"/>
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/group3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <Button
             android:id="@+id/pollOption3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/bar3"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#ADD8E6"/>
+
         <TextView
             android:id="@+id/pollVote3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/pollOption3"/>
+            android:layout_marginLeft="5dp"/>
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/group4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <Button
             android:id="@+id/pollOption4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/bar4"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#ADD8E6"/>
+
         <TextView
             android:id="@+id/pollVote4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/pollOption4"/>
+            android:layout_marginLeft="5dp"/>
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/group5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <Button
             android:id="@+id/pollOption5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/bar5"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#ADD8E6"/>
+
         <TextView
             android:id="@+id/pollVote5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/pollOption5"/>
+            android:layout_marginLeft="5dp"/>
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/group6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <Button
             android:id="@+id/pollOption6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/bar6"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#ADD8E6"/>
+
         <TextView
             android:id="@+id/pollVote6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/pollOption6"/>
+            android:layout_marginLeft="5dp"/>
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/group7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <Button
             android:id="@+id/pollOption7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/bar7"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#ADD8E6"/>
+
         <TextView
             android:id="@+id/pollVote7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/pollOption7"/>
+            android:layout_marginLeft="5dp"/>
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/group8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <Button
             android:id="@+id/pollOption8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/bar8"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#ADD8E6"/>
+
         <TextView
             android:id="@+id/pollVote8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/pollOption8"/>
+            android:layout_marginLeft="5dp"/>
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/group9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <Button
             android:id="@+id/pollOption9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/bar9"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#ADD8E6"/>
+
         <TextView
             android:id="@+id/pollVote9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/pollOption9"/>
+            android:layout_marginLeft="5dp"/>
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/group10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <Button
             android:id="@+id/pollOption10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/bar10"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#ADD8E6"/>
+
         <TextView
             android:id="@+id/pollVote10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/pollOption10"/>
-    </LinearLayout>
+            android:layout_marginLeft="5dp"/>
 
-    <TextView
-        android:id="@+id/pollTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time" />
+    </LinearLayout>
 
 </LinearLayout>
