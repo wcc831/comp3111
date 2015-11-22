@@ -79,11 +79,12 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     }
 
     private String[] category = new String[] {"Midterm", "Final", "Assignment", "Other"};
+    private String[] categoryShort = {"Mid", "Fin", "Asi", "Oth"};
     private String categoryChoice;
 
     public void setCategoryButtonText(int choice){
         Button categoryButton = (Button) findViewById(R.id.categoryButton);
-        categoryButton.setText(category[choice]);
+        categoryButton.setText(categoryShort[choice]);
     }
 
     public void setCategoryChoice(int choice){

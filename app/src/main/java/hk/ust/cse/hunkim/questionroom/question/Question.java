@@ -175,6 +175,8 @@ public class Question implements Comparable<Question> {
 
     public String getDislikeKey(){ return dislikeKey;}
 
+    public void setQusetioner(String questioner) { this.questioner = questioner; }
+
     public void setAttachment(String attachment) { this.attachment = attachment; }
 
     public void setTimestamp(long time) { this.timestamp = time; }

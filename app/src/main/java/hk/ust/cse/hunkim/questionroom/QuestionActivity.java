@@ -284,6 +284,7 @@ public class QuestionActivity extends Activity {
                 }
 
                 Question question = new Question(comentContent.getText().toString());
+                question.setQusetioner(UserInfo.getInstance().email);
                 if (UserInfo.getInstance().role == UserInfo.SUPERVISOR)
                     question.setHighlight(2);
                 commentRef.setValue(question);
