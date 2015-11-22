@@ -59,8 +59,6 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
     @Override
     protected void populateView(View view, final Polling polling){
 
-        DBUtil dbUtil = activity.getDbutil();
-
         final String pollTitle = polling.getName();
         ((TextView) view.findViewById(R.id.pollTitle)).setText(pollTitle);
 
@@ -165,6 +163,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 int intVote = Integer.parseInt(polling.getVote(0));
                 String stringVote = Integer.toString(++intVote);
                 pollingRef.child(polling.getKey()).child("options").child("0").child("1").setValue(stringVote);
+                view.findViewById(R.id.pollOption1).setEnabled(false);
             }
         });
         ((Button) view.findViewById(R.id.pollOption2)).setOnClickListener(new View.OnClickListener() {
@@ -173,6 +172,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 int intVote = Integer.parseInt(polling.getVote(1));
                 String stringVote = Integer.toString(++intVote);
                 pollingRef.child(polling.getKey()).child("options").child("1").child("1").setValue(stringVote);
+                view.findViewById(R.id.pollOption2).setEnabled(false);
             }
         });
         ((Button) view.findViewById(R.id.pollOption3)).setOnClickListener(new View.OnClickListener() {
@@ -181,6 +181,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 int intVote = Integer.parseInt(polling.getVote(2));
                 String stringVote = Integer.toString(++intVote);
                 pollingRef.child(polling.getKey()).child("options").child("2").child("1").setValue(stringVote);
+                view.findViewById(R.id.pollOption3).setEnabled(false);
             }
         });
         ((Button) view.findViewById(R.id.pollOption4)).setOnClickListener(new View.OnClickListener() {
@@ -189,6 +190,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 int intVote = Integer.parseInt(polling.getVote(3));
                 String stringVote = Integer.toString(++intVote);
                 pollingRef.child(polling.getKey()).child("options").child("3").child("1").setValue(stringVote);
+                view.findViewById(R.id.pollOption4).setEnabled(false);
             }
         });
         ((Button) view.findViewById(R.id.pollOption5)).setOnClickListener(new View.OnClickListener() {
@@ -197,6 +199,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 int intVote = Integer.parseInt(polling.getVote(4));
                 String stringVote = Integer.toString(++intVote);
                 pollingRef.child(polling.getKey()).child("options").child("4").child("1").setValue(stringVote);
+                view.findViewById(R.id.pollOption5).setEnabled(false);
             }
         });
         ((Button) view.findViewById(R.id.pollOption6)).setOnClickListener(new View.OnClickListener() {
@@ -205,6 +208,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 int intVote = Integer.parseInt(polling.getVote(5));
                 String stringVote = Integer.toString(++intVote);
                 pollingRef.child(polling.getKey()).child("options").child("5").child("1").setValue(stringVote);
+                view.findViewById(R.id.pollOption6).setEnabled(false);
             }
         });
         ((Button) view.findViewById(R.id.pollOption7)).setOnClickListener(new View.OnClickListener() {
@@ -213,6 +217,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 int intVote = Integer.parseInt(polling.getVote(6));
                 String stringVote = Integer.toString(++intVote);
                 pollingRef.child(polling.getKey()).child("options").child("6").child("1").setValue(stringVote);
+                view.findViewById(R.id.pollOption7).setEnabled(false);
             }
         });
         ((Button) view.findViewById(R.id.pollOption8)).setOnClickListener(new View.OnClickListener() {
@@ -221,6 +226,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 int intVote = Integer.parseInt(polling.getVote(7));
                 String stringVote = Integer.toString(++intVote);
                 pollingRef.child(polling.getKey()).child("options").child("7").child("1").setValue(stringVote);
+                view.findViewById(R.id.pollOption8).setEnabled(false);
             }
         });
         ((Button) view.findViewById(R.id.pollOption9)).setOnClickListener(new View.OnClickListener() {
@@ -229,6 +235,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 int intVote = Integer.parseInt(polling.getVote(8));
                 String stringVote = Integer.toString(++intVote);
                 pollingRef.child(polling.getKey()).child("options").child("8").child("1").setValue(stringVote);
+                view.findViewById(R.id.pollOption9).setEnabled(false);
             }
         });
         ((Button) view.findViewById(R.id.pollOption10)).setOnClickListener(new View.OnClickListener() {
@@ -237,6 +244,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 int intVote = Integer.parseInt(polling.getVote(9));
                 String stringVote = Integer.toString(++intVote);
                 pollingRef.child(polling.getKey()).child("options").child("9").child("1").setValue(stringVote);
+                view.findViewById(R.id.pollOption10).setEnabled(false);
             }
         });
 
