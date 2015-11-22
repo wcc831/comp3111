@@ -7,6 +7,7 @@ import java.util.Date;
  */
 public class Polling implements Comparable<Polling> {
 
+    private String key;
     private String name;
     private String[][] options = new String[10][2];
     private long timestamp;
@@ -30,6 +31,9 @@ public class Polling implements Comparable<Polling> {
         }
     }
 
+    public String getKey() {
+        return key;
+    }
 
     public String getName(){
         return name;
@@ -41,6 +45,10 @@ public class Polling implements Comparable<Polling> {
 
     public long getTimestamp(){
         return timestamp;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     @Override
