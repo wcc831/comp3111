@@ -127,10 +127,10 @@ public class GoogleLogin extends AsyncTask<Void , Void , Void> {
                             */
                             File googleProfileDir = new File(mActivity.getFilesDir(), "google");
 
-                            /*if (googleProfileDir.exists()){
+                            if (googleProfileDir.exists()){
                                 loginCallback.onPictureReady();
                                 return null;
-                            }*/
+                            }
                             loginCallback.onPictureReady();
 
 

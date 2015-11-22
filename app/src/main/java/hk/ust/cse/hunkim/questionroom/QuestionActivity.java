@@ -2,6 +2,8 @@ package hk.ust.cse.hunkim.questionroom;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -91,6 +94,7 @@ public class QuestionActivity extends Activity {
 
                 TextView category = (TextView) findViewById(R.id.category);
                 TextView msg = (TextView) findViewById(R.id.head_desc);
+                final TextView questionerView = (TextView) findViewById(R.id.questioner);
                 category.setText(q.getCategory());
                 msg.setText(q.getWholeMsg());
                 Typeface helvetica = Typeface.createFromAsset(getAssets(), "font/Helvetica_Neue.ttf");
@@ -99,15 +103,19 @@ public class QuestionActivity extends Activity {
                     category.setTypeface(helvetica, Typeface.BOLD);
                     msg.setTextColor((0xFF2DAAF3));
                     category.setTextColor((0xFF2DAAF3));
+                    questionerView.setTypeface(helvetica, Typeface.BOLD);
+                    questionerView.setTextColor((0xFF2DAAF3));
+
                 }
                 else if (q.getHighlight() == 1) {
                     msg.setTypeface(helvetica);
                     category.setTypeface(helvetica, Typeface.BOLD);
                     msg.setTextColor((0xFFF28D09));
                     category.setTextColor((0xFFF28D09));
+                    questionerView.setTypeface(helvetica, Typeface.BOLD);
+                    questionerView.setTextColor((0xFFF28D09));
+
                 }
-
-
 
                 //set attachment
                 String encodedImage = q.getAttachment();
@@ -256,6 +264,37 @@ public class QuestionActivity extends Activity {
 
     public void addToFavorite(MenuItem item) {
 
+    }
+
+    public void giveComment(View view) {
+
+        final Firebase commentRef = fireRef.child("rooms").child(roomName).child("comment").child(questionKey).push();
+
+        LayoutInflater inflater = getLayoutInflater();
+        final View AddCommentLayout = inflater.inflate(R.layout.add_comment_layout, null);
+        final TextView comentContent = (TextView) AddCommentLayout.findViewById(R.id.add_comment);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(AddCommentLayout).setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (comentContent.getText().length() < 1){
+                    Toast.makeText(QuestionActivity.this, "comment cannot be empty.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Question question = new Question(comentContent.getText().toString());
+                if (UserInfo.getInstance().role == UserInfo.SUPERVISOR)
+                    question.setHighlight(2);
+                commentRef.setValue(question);
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
     }
 
 }

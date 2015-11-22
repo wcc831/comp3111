@@ -34,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +77,10 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            logout(null);
+        }
 
         //set status bar color
         Window window = getWindow();
@@ -169,12 +174,18 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         searchView.setOnQueryTextListener(this);
         searchView.setSubmitButtonEnabled(false);
         EditText editText = (EditText)searchView.findViewById(getResources().getIdentifier("android:id/search_src_text", null, null));
-        editText.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        editText.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         LinearLayout searchBar = (LinearLayout) searchView.findViewById(R.id.action_search);
         searchBar.setLayoutTransition(new LayoutTransition());
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+
+        if (user.isAuthenticated()) {
+            ImageView imageView = (ImageView) findViewById(R.id.drawer_logout);
+            imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.logout));
+            //imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+        }
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -398,6 +409,13 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
     public void startCamera(MenuItem item) {
         Intent cameraIntent = new Intent(this, CameraViewActivity.class);
         startActivity(cameraIntent);
+    }
+
+    public void logout(View view) {
+        user.logout();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
+
     }
 }
 

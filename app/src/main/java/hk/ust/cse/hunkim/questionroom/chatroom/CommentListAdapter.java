@@ -1,6 +1,8 @@
 package hk.ust.cse.hunkim.questionroom.chatroom;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,7 +47,7 @@ public class CommentListAdapter extends ArrayAdapter<Question> {
         this.context = context;
         this.questions = questions;
 
-        queryOnce();
+        query();
     }
 
     private void queryOnce() {
@@ -107,11 +109,29 @@ public class CommentListAdapter extends ArrayAdapter<Question> {
 
         String questioner = comment.getQuestioner();
         String message = comment.getWholeMsg();
+
+        TextView questionerView = (TextView) commentView.findViewById(R.id.questioner);
         if (questioner != null)
-            ((TextView) commentView.findViewById(R.id.questioner)).setText(questioner);
+            questionerView.setText(questioner);
         else
-            ((TextView) commentView.findViewById(R.id.questioner)).setText("Anonymous");
-        ((TextView) commentView.findViewById(R.id.head_desc)).setText(message);
+            questionerView.setText("Anonymous");
+
+        TextView messageView = (TextView) commentView.findViewById(R.id.head_desc);
+        messageView.setText(message);
+
+        if (comment.getHighlight() == 2){
+            Typeface helvetica = Typeface.createFromAsset(context.getAssets(), "font/Helvetica_Neue.ttf");
+
+            messageView.setTypeface(helvetica, Typeface.BOLD);
+            messageView.setTextColor((0xFF2DAAF3));
+
+            questionerView.setTypeface(helvetica, Typeface.BOLD);
+            questionerView.setTextColor((0xFF2DAAF3));
+        }
+        else {
+            messageView.setTextColor(Color.BLACK);
+            questionerView.setTextColor(Color.BLACK);
+        }
 
         long time = comment.getTimestamp();
         String relativeTime = (String) DateUtils.getRelativeDateTimeString(context, time, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL);

@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_leftMenuWraper"
-    android:padding="20dp"
     android:layout_width="300dp"
     android:layout_height="fill_parent"
     android:layout_gravity="start"
@@ -14,8 +13,10 @@
     >
 
     <RelativeLayout
+        android:background="@color/my_blue"
+        android:padding="20dp"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="200dp"
         android:id="@+id/drawer_userProfile"
         android:orientation="vertical">
         <ImageView
@@ -29,52 +30,56 @@
             />
 
         <TextView
+            android:paddingTop="5dp"
+            android:textColor="@color/gray_light2"
             android:id="@+id/drawer_profileEmail"
             android:text="email adderss"
             android:textSize="@dimen/font_size_middle"
-            android:paddingTop="15dp"
             android:gravity="center"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true" />
 
         <TextView
+            android:textColor="@color/gray_light1"
             android:id="@+id/drawer_userRole"
-            android:text="role"
+            android:text="normal user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"/>
+            android:layout_above="@+id/drawer_profileEmail"
+            android:layout_alignParentStart="true" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="60dp"
+        <ImageView
+            android:src="@drawable/transparent_bg"
+            android:id="@+id/drawer_logout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignEnd="@+id/drawer_userRole">
-
-            <TextView
-                android:text="auto hide"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <ImageView
-                android:id="@+id/hide_message"
-                android:src="@drawable/off"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:onClick="changeHideMessage"/>
-        </LinearLayout>
-
-
+            android:onClick="logout"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
 
 
     </RelativeLayout>
     <LinearLayout
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/drawer_menu"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/drawer_onlineUsers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
+        <ImageView
+            android:id="@+id/hide_message"
+            android:src="@drawable/off"
+            android:layout_width="70dp"
+            android:layout_height="50dp" android:onClick="changeHideMessage" />
 
     </LinearLayout>
 </LinearLayout>

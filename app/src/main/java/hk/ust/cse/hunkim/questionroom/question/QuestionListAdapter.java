@@ -36,6 +36,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -156,6 +158,8 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
                      }
 
                     Question question = new Question(comentContent.getText().toString());
+                    if (UserInfo.getInstance().role == UserInfo.SUPERVISOR)
+                        question.setHighlight(2);
                     commentPushRef.setValue(question);
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -241,7 +245,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
      * @param question An instance representing the current state of a chat message
      */
     @Override
-    protected void populateView(final View view, Question question) {
+    protected void populateView(final View view, final Question question) {
 
         if (UserInfo.getInstance().hideMessage && question.getDislike() != 0)
             view.setLayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -304,21 +308,27 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
         // 0= nothing, 1 = prof like , 2= prof ask
         final TextView supervisorText = (TextView) view.findViewById(R.id.head_desc);
         final TextView supervisorCate = (TextView) view.findViewById(R.id.category);
+        final TextView questionerView = (TextView) view.findViewById(R.id.questioner);
         Typeface helvetica = Typeface.createFromAsset(context.getAssets(), "font/Helvetica_Neue.ttf");
         if (question.getHighlight() == 2) {
             supervisorText.setTypeface(helvetica);
             supervisorCate.setTypeface(helvetica, Typeface.BOLD);
+            questionerView.setTypeface(helvetica, Typeface.BOLD);
             supervisorText.setTextColor((0xFF2DAAF3));
             supervisorCate.setTextColor((0xFF2DAAF3));
+            questionerView.setTextColor((0xFF2DAAF3));
         }
         else if (question.getHighlight() == 1) {
             supervisorText.setTypeface(helvetica);
             supervisorCate.setTypeface(helvetica, Typeface.BOLD);
+            questionerView.setTypeface(helvetica, Typeface.BOLD);
             supervisorText.setTextColor((0xFFF28D09));
             supervisorCate.setTextColor((0xFFF28D09));
+            questionerView.setTextColor((0xFFF28D09));
 
         }
         else {
+            questionerView.setTextColor(Color.BLACK);
             supervisorText.setTextColor(Color.BLACK);
             supervisorCate.setTextColor(Color.BLACK);
         }
@@ -424,8 +434,13 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
         commentRef.child(question.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists())
-                    ((TextView) view.findViewById(R.id.more_comment)).setText("click to view more comment");
+                if (dataSnapshot.getValue() != null) {
+                    Log.d("comment", question.getWholeMsg());
+                    TextView textView = (TextView) view.findViewById(R.id.more_comment);
+                    textView.setText("comment...");
+                    textView.setTextColor(context.getResources().getColor(R.color.gray_light1));
+                }
+
             }
 
             @Override

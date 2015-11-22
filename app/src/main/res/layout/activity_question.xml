@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:orientation="vertical"
     tools:context="hk.ust.cse.hunkim.questionroom.QuestionActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/round_corner_bg">
+    <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent"
+        android:orientation="vertical">
 
-        <include layout="@layout/question"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_corner_bg">
+
+            <include layout="@layout/question"/>
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/question_comments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/question_comments"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <ImageView
+        android:src="@drawable/addthis"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="450dp"
+        android:layout_marginStart="300dp"
+        android:onClick="giveComment"/>
 
-</LinearLayout>
+
+
+</RelativeLayout>

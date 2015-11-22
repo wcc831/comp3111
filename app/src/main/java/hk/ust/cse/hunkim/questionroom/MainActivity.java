@@ -22,14 +22,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +42,8 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
@@ -234,7 +240,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         final ListView listView = getListView();
         // Tell our list adapter that we only want 200 messages at a time
         mChatListAdapter = new QuestionListAdapter(
-                mChatroomRef.orderByChild("echo").limitToFirst(200),
+                mChatroomRef.orderByChild("timestamp").limitToFirst(200),
                 this, R.layout.question, this, mChatroomRef.getParent().child("comment"));
         mChatListAdapter.setOnTouchListener(
                 Generic.getAnimateColorListener(
@@ -346,6 +352,12 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
         setCategoryChoice(3);
 
+        if (user.isAuthenticated()) {
+            ImageView imageView = (ImageView) findViewById(R.id.drawer_logout);
+            imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.logout));
+            //imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -364,7 +376,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-
+            ((EditText)findViewById(R.id.messageInput)).setText(" ");
             sendMessage(imageBitmap);
             //ImageView mImageView = (ImageView) findViewById(R.id.cameraImageView);
             //mImageView.setImageBitmap(imageBitmap);
@@ -466,14 +478,10 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                     numUser++;
                 }
 
-                TextView textView = new TextView(MainActivity.this);
-                textView.setId(R.id.drawer_onlineUsers);
+                TextView textView = (TextView) findViewById(R.id.drawer_onlineUsers);
                 textView.setText("online users: " + Integer.toString(numUser));
-                textView.setPadding(5, 5, 5, 5);
+                textView.setPadding(0, 5, 5, 5);
 
-                LinearLayout linearLayout = ((LinearLayout) findViewById(R.id.drawer_menu));
-                if (linearLayout.findViewById(R.id.drawer_onlineUsers) == null)
-                    linearLayout.addView(textView);
             }
 
             @Override
@@ -535,8 +543,17 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
         }
 
-        mChatListAdapter.refersh();
+        //mChatListAdapter.refersh();
+        startActivity(getIntent());
+        finish();
 
+    }
+
+    public void logout(View view) {
+        Intent intent = new Intent(getApplicationContext(), JoinActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
+        startActivity(intent);
     }
 
     public void startCamera(MenuItem item) {
