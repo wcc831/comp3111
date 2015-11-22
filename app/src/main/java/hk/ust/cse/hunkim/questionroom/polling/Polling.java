@@ -31,6 +31,14 @@ public class Polling implements Comparable<Polling> {
         }
     }
 
+    public void setVote(int i, String s){
+        options[i][1] = s;
+    }
+
+    public String getVote(int i){
+        return options[i][1];
+    }
+
     public String getKey() {
         return key;
     }
@@ -53,17 +61,24 @@ public class Polling implements Comparable<Polling> {
 
     @Override
     public int compareTo(Polling other) {
-        return 0;
+        if (other.timestamp == this.timestamp) {
+            return 0;
+        }
+        return other.timestamp > this.timestamp ? -1 : 1;
     }
-
 
     @Override
     public boolean equals(Object o) {
-        return false;
+        if (!(o instanceof Polling)) {
+            return false;
+        }
+        Polling other = (Polling)o;
+        return key.equals(other.key);
     }
+
 
     @Override
     public int hashCode() {
-        return 0;
+        return key.hashCode();
     }
 }
