@@ -51,6 +51,7 @@ import hk.ust.cse.hunkim.questionroom.FirebaseListAdapter;
 import hk.ust.cse.hunkim.questionroom.MainActivity;
 import hk.ust.cse.hunkim.questionroom.QuestionActivity;
 import hk.ust.cse.hunkim.questionroom.R;
+import hk.ust.cse.hunkim.questionroom.animation.AnimationFactory;
 import hk.ust.cse.hunkim.questionroom.chatroom.ChatRoomListAdapter;
 import hk.ust.cse.hunkim.questionroom.chatroom.CommentListAdapter;
 import hk.ust.cse.hunkim.questionroom.db.DBUtil;
@@ -248,8 +249,23 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
     @Override
     protected void populateView(final View view, final Question question) {
 
-        if (UserInfo.getInstance().hideMessage && question.getDislike() != 0)
-            view.setLayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (UserInfo.getInstance().hideMessage && question.getDislike() != 0) {
+            //view.findViewById(R.id.question_container).setVisibility(View.GONE);
+            //view.findViewById(R.id.question_hide).setVisibility(View.VISIBLE);
+
+            AnimationFactory.crossFade(view.findViewById(R.id.question_container), view.findViewById(R.id.question_hide), 1000);
+
+            return;
+        }
+        else if (!UserInfo.getInstance().hideMessage
+                && view.findViewById(R.id.question_hide).getVisibility() == View.VISIBLE) {
+
+            //view.findViewById(R.id.question_container).setVisibility(View.VISIBLE);
+            //view.findViewById(R.id.question_hide).setVisibility(View.GONE);
+
+            AnimationFactory.crossFade(view.findViewById(R.id.question_hide), view.findViewById(R.id.question_container), 1000);
+        }
+
 
         DBUtil dbUtil = activity.getDbutil();
 
@@ -438,8 +454,12 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
                 if (dataSnapshot.getValue() != null) {
                     Log.d("comment", question.getWholeMsg());
                     TextView textView = (TextView) view.findViewById(R.id.more_comment);
-                    textView.setText("comment...");
-                    textView.setTextColor(context.getResources().getColor(R.color.gray_light1));
+                    textView.setText("view comments ->");
+                    textView.setTextColor(context.getResources().getColor(R.color.black_dark1));
+                }
+                else{
+                    TextView textView = (TextView) view.findViewById(R.id.more_comment);
+                    textView.setText(" ");
                 }
 
             }

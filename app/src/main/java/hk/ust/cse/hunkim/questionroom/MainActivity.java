@@ -544,9 +544,10 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
         }
 
+        mChatListAdapter.notifyDataSetChanged();
         //mChatListAdapter.refersh();
-        startActivity(getIntent());
-        finish();
+        //startActivity(getIntent());
+        //finish();
 
     }
 

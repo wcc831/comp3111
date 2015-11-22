@@ -151,7 +151,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
         }
         numOfOption++;
 
-        /*fireRef = new Firebase(MainActivity.FIREBASE_URL);
+        fireRef = new Firebase(MainActivity.FIREBASE_URL);
 
         ((Button) view.findViewById(R.id.pollOption1)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +159,7 @@ public class PollingListAdapter extends FirebaseListAdapter<Polling> {
                 mAddVote = pollingRef.child("options").child("0").child("1");
                 mAddVote.push().setValue("HelloWorld");
             }
-        });*/
+        });
 
         long pollTime = polling.getTimestamp();
         String relativeTime = (String) DateUtils.getRelativeDateTimeString(context, pollTime, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL);
