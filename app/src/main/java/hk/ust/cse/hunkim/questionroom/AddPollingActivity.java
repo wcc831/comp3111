@@ -16,6 +16,7 @@ import hk.ust.cse.hunkim.questionroom.polling.Polling;
 public class AddPollingActivity extends ListActivity {
 
     public static final String FIREBASE_URL = "https://instaquest.firebaseio.com/";
+    int num_answer = 0;
 
 
     private String roomName;
@@ -102,6 +103,57 @@ public class AddPollingActivity extends ListActivity {
                 pollingAnswerInputText10.setText("");
             }
         });
+    }
+
+    public void addOption(View view){
+        if (num_answer == 0)
+            findViewById(R.id.poll_answer_input1).setVisibility(View.VISIBLE);
+        if (num_answer == 1)
+            findViewById(R.id.poll_answer_input2).setVisibility(View.VISIBLE);
+        if (num_answer == 2)
+            findViewById(R.id.poll_answer_input3).setVisibility(View.VISIBLE);
+        if (num_answer == 3)
+            findViewById(R.id.poll_answer_input4).setVisibility(View.VISIBLE);
+        if (num_answer == 4)
+            findViewById(R.id.poll_answer_input5).setVisibility(View.VISIBLE);
+        if (num_answer == 5)
+            findViewById(R.id.poll_answer_input6).setVisibility(View.VISIBLE);
+        if (num_answer == 6)
+            findViewById(R.id.poll_answer_input7).setVisibility(View.VISIBLE);
+        if (num_answer == 7)
+            findViewById(R.id.poll_answer_input8).setVisibility(View.VISIBLE);
+        if (num_answer == 8)
+            findViewById(R.id.poll_answer_input9).setVisibility(View.VISIBLE);
+        if (num_answer == 9)
+            findViewById(R.id.poll_answer_input10).setVisibility(View.VISIBLE);
+        if (num_answer < 10){
+            num_answer++;
+        }
+    }
+
+    public void removeOption(View view){
+        if (num_answer == 1)
+            findViewById(R.id.poll_answer_input1).setVisibility(View.GONE);
+        if (num_answer == 2)
+            findViewById(R.id.poll_answer_input2).setVisibility(View.GONE);
+        if (num_answer == 3)
+            findViewById(R.id.poll_answer_input3).setVisibility(View.GONE);
+        if (num_answer == 4)
+            findViewById(R.id.poll_answer_input4).setVisibility(View.GONE);
+        if (num_answer == 5)
+            findViewById(R.id.poll_answer_input5).setVisibility(View.GONE);
+        if (num_answer == 6)
+            findViewById(R.id.poll_answer_input6).setVisibility(View.GONE);
+        if (num_answer == 7)
+            findViewById(R.id.poll_answer_input7).setVisibility(View.GONE);
+        if (num_answer == 8)
+            findViewById(R.id.poll_answer_input8).setVisibility(View.GONE);
+        if (num_answer == 9)
+            findViewById(R.id.poll_answer_input9).setVisibility(View.GONE);
+        if (num_answer == 10)
+            findViewById(R.id.poll_answer_input10).setVisibility(View.GONE);
+        if (num_answer > 0)
+            num_answer--;
     }
 
     @Override

@@ -81,5 +81,20 @@
             android:layout_width="70dp"
             android:layout_height="50dp" android:onClick="changeHideMessage" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Badword Filter"
+            android:layout_marginTop="20dp"
+            android:textSize="15dp"/>
+
+        <ImageView
+            android:id="@+id/hide_badword"
+            android:src="@drawable/off"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:onClick="changeHideBadword"/>
+
+
     </LinearLayout>
 </LinearLayout>
