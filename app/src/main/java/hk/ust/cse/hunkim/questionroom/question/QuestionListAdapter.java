@@ -249,21 +249,23 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
     @Override
     protected void populateView(final View view, final Question question) {
 
-        if (UserInfo.getInstance().hideMessage && question.getDislike() != 0) {
-            //view.findViewById(R.id.question_container).setVisibility(View.GONE);
-            //view.findViewById(R.id.question_hide).setVisibility(View.VISIBLE);
+        if (UserInfo.getInstance().hideMessage && question.getDislike() - question.getLike() >= 80) {
+            view.findViewById(R.id.question_container).setVisibility(View.GONE);
+            view.findViewById(R.id.question_hide).setVisibility(View.VISIBLE);
 
-            AnimationFactory.crossFade(view.findViewById(R.id.question_container), view.findViewById(R.id.question_hide), 1000);
+
+            Log.d("hide", Integer.toString(question.getDislike() - question.getLike()) + ", " + question.getWholeMsg());
+            //AnimationFactory.crossFade(view.findViewById(R.id.question_container), view.findViewById(R.id.question_hide), 1000);
 
             return;
         }
         else if (!UserInfo.getInstance().hideMessage
                 && view.findViewById(R.id.question_hide).getVisibility() == View.VISIBLE) {
 
-            //view.findViewById(R.id.question_container).setVisibility(View.VISIBLE);
-            //view.findViewById(R.id.question_hide).setVisibility(View.GONE);
-
-            AnimationFactory.crossFade(view.findViewById(R.id.question_hide), view.findViewById(R.id.question_container), 1000);
+            view.findViewById(R.id.question_container).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.question_hide).setVisibility(View.GONE);
+            return;
+            //AnimationFactory.crossFade(view.findViewById(R.id.question_hide), view.findViewById(R.id.question_container), 1000);
         }
 
 
@@ -456,8 +458,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
                     TextView textView = (TextView) view.findViewById(R.id.more_comment);
                     textView.setText("view comments ->");
                     textView.setTextColor(context.getResources().getColor(R.color.black_dark1));
-                }
-                else{
+                } else {
                     TextView textView = (TextView) view.findViewById(R.id.more_comment);
                     textView.setText(" ");
                 }
@@ -469,6 +470,11 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
 
             }
         });
+
+        if (!question.isLoad)
+            AnimationFactory.fadeIn(view, 500);
+
+        question.isLoad = true;
 
     }
 

@@ -31,6 +31,7 @@ import java.util.List;
 import hk.ust.cse.hunkim.questionroom.FirebaseListAdapter;
 import hk.ust.cse.hunkim.questionroom.Generic;
 import hk.ust.cse.hunkim.questionroom.R;
+import hk.ust.cse.hunkim.questionroom.animation.AnimationFactory;
 import hk.ust.cse.hunkim.questionroom.question.Question;
 
 /**
@@ -220,6 +221,11 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
 
 
         chatRoomView.setOnTouchListener(onTouchListener);
+
+        if (!room.isLoad)
+            AnimationFactory.fadeIn(chatRoomView, 500);
+
+        room.isLoad = true;
 
         return chatRoomView;
     }

@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class Question implements Comparable<Question> {
 
+    public boolean isLoad = false;
+
     /**
      * Must be synced with firebase JSON structure
      * Each must have getters

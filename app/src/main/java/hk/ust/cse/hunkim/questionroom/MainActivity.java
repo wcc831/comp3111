@@ -327,7 +327,7 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu items for use in the action bar
         Log.d("main", "option menu created");
         MenuInflater inflater = getMenuInflater();
@@ -336,9 +336,6 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
         ActionBar actionBar = getActionBar();
         if (actionBar != null)
             actionBar.setTitle(roomName);
-
-        if(user.isAuthenticated())
-            menu.findItem(R.id.action_addFavorite).setVisible(true);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -358,6 +355,29 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
             imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.logout));
             //imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
         }
+
+        if(user.isAuthenticated()) {
+
+            mFirebaseRef.child("userRecord").child(user.id).child("favorite").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        if (child.getValue().toString().equals(roomName))
+                            return;
+                    }
+
+                    menu.findItem(R.id.action_addFavorite).setVisible(true);
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+
+        }
+
 
         return super.onCreateOptionsMenu(menu);
     }

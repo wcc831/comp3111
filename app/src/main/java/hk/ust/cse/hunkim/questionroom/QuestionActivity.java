@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -119,7 +120,8 @@ public class QuestionActivity extends Activity {
 
                 //set attachment
                 String encodedImage = q.getAttachment();
-                if (encodedImage != null) {
+                if (!TextUtils.isEmpty(encodedImage)
+                        && encodedImage.indexOf(',') > 0) {
                     encodedImage = encodedImage.substring(encodedImage.indexOf(','));
                     byte[] imageAsBytes = Base64.decode(encodedImage.getBytes(), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
