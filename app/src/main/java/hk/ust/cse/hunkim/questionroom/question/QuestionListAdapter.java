@@ -320,8 +320,15 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
 
         Log.d("comments", msgString);
 
+        if (UserInfo.getInstance().isAuthenticated()){
+            if (UserInfo.getInstance().hideBadword)
+                ((TextView) view.findViewById(R.id.head_desc)).setText(badWordFilter(msgString));
+            else
+                ((TextView) view.findViewById(R.id.head_desc)).setText(msgString);
+        }
+        else
+            ((TextView) view.findViewById(R.id.head_desc)).setText(msgString);
 
-        ((TextView) view.findViewById(R.id.head_desc)).setText(badWordFilter(msgString));
         // 0= nothing, 1 = prof like , 2= prof ask
         final TextView supervisorText = (TextView) view.findViewById(R.id.head_desc);
         final TextView supervisorCate = (TextView) view.findViewById(R.id.category);
@@ -456,8 +463,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
                     TextView textView = (TextView) view.findViewById(R.id.more_comment);
                     textView.setText("view comments ->");
                     textView.setTextColor(context.getResources().getColor(R.color.black_dark1));
-                }
-                else{
+                } else {
                     TextView textView = (TextView) view.findViewById(R.id.more_comment);
                     textView.setText(" ");
                 }
