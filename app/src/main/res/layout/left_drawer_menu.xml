@@ -92,14 +92,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Badword Filter"
+            android:id="@+id/hide_badword_title"
             android:layout_marginTop="20dp"
+            android:visibility="gone"
             android:textSize="15dp"/>
 
         <ImageView
             android:id="@+id/hide_badword"
-            android:src="@drawable/off"
+            android:src="@drawable/on"
             android:layout_width="70dp"
             android:layout_height="50dp"
+            android:visibility="gone"
             android:onClick="changeHideBadword"/>
 
 

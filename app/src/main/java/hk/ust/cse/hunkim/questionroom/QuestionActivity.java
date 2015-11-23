@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -41,6 +42,7 @@ import hk.ust.cse.hunkim.questionroom.db.DBHelper;
 import hk.ust.cse.hunkim.questionroom.db.DBUtil;
 import hk.ust.cse.hunkim.questionroom.login.UserInfo;
 import hk.ust.cse.hunkim.questionroom.question.Question;
+import hk.ust.cse.hunkim.questionroom.question.QuestionListAdapter;
 import hk.ust.cse.hunkim.questionroom.server.ServerConfig;
 import hk.ust.cse.hunkim.questionroom.server.ServerConnection;
 
@@ -102,7 +104,14 @@ public class QuestionActivity extends Activity {
                 TextView msg = (TextView) findViewById(R.id.head_desc);
                 final TextView questionerView = (TextView) findViewById(R.id.questioner);
                 category.setText(q.getCategory());
-                msg.setText(q.getWholeMsg());
+
+
+                if (!UserInfo.getInstance().isAuthenticated() || UserInfo.getInstance().hideBadword)
+                    msg.setText(QuestionListAdapter.badWordFilter(q.getWholeMsg()));
+                else
+                    msg.setText(q.getWholeMsg());
+
+
                 Typeface helvetica = Typeface.createFromAsset(getAssets(), "font/Helvetica_Neue.ttf");
                 if (q.getHighlight() == 2) {
                     msg.setTypeface(helvetica);
@@ -138,7 +147,10 @@ public class QuestionActivity extends Activity {
                     byte[] imageAsBytes = Base64.decode(encodedImage.getBytes(), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
                     ImageView image = (ImageView) findViewById(R.id.attachment);
-                    image.setLayoutParams(new LinearLayout.LayoutParams(bitmap.getWidth() * 5, bitmap.getHeight() * 5));
+                    if (bitmap.getHeight() * 5 < 500)
+                        image.setLayoutParams(new LinearLayout.LayoutParams(bitmap.getWidth() * 5, bitmap.getHeight() * 5));
+                    else
+                        image.setLayoutParams(new LinearLayout.LayoutParams( ((500 * bitmap.getWidth()) / bitmap.getHeight()), 500));
                     image.setImageBitmap(bitmap);
                     image.setPadding(0, 15, 0, 15);
                 }
@@ -168,7 +180,7 @@ public class QuestionActivity extends Activity {
         });
 
         setUpdateListener(((Button) findViewById(R.id.echo)), "like", 1);
-        setUpdateListener(((Button) findViewById(R.id.dislike)), "dislike", -1);
+        setUpdateListener(((Button) findViewById(R.id.dislike)), "dislike", 1);
         //load comments
         CommentListAdapter adapter = new CommentListAdapter(fireRef.child("rooms").child(roomName).child("comment").child(questionKey).orderByChild("timestamp"),
                 this, new ArrayList<Question>());
@@ -188,7 +200,7 @@ public class QuestionActivity extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setTitle("InstaQuest");
 
-        menu.findItem(R.id.action_giveReword).setVisible(UserInfo.getInstance().role == UserInfo.SUPERVISOR);
+        menu.findItem(R.id.action_giveReword).setVisible(UserInfo.getInstance().role == UserInfo.SUPERVISOR && highlight != 2);
         menu.findItem(R.id.action_highlight).setVisible(UserInfo.getInstance().role == UserInfo.SUPERVISOR && highlight == 0);
         menu.findItem(R.id.action_unhighlight).setVisible(UserInfo.getInstance().role == UserInfo.SUPERVISOR && highlight == 1);
 

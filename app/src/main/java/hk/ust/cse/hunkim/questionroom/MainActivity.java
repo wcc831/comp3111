@@ -136,6 +136,10 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
                     setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off));
         }
 
+        if (user.isAuthenticated()) {
+            findViewById(R.id.hide_badword_title).setVisibility(View.VISIBLE);
+            findViewById(R.id.hide_badword).setVisibility(View.VISIBLE);
+        }
 
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button

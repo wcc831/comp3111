@@ -23,7 +23,7 @@ public class UserInfo {
     public File profileImage;
     public int role = -1;
     public boolean hideMessage = false;
-    public boolean hideBadword = false;
+    public boolean hideBadword = true;
 
     private static UserInfo userInfo = new UserInfo();
     private boolean authenticated = false;

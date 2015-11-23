@@ -218,7 +218,7 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
 
     }
 
-    public String badWordFilter(String message){
+    public static String badWordFilter(String message){
         return message.replaceAll("(?i)fuck", "love").replaceAll("(?i)fuxk", "support").replaceAll("(?i)fxck", "support").replaceAll("(?i)fxxk", "great").replaceAll("(?i)on9", "clever")
                 .replaceAll("(?i)on 9", "clever").replaceAll("(?i)diu", "Auntie").replaceAll("(?i)chi lan sin", "HaHa").replaceAll("(?i)on lun", "HiHi").replaceAll("(?i)asshole", "javascript")
                 .replaceAll("(?i)ass hole", "javascript").replaceAll("(?i)ass ", "java ").replaceAll("(?i)bitch", "friend").replaceAll("(?i)suck", "good").replaceAll("(?i)popkai","lucky")
@@ -322,14 +322,11 @@ public class QuestionListAdapter extends FirebaseListAdapter<Question> implement
 
         Log.d("comments", msgString);
 
-        if (UserInfo.getInstance().isAuthenticated()){
-            if (UserInfo.getInstance().hideBadword)
-                ((TextView) view.findViewById(R.id.head_desc)).setText(badWordFilter(msgString));
-            else
-                ((TextView) view.findViewById(R.id.head_desc)).setText(msgString);
-        }
+        if (!UserInfo.getInstance().isAuthenticated() || UserInfo.getInstance().hideBadword)
+            ((TextView) view.findViewById(R.id.head_desc)).setText(badWordFilter(msgString));
         else
             ((TextView) view.findViewById(R.id.head_desc)).setText(msgString);
+
 
         // 0= nothing, 1 = prof like , 2= prof ask
         final TextView supervisorText = (TextView) view.findViewById(R.id.head_desc);

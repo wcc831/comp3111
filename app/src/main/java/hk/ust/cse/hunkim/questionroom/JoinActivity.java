@@ -117,6 +117,11 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
                     setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off));
         }
 
+        if (user.isAuthenticated()) {
+            findViewById(R.id.hide_badword_title).setVisibility(View.VISIBLE);
+            findViewById(R.id.hide_badword).setVisibility(View.VISIBLE);
+        }
+
         //setup drawer
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.join_mainLayout);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.leftMenu_open, R.string.leftMenu_close){
@@ -416,6 +421,21 @@ public class JoinActivity extends FragmentActivity implements SearchView.OnQuery
         startActivity(new Intent(this, LoginActivity.class));
         finish();
 
+    }
+
+    public void changeHideBadword(View view) {
+        user.hideBadword = !user.hideBadword;
+        if(user.hideBadword) {
+            ((ImageView) view).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on));
+        }
+        else {
+            ((ImageView) view).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off));
+        }
+
+        chatroomPagerAdapter.notifyDataSetChanged();
+        //mChatListAdapter.refersh();
+        //startActivity(getIntent());
+        //finish();
     }
 }
 

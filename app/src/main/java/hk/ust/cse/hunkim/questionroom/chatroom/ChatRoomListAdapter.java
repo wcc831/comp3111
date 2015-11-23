@@ -32,7 +32,9 @@ import hk.ust.cse.hunkim.questionroom.FirebaseListAdapter;
 import hk.ust.cse.hunkim.questionroom.Generic;
 import hk.ust.cse.hunkim.questionroom.R;
 import hk.ust.cse.hunkim.questionroom.animation.AnimationFactory;
+import hk.ust.cse.hunkim.questionroom.login.UserInfo;
 import hk.ust.cse.hunkim.questionroom.question.Question;
+import hk.ust.cse.hunkim.questionroom.question.QuestionListAdapter;
 
 /**
  * Created by cc on 10/11/2015.
@@ -181,6 +183,9 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
         String latestQuestionId = dataSnapshot.child("recentQuestion").getValue().toString();
         String latestQuestion = dataSnapshot.child("questions").child(latestQuestionId).child("wholeMsg").getValue().toString();
 
+        if (!UserInfo.getInstance().isAuthenticated() || UserInfo.getInstance().hideBadword);
+            latestQuestion = QuestionListAdapter.badWordFilter(latestQuestion);
+
         DataSnapshot questioner = dataSnapshot.child("questions").child(latestQuestionId).child("questioner");
         if (questioner.getValue() == null){
             latestQuestion = "Anonymous: " + latestQuestion;
@@ -230,4 +235,8 @@ public class ChatRoomListAdapter extends ArrayAdapter<ChatRoom> {
         return chatRoomView;
     }
 
+
+    public void update() {
+
+    }
 }
