@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -56,6 +57,7 @@ public class QuestionActivity extends Activity {
 
     DBUtil dbUtil;
 
+    int highlight = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,9 @@ public class QuestionActivity extends Activity {
         questionRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d(TAG, "changed");
+
                 Question q = dataSnapshot.getValue(Question.class);
 
 
@@ -107,8 +112,7 @@ public class QuestionActivity extends Activity {
                     questionerView.setTypeface(helvetica, Typeface.BOLD);
                     questionerView.setTextColor((0xFF2DAAF3));
 
-                }
-                else if (q.getHighlight() == 1) {
+                } else if (q.getHighlight() == 1) {
                     msg.setTypeface(helvetica);
                     category.setTypeface(helvetica, Typeface.BOLD);
                     msg.setTextColor((0xFFF28D09));
@@ -116,7 +120,15 @@ public class QuestionActivity extends Activity {
                     questionerView.setTypeface(helvetica, Typeface.BOLD);
                     questionerView.setTextColor((0xFFF28D09));
 
+                } else if (q.getHighlight() == 0) {
+                    msg.setTypeface(helvetica);
+                    msg.setTextColor(Color.BLACK);
+                    category.setTextColor(Color.BLACK);
+                    questionerView.setTextColor(Color.BLACK);
+
                 }
+
+                highlight = q.getHighlight();
 
                 //set attachment
                 String encodedImage = q.getAttachment();
@@ -130,7 +142,6 @@ public class QuestionActivity extends Activity {
                     image.setImageBitmap(bitmap);
                     image.setPadding(0, 15, 0, 15);
                 }
-
 
 
                 Button likeButton = ((Button) findViewById(R.id.echo));
@@ -147,7 +158,7 @@ public class QuestionActivity extends Activity {
                 dislikeButton.setEnabled(clickable);
 
                 Log.d(TAG, Boolean.toString(dbUtil.contains(questionKey)));
-
+                invalidateOptionsMenu();
             }
 
             @Override
@@ -178,7 +189,8 @@ public class QuestionActivity extends Activity {
         actionBar.setTitle("InstaQuest");
 
         menu.findItem(R.id.action_giveReword).setVisible(UserInfo.getInstance().role == UserInfo.SUPERVISOR);
-        menu.findItem(R.id.action_highlight).setVisible(UserInfo.getInstance().role == UserInfo.SUPERVISOR);
+        menu.findItem(R.id.action_highlight).setVisible(UserInfo.getInstance().role == UserInfo.SUPERVISOR && highlight == 0);
+        menu.findItem(R.id.action_unhighlight).setVisible(UserInfo.getInstance().role == UserInfo.SUPERVISOR && highlight == 1);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -243,7 +255,10 @@ public class QuestionActivity extends Activity {
     }
 
     public void highlight(MenuItem item) {
-        fireRef.child("rooms").child(roomName).child("questions").child(questionKey).child("highlight").setValue(1);
+        if (item.getItemId() == R.id.action_highlight)
+            fireRef.child("rooms").child(roomName).child("questions").child(questionKey).child("highlight").setValue(1);
+        else if (item.getItemId() == R.id.action_unhighlight)
+            fireRef.child("rooms").child(roomName).child("questions").child(questionKey).child("highlight").setValue(0);
     }
 
     public void giveReward (MenuItem item) {

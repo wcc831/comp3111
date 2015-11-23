@@ -19,4 +19,10 @@
         android:onClick="highlight"
         android:visible="false"/>
 
+    <item android:title="Unhighlight a question"
+        android:id="@+id/action_unhighlight"
+        android:showAsAction="never"
+        android:onClick="highlight"
+        android:visible="false"/>
+
 </menu>
