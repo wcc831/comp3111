@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="Title"
-            android:textSize="20dp"/>
+            android:textSize="24dp"/>
 
         <TextView
             android:id="@+id/pollTime"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="Time"
             android:gravity="right"
-            android:textSize="12dp"/>
+            android:textSize="15dp"/>
 
     </RelativeLayout>
 
@@ -34,13 +34,16 @@
 
         <Button
             android:id="@+id/pollOption1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:textSize="8dp"
+            android:background="@drawable/pollcircle"/>
 
         <Button
             android:id="@+id/bar1"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
             android:background="#ADD8E6" />
 
         <TextView
@@ -60,13 +63,16 @@
 
         <Button
             android:id="@+id/pollOption2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:textSize="8dp"
+            android:background="@drawable/pollcircle" />
 
         <Button
             android:id="@+id/bar2"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
             android:background="#ADD8E6"/>
 
         <TextView
@@ -86,13 +92,16 @@
 
         <Button
             android:id="@+id/pollOption3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:textSize="8dp"
+            android:background="@drawable/pollcircle" />
 
         <Button
             android:id="@+id/bar3"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
             android:background="#ADD8E6"/>
 
         <TextView
@@ -112,13 +121,16 @@
 
         <Button
             android:id="@+id/pollOption4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:textSize="8dp"
+            android:background="@drawable/pollcircle" />
 
         <Button
             android:id="@+id/bar4"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
             android:background="#ADD8E6"/>
 
         <TextView
@@ -138,13 +150,16 @@
 
         <Button
             android:id="@+id/pollOption5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:textSize="8dp"
+            android:background="@drawable/pollcircle" />
 
         <Button
             android:id="@+id/bar5"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
             android:background="#ADD8E6"/>
 
         <TextView
@@ -164,13 +179,16 @@
 
         <Button
             android:id="@+id/pollOption6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:textSize="8dp"
+            android:background="@drawable/pollcircle" />
 
         <Button
             android:id="@+id/bar6"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
             android:background="#ADD8E6"/>
 
         <TextView
@@ -190,13 +208,16 @@
 
         <Button
             android:id="@+id/pollOption7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:textSize="8dp"
+            android:background="@drawable/pollcircle" />
 
         <Button
             android:id="@+id/bar7"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
             android:background="#ADD8E6"/>
 
         <TextView
@@ -216,13 +237,16 @@
 
         <Button
             android:id="@+id/pollOption8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:textSize="8dp"
+            android:background="@drawable/pollcircle" />
 
         <Button
             android:id="@+id/bar8"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
             android:background="#ADD8E6"/>
 
         <TextView
@@ -242,13 +266,16 @@
 
         <Button
             android:id="@+id/pollOption9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:textSize="8dp"
+            android:background="@drawable/pollcircle" />
 
         <Button
             android:id="@+id/bar9"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
             android:background="#ADD8E6"/>
 
         <TextView
@@ -268,13 +295,16 @@
 
         <Button
             android:id="@+id/pollOption10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:textSize="8dp"
+            android:background="@drawable/pollcircle" />
 
         <Button
             android:id="@+id/bar10"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
             android:background="#ADD8E6"/>
 
         <TextView
