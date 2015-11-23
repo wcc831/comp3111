@@ -34,62 +34,99 @@
                 android:id="@+id/poll_answer_input1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Poll's Answer1"/>
+                android:hint="Poll's Answer1"
+                android:visibility="gone"/>
             <EditText
                 android:id="@+id/poll_answer_input2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Poll's Answer2"/>
+                android:hint="Poll's Answer2"
+                android:visibility="gone"/>
             <EditText
                 android:id="@+id/poll_answer_input3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Poll's Answer3"/>
+                android:hint="Poll's Answer3"
+                android:visibility="gone"/>
             <EditText
                 android:id="@+id/poll_answer_input4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Poll's Answer4"/>
+                android:hint="Poll's Answer4"
+                android:visibility="gone"/>
             <EditText
                 android:id="@+id/poll_answer_input5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Poll's Answer5"/>
+                android:hint="Poll's Answer5"
+                android:visibility="gone"/>
             <EditText
                 android:id="@+id/poll_answer_input6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Poll's Answer6"/>
+                android:hint="Poll's Answer6"
+                android:visibility="gone"/>
             <EditText
                 android:id="@+id/poll_answer_input7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Poll's Answer7"/>
+                android:hint="Poll's Answer7"
+                android:visibility="gone"/>
             <EditText
                 android:id="@+id/poll_answer_input8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Poll's Answer8"/>
+                android:hint="Poll's Answer8"
+                android:visibility="gone"/>
             <EditText
                 android:id="@+id/poll_answer_input9"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Poll's Answer9"/>
+                android:hint="Poll's Answer9"
+                android:visibility="gone"/>
             <EditText
                 android:id="@+id/poll_answer_input10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Poll's Answer10"/>
+                android:hint="Poll's Answer10"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
     </ScrollView>
 
-    <Button
-        android:id="@+id/send_polling"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SEND"/>
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/add_option"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:onClick="addOption"
+            android:background="@drawable/addthis"/>
+
+        <ImageView
+            android:id="@+id/remove_option"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:onClick="removeOption"
+            android:background="@drawable/removethis"/>
+
+        <Button
+            android:id="@+id/send_polling"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/send"/>
+
+    </LinearLayout>
 
     <ListView
         android:id="@android:id/list"

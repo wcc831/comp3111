@@ -571,6 +571,21 @@ public class MainActivity extends ListActivity implements SearchView.OnQueryText
 
     }
 
+    public void changeHideBadword(View view) {
+        user.hideBadword = !user.hideBadword;
+        if(user.hideBadword) {
+            ((ImageView) view).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on));
+        }
+        else {
+            ((ImageView) view).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off));
+        }
+
+        mChatListAdapter.notifyDataSetChanged();
+        //mChatListAdapter.refersh();
+        //startActivity(getIntent());
+        //finish();
+    }
+
     public void logout(View view) {
         Intent intent = new Intent(getApplicationContext(), JoinActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
